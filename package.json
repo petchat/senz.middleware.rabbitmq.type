@@ -1,0 +1,20 @@
+{
+    "name": "Senz-Log-Hooker",
+    "description": "Cloud Code test project.",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+
+        "wascally"     : "latest",
+        "memory-cache" : "",
+        "tracer" : "",
+        "node-logentries": "0.0.2",
+        "express": "3.x",
+        "jsonfile": "",
+        "forever":"",
+        "forever-monitor":"",
+        "avoscloud-sdk": ""
+
+    },
+    "scripts": {"start":"node  ./cloud/forever_monitor.js"}
+}

@@ -1,0 +1,4 @@
+1.change the config.json "save_in_db" if neccessary;
+2.put in the targeted url to request
+
+#todo now we assume the leancloud save process may not cause error.
