@@ -30,11 +30,11 @@ var configuration = {
     //'sourceDir': 'script/path',// Directory that the source script is in
 
     //
-    // Options for restarting on watched files.
+    // Options for restarting on watched logs.
     //
-    'watch': true,               // Value indicating if we should watch files.
+    'watch': true,               // Value indicating if we should watch logs.
     'watchIgnoreDotFiles': true, // Whether to ignore file starting with a '.'
-    'watchIgnorePatterns': null, // Ignore patterns to use when watching files.
+    'watchIgnorePatterns': null, // Ignore patterns to use when watching logs.
     'watchDirectory': "./",      // Top-level directory to watch from.
 
     //
@@ -55,11 +55,11 @@ var configuration = {
     //'cwd': '/path/to/child/working/directory',
 
     //
-    // Log files and associated logging options for this instance
+    // Log logs and associated logging options for this instance
     //
-    'logFile': './files/logfile', // Path to log output from forever process (when daemonized)
-    'outFile': './files/output', // Path to log output from child stdout
-    'errFile': './files/error', // Path to log output from child stderr
+    'logFile': './logs/logfile', // Path to log output from forever process (when daemonized)
+    'outFile': './logs/output', // Path to log output from child stdout
+    'errFile': './logs/error', // Path to log output from child stderr
 
     //
     // ### function parseCommand (command, args)

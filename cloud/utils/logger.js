@@ -5,7 +5,7 @@
 /**
  * Created by zhanghengyang on 15/4/29.
  */
-var log_tag = "main module";
+var log_tag = "main module ";
 var debug = true;
 
 

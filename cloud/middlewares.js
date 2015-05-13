@@ -64,6 +64,12 @@ exports.isTraining = function(){
 
 };
 
-exports.start_location_service = location.init();
-exports.start_sound_service = sound.init();
-exports.start_motion_service = motion.init();
+exports.start_location_service = function(){
+    location.init();
+}
+exports.start_sound_service = function(){
+    sound.init();
+}
+exports.start_motion_service = function(){
+    motion.init();
+}

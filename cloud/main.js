@@ -1,18 +1,24 @@
-var publisher = require('./rabbit_lib/publisher');
+require("newrelic");
 var express = require("express");
 var middle = require("./middlewares");
 var location = require("./places/init");
 var sound = require("./sounds/init");
 var motion = require("./motions/init");
 var logger = require("./utils/logger");
-
-
+var rollbar = require("rollbar");
+var request = require("request");
 //location.init();
 //motion.init();
 //sound.init();
+//
+//rollbar.init("ca7f0172c3d44f54a17c75367116bd2a");
 
 var app = express();
 app.get("/debug/",function(req,res){
+
+    throw new Error("test the error");
+
+
     middle.toDebug();
     res.send({"status":"debug mode","logger":"tracer"});
 
@@ -20,7 +26,36 @@ app.get("/debug/",function(req,res){
 
 app.get("/production/",function(req,res){
     middle.toProd();
-    res.send({"status":"production mode","logger":"logentries"});
+
+    request.post(
+        {
+            url:"http://httpbin.org/post",
+            json: {"shit":"fuck"}
+            //timeout:6
+        },
+        function(err,response,body){
+            if(err != null ){
+                logger.error("locations batch post meets errors: " + err);
+                res.send("errors");
+
+            }
+            else {
+                var body_str = JSON.stringify(body);
+                if(body == null || body == undefined || body =='' ) {
+                    logger.error("send to the administrator, the geopoint can't decode the right poi info");
+                }
+                else{
+                    logger.debug("locations batch service's body is ",body_str);
+                    console.log(body_str);
+                    res.send({"status":"production mode","logger":"logentries"});
+
+                }
+
+            }
+        }
+    );
+
+
 
 });
 
@@ -37,6 +72,7 @@ app.get("/real-data/",function(req,res){
 
 app.get("/services/motion/start/",function(req,res){
 
+    logger.warn("fuck \n\n\n\n\n\\n\n\n\n\n fuck ");
     motion.init();
     res.send({"status":"motion service started"});
 });
@@ -54,7 +90,8 @@ app.get("/services/sound/start/",function(req,res){
 });
 
 });
-logger.info("service interchange api opened,")
+logger.info("service interchange api opened,");
+app.use(rollbar.errorHandler('ca7f0172c3d44f54a17c75367116bd2a'));
 app.listen(8080);
 
 
