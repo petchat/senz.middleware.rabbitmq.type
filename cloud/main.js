@@ -8,8 +8,8 @@ var logger = require("./utils/logger");
 var rollbar = require("rollbar");
 var request = require("request");
 //location.init();
-//motion.init();
-//sound.init();
+motion.init();
+sound.init();
 //
 //rollbar.init("ca7f0172c3d44f54a17c75367116bd2a");
 

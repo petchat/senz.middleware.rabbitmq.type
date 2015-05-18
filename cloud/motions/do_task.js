@@ -60,7 +60,6 @@ var get_request_body = function(obj){
     body["timestamp"] = obj[id].timestamp;
     body["objectId"] = id;// here save the object Id for latter operation
     body["rawData"] = obj[id].rawData;
-    body["clfType"] = ["SS"];
     //console.log("a is " + JSON.stringify(a));
 
     return body

@@ -46,7 +46,7 @@ var parse_body = function(body) {
     var params = {};
     params["processStatus"] = "untreated";
     params["isTrainingSample"] = config.is_sample;
-    params["soundType"] = body.ctxProba;
+    params["sceneProb"] = body.ctxProba;
 
     return params;
 
@@ -66,20 +66,23 @@ var sound_post = function (url, params) {
         },
         function(err,res,body){
             if(err != null ){
+                logger.error("this is the req error" + JSON.stringify(err))
                 promise.reject("request error");
             }
-            else if(body.responseOK){
+            else if(body.responseOk){
                 var body_str = JSON.stringify(body);
                 logger.debug("body is ,s%", body_str);
                 var processed_data = parse_body(body);
                 processed_data["timestamp"] = params.timestamp;
                 processed_data["userRawdataId"] = params.objectId;
                 processed_data["user"] = type.leanUser(m_cache.get(params.objectId)["user"].id);
+                logger.debug("processed data is \n" + JSON.stringify(processed_data));
                 logger.info("data proccessed");
                 ///write_in_db body wrapping
                 promise.resolve(processed_data);
             }
             else{
+                logger.error("this is the sound service error " + JSON.stringify(body));
                 promise.reject(JSON.stringify(body));
             }
         }

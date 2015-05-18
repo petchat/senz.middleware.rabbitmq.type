@@ -1,9 +1,9 @@
 {
   "source_db":
     {
-        "APP_KEY": "lgxxqmbx7kcxo1sehnjme12lq91oawsmguwzikqej012tn7o" ,
-        "APP_ID": "2g80kca6c6opty4n9xeby7txo2uei30vlbl92csmip82xi8e",
-        "MASTER_KEY":"iw4zn15qtxlmhbidghl1zix6uqxi8zkgdfxln9gjpzo2emsp",
+        "APP_KEY": "7pu1411dmmuvrv51caudehxa1c7sdjcle07nh4knja6sm59m" ,
+        "APP_ID": "mlg6g76on2b8xqzu2e2ghc2vkm4f0214smqgwzvg195qajbj",
+        "MASTER_KEY":"gypoj3dzxgc2mqnm77ehwb6y17k4ks28ylvlj5lf2kx8nbei",
         "target_class":"UserLocation"
     },
 
@@ -17,7 +17,7 @@
     "serv_url" :  "http://182.92.4.173/senz/pois/",
     "log_tag":"[Locations] ",
     "debug":true,
-    "is_sample" : true
+    "is_sample" : 1
 
 
 }

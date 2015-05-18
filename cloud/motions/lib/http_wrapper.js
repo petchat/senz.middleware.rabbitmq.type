@@ -44,7 +44,7 @@ var parse_body = function(body) {
 
     var params = {};
     params["processStatus"] = "untreated";
-    params["motionType"] = config.stat_dict[body.predSS[0]];
+    params["motionProb"] = body.pred[0]; // todo check if given a list..
     params["isTrainingSample"] = config.is_sample;
     return params;
 
@@ -64,9 +64,10 @@ var motion_post = function (url, params) {
         },
         function(err,res,body){
             if(err != null ){
+                logger.error(JSON.stringify(err));
                 promise.reject("request error");
             }
-            else if(body.responseOK){
+            else if(body.responseOk){
                 var body_str = JSON.stringify(body);
                 logger.debug("body is ,s%", body_str);
                 var processed_data = parse_body(body);
@@ -78,12 +79,14 @@ var motion_post = function (url, params) {
                 promise.resolve(processed_data);
             }
             else{
+                logger.error(JSON.stringify(body))
                 promise.reject(JSON.stringify(body));
             }
         }
     );
     return promise;
 };
+
 
 
 exports.motion_post = motion_post;
