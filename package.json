@@ -1,6 +1,6 @@
 {
     "name": "Senz-Log-Hooker",
-    "description": "Cloud Code test project.",
+    "description": "get all the services smooth",
     "version": "0.0.1",
     "private": true,
     "dependencies": {
@@ -15,8 +15,8 @@
         "forever-monitor":"",
         "avoscloud-sdk": "",
         "newrelic":"",
-        "rollbar":""
-
+        "rollbar":"",
+        "strongloop":""
     },
     "scripts": {"start":"node  ./cloud/forever_monitor.js"}
 }

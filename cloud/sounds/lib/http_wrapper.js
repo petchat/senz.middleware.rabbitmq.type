@@ -41,19 +41,12 @@ var lean_post = function (APP_ID, APP_KEY, params) {
 };
 
 
-var load_data = function(body) {
+var parse_body = function(body) {
 
     var params = {};
     params["processStatus"] = "untreated";
     params["isTrainingSample"] = config.is_sample;
-
-    if ("l2_text" in body){
-        params["soundType"] = config.sound_pred_code[body.l2_text];
-
-    }
-    else{
-        params["soundType"] = config.sound_pred_code[body.l2_code];
-    }
+    params["soundType"] = body.ctxProba;
 
     return params;
 
@@ -75,16 +68,19 @@ var sound_post = function (url, params) {
             if(err != null ){
                 promise.reject("request error");
             }
-            else {
+            else if(body.responseOK){
                 var body_str = JSON.stringify(body);
                 logger.debug("body is ,s%", body_str);
-                var processed_data = load_data(body);
+                var processed_data = parse_body(body);
                 processed_data["timestamp"] = params.timestamp;
                 processed_data["userRawdataId"] = params.objectId;
                 processed_data["user"] = type.leanUser(m_cache.get(params.objectId)["user"].id);
                 logger.info("data proccessed");
                 ///write_in_db body wrapping
                 promise.resolve(processed_data);
+            }
+            else{
+                promise.reject(JSON.stringify(body));
             }
         }
     );

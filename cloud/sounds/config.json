@@ -37,7 +37,7 @@
         "in_bus",
         "classroom"
     ],
-    "log_tag":"sounds ==> ",
+    "log_tag":"[Sounds] ",
     "is_sample" : true
 
 }

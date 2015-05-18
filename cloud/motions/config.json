@@ -19,7 +19,7 @@
     "serv_url" :  "http://182.92.4.173/motions/",
     "stat_dict":["sitting", "driving", "riding", "walking", "running"],
 
-    "log_tag": "motions ==> ",
+    "log_tag": "[Motions] ",
     "is_sample" : true
 
 }
