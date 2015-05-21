@@ -5,7 +5,7 @@ ADD . /usr/share/nginx/html/
 
 WORKDIR /usr/share/nginx/html/
 
-npm install
+RUN npm install
 
 CMD["/usr/local/bin/supervisord","-n"]
 
