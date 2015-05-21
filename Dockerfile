@@ -1,7 +1,12 @@
-FROM google/nodejs-runtime
-ADD install.sh /app
-WORKDIR /app
+FROM richarvey/nginx-nodejs
+
+RUN rm -rf /usr/share/nginx/html/*
+ADD . /user/share/nginx/html/
+
+WORKDIR /user/share/nginx/html/
 RUN bash install.sh
+
+
 
 
 

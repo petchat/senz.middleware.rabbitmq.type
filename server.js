@@ -1,7 +1,7 @@
 /**
  * Created by zhanghengyang on 15/5/4.
  */
-var logger = require("./utils/logger");
+var logger = require("./cloud/utils/logger");
 var forever = require("forever-monitor");
 
 var configuration = {
@@ -76,9 +76,9 @@ var configuration = {
             args:    args
         };
     }
-}
+};
 
-var child = new (forever.Monitor)("./main.js",configuration);
+var child = new (forever.Monitor)("./cloud/main.js",configuration);
 
 child.on('watch:restart', function(info) {
     logger.error('Restaring script because ' + info.file + ' changed');
