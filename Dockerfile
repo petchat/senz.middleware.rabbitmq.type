@@ -1,11 +1,13 @@
 FROM richarvey/nginx-nodejs
 
 RUN rm -rf /usr/share/nginx/html/*
-ADD . /user/share/nginx/html/
+ADD . /usr/share/nginx/html/
 
-WORKDIR /user/share/nginx/html/
-RUN bash install.sh
+WORKDIR /usr/share/nginx/html/
 
+npm install
+
+CMD["supervisord","-n"]
 
 
 

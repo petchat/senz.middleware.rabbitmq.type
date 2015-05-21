@@ -14,9 +14,9 @@
         "forever":"",
         "forever-monitor":"",
         "avoscloud-sdk": "",
-        "newrelic":"",
         "rollbar":"",
-        "strongloop":""
-    },
-    "scripts": {"start":"node  ./cloud/forever_monitor.js"}
+        "request":""
+
+    }
+
 }
