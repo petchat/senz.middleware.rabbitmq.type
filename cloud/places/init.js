@@ -30,7 +30,7 @@ exports.init = function(){
 
     sub.registerEvent(PlaceCallback,queue_name,event);
     logger.info("task_interval is " + task_interval);
-    logger.warn("fuck \n\n\n\n\n\\n\n\n\n\n\nn\fuck");
+    //logger.warn("fuck \n\n\n\n\n\\n\n\n\n\n\nn\fuck");
     setInterval(m_task.start,task_interval);
 
     //var rule = new timer.RecurrenceRule();

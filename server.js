@@ -92,3 +92,4 @@ child.on('exit:code', function(code) {
     logger.error('Forever detected script exited with code ' + code);
 });
 
+child.start();

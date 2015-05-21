@@ -7,7 +7,7 @@ var motion = require("./motions/init");
 var logger = require("./utils/logger");
 var rollbar = require("rollbar");
 var request = require("request");
-//location.init();
+location.init();
 motion.init();
 sound.init();
 //
