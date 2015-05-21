@@ -10,9 +10,9 @@ var location_log = require("./places/lib/logger");
 var sound_log = require("./sounds/lib/logger");
 var json = require("jsonfile");
 
-var location_config = "./places/config.json";
-var motion_config = "./motions/config.json";
-var sound_config = "./sounds/config.json";
+var location_config = "./cloud/places/config.json";
+var motion_config = "./cloud/motions/config.json";
+var sound_config = "./cloud/sounds/config.json";
 
 exports.toDebug = function(){
 

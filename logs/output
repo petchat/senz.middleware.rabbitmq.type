@@ -1,48 +1,76 @@
 ------ Receiving ------
 * Waiting for Msg from publisher.
-2015-05-21T12:52:13+0800 <debug> logger.js:23 (Object.exports.debug) [Motions] task_interval 10000
+2015-05-21T12:55:55+0800 <info> logger.js:19 (Object.exports.info) [Locations] task_interval is 10000
 ------ Receiving ------
 * Waiting for Msg from publisher.
-2015-05-21T12:52:13+0800 <debug> logger.js:23 (Object.exports.debug) [Sounds] task_interval 10000
-2015-05-21T12:52:13+0800 <info> logger.js:24 (Object.exports.info) [main module] service interchange api opened,
+2015-05-21T12:55:55+0800 <debug> logger.js:23 (Object.exports.debug) [Motions] task_interval 10000
 ------ Receiving ------
 * Waiting for Msg from publisher.
-2015-05-21T12:52:43+0800 <info> logger.js:19 (Object.exports.info) [Locations] task_interval is 10000
-2015-05-21T12:52:43+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] fuck 
-
-
-
-
-\n
-
-
-
-
-nuck
+2015-05-21T12:55:55+0800 <debug> logger.js:23 (Object.exports.debug) [Sounds] task_interval 10000
+2015-05-21T12:55:55+0800 <info> logger.js:24 (Object.exports.info) [main module] service interchange api opened,
+[Rollbar] Successful api response
+2015-05-21T12:56:05+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:56:05+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:56:15+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:56:15+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+[Rollbar] Successful api response
+2015-05-21T12:56:25+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:56:25+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:56:35+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:56:35+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:56:45+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:56:45+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:56:55+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:56:55+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
 ------ Receiving ------
 * Waiting for Msg from publisher.
-2015-05-21T12:52:43+0800 <debug> logger.js:23 (Object.exports.debug) [Motions] task_interval 10000
+2015-05-21T12:57:05+0800 <info> logger.js:19 (Object.exports.info) [Locations] task_interval is 10000
 ------ Receiving ------
 * Waiting for Msg from publisher.
-2015-05-21T12:52:43+0800 <debug> logger.js:23 (Object.exports.debug) [Sounds] task_interval 10000
-2015-05-21T12:52:43+0800 <info> logger.js:24 (Object.exports.info) [main module] service interchange api opened,
-2015-05-21T12:52:53+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
-2015-05-21T12:52:53+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
-2015-05-21T12:53:03+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
-2015-05-21T12:53:03+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:57:05+0800 <debug> logger.js:23 (Object.exports.debug) [Motions] task_interval 10000
 ------ Receiving ------
 * Waiting for Msg from publisher.
-2015-05-21T12:53:08+0800 <info> logger.js:19 (Object.exports.info) [Locations] task_interval is 10000
+2015-05-21T12:57:05+0800 <debug> logger.js:23 (Object.exports.debug) [Sounds] task_interval 10000
+2015-05-21T12:57:05+0800 <info> logger.js:24 (Object.exports.info) [main module] service interchange api opened,
+2015-05-21T12:57:10+0800 <info> logger.js:19 (Object.exports.info) [Locations] location is already in debug mode
+2015-05-21T12:57:10+0800 <info> logger.js:19 (Object.exports.info) [Motions] motion is already in debug mode
+2015-05-21T12:57:10+0800 <info> logger.js:19 (Object.exports.info) [Sounds] location is already in debug mode
+2015-05-21T12:57:15+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:57:15+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:57:25+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:57:25+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:57:35+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:57:35+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:57:45+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:57:45+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:57:55+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:57:55+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:58:05+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:58:05+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:58:15+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:58:15+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:58:25+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:58:25+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:58:35+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:58:35+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:58:45+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:58:45+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:58:55+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:58:55+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:59:05+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:59:05+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
 ------ Receiving ------
 * Waiting for Msg from publisher.
-2015-05-21T12:53:08+0800 <debug> logger.js:23 (Object.exports.debug) [Motions] task_interval 10000
+2015-05-21T12:59:10+0800 <info> logger.js:19 (Object.exports.info) [Locations] task_interval is 10000
 ------ Receiving ------
 * Waiting for Msg from publisher.
-2015-05-21T12:53:08+0800 <debug> logger.js:23 (Object.exports.debug) [Sounds] task_interval 10000
-2015-05-21T12:53:08+0800 <info> logger.js:24 (Object.exports.info) [main module] service interchange api opened,
-2015-05-21T12:53:18+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
-2015-05-21T12:53:18+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
-2015-05-21T12:53:28+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
-2015-05-21T12:53:28+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
-2015-05-21T12:53:38+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
-2015-05-21T12:53:38+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:59:10+0800 <debug> logger.js:23 (Object.exports.debug) [Motions] task_interval 10000
+------ Receiving ------
+* Waiting for Msg from publisher.
+2015-05-21T12:59:10+0800 <debug> logger.js:23 (Object.exports.debug) [Sounds] task_interval 10000
+2015-05-21T12:59:10+0800 <info> logger.js:24 (Object.exports.info) [main module] service interchange api opened,
+[Rollbar] Successful api response
+2015-05-21T12:59:20+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:59:20+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
+2015-05-21T12:59:30+0800 <info> logger.js:19 (Object.exports.info) [Locations] task started
+2015-05-21T12:59:30+0800 <warn> logger.js:34 (Object.exports.warn) [Locations] empty list,no need to go on. let's return
