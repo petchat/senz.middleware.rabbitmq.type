@@ -14,6 +14,14 @@ sound.init();
 //rollbar.init("ca7f0172c3d44f54a17c75367116bd2a");
 
 var app = express();
+
+app.get("/",function(req,res){
+
+
+    res.send("index page");
+
+});
+
 app.get("/debug/",function(req,res){
 
     middle.toDebug();

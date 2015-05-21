@@ -35,7 +35,7 @@ var configuration = {
     'watch': true,               // Value indicating if we should watch logs.
     'watchIgnoreDotFiles': true, // Whether to ignore file starting with a '.'
     'watchIgnorePatterns': null, // Ignore patterns to use when watching logs.
-    'watchDirectory': "./",      // Top-level directory to watch from.
+    'watchDirectory': "./cloud/",      // Top-level directory to watch from.
 
     //
     // All or nothing options passed along to `child_process.spawn`.
@@ -57,9 +57,9 @@ var configuration = {
     //
     // Log logs and associated logging options for this instance
     //
-    'logFile': './cloud/logs/logfile', // Path to log output from forever process (when daemonized)
-    'outFile': './cloud/logs/output', // Path to log output from child stdout
-    'errFile': './cloud/logs/error', // Path to log output from child stderr
+    'logFile': './logs/logfile', // Path to log output from forever process (when daemonized)
+    'outFile': './logs/output', // Path to log output from child stdout
+    'errFile': './logs/error', // Path to log output from child stderr
 
     //
     // ### function parseCommand (command, args)

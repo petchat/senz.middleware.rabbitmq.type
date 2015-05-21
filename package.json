@@ -15,8 +15,8 @@
         "forever-monitor":"",
         "avoscloud-sdk": "",
         "rollbar":"",
-        "request":""
-
+        "request":"",
+        "simplesets":""
     }
 
 }

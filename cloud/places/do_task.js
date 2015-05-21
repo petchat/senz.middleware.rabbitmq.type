@@ -8,6 +8,7 @@ var AV = require("avoscloud-sdk").AV;
 var interval = require("./lib/interval");
 var req_lib = require("./lib/http_wrapper");
 var logger = require("./lib/logger");
+var Set = require("simplesets").Set
 var AV = require("avoscloud-sdk").AV;
 ////log 3
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
@@ -58,7 +59,7 @@ var fetch_trace = function(ids){
 
     };
     var promises = [];
-    ids.forEach(function(id) {
+    ids.each(function(id) {
         promises.push(query_promise(id));
     });
     return AV.Promise.all(promises);
@@ -117,7 +118,7 @@ var cache_purge = function(suc_ids){
     });
 
     suc_ids.forEach(function(id){
-        request_ids.delete(id);
+        request_ids.remove(id);
     })
 
     var fail_ids = request_ids;
@@ -143,7 +144,7 @@ var expired = function(values){
 
     if (values.tries >= 3) {
 
-        request_ids.delete(id);
+        request_ids.remove(id);
         logger.warn("the objectId (" + id + ")" + " tries too much,throw away~");
         try{
             return m_cache.del(id);
@@ -180,7 +181,7 @@ var start = function(){
     logger.info("task started");
     request_ids = get_cache_ids();
 
-    if (!request_ids.size) {
+    if (!request_ids.size()) {
         logger.warn("empty list,no need to go on. let's return");
         return;
     }
