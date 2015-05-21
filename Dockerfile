@@ -7,7 +7,7 @@ WORKDIR /usr/share/nginx/html/
 
 RUN npm install
 
-CMD["/usr/local/bin/supervisord","-n"]
+CMD ["/usr/local/bin/supervisord","-n"]
 
 
 
