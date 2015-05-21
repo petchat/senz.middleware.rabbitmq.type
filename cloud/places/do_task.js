@@ -1,32 +1,31 @@
 /**
  * Created by zhanghengyang on 15/4/23.
  */
-
 var config = require("./config.json");
 var m_cache = require("location-cache");
 var AV = require("avoscloud-sdk").AV;
 var interval = require("./lib/interval");
 var req_lib = require("./lib/http_wrapper");
 var logger = require("./lib/logger");
-var Set = require("simplesets").Set
+var Set = require("simplesets").Set;
 var AV = require("avoscloud-sdk").AV;
 ////log 3
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
-
 var suc_ids = [];//global value for filter the final save rawDataIds.
-
 var request_ids = new Set(); //global value for deletion
+var timeout =  100000; //0.5 * interval.task_interval.check_interval;
 
 var fetch_trace = function(ids){
-    //questions on whether to set a request timeout
-    logger.info("fetch trace starting !!!!!!")
-    var UserLocation = AV.Object.extend(config.source_db.target_class);
 
+    //questions on whether to set a request timeout
+
+    logger.info("fetch trace starting !!!!!!");
+    var UserLocation = AV.Object.extend(config.source_db.target_class);
     var query_promise = function(id) {
         var promise = new AV.Promise();
         var query = new AV.Query(UserLocation);
         query.equalTo("objectId", id);
-        logger.debug("request id =====>>>>" + id);
+        logger.debug("request id =====>" + id);
         query.find().then(
             function (obj_list) {
                 logger.debug(JSON.stringify(obj_list));
@@ -82,7 +81,7 @@ var batch_body = function(obj_l){
         //console.log("a is " + JSON.stringify(a));
         locations.push(new_obj);
     });
-    var body = {"locations":locations};
+    var body = {"user_trace":locations};
     //console.log("body is ,%s",JSON.stringify(body));
     logger.error("requests body is ");
     logger.debug(JSON.stringify(body))
@@ -98,8 +97,6 @@ function location_service(body,mode){
     /// keep the request waiting time being 1/2 of timer interval
 
     var serv_url = config.serv_url;
-    var timeout = 0.5 * interval.task_interval.check_interval;
-
     logger.info("request the poi type of specific geopoint ");
     //http batch request
     return req_lib.batch_post(serv_url,body,timeout);
@@ -123,7 +120,7 @@ var cache_purge = function(suc_ids){
 
     var fail_ids = request_ids;
 
-    fail_ids.forEach(function(id){
+    fail_ids.each(function(id){
         m_cache.get(id).tries += 1;
 
 
@@ -161,7 +158,7 @@ var check_exhausted = function(i){
 
     var p = {};
     var ids = request_ids;
-    ids.forEach(function (id) {
+    ids.each(function (id) {
         var r = expired(m_cache.get(id));
 
     });
@@ -226,10 +223,8 @@ var start = function(){
                 function(result){
                     logger.error("one process ends in fail");
                     logger.error("result error is" + result);
-
                 }
             )
-
         },
         function (errors) {
             logger.error("id list retrieve failed, failed ids are ,%s",errors);

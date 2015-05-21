@@ -6,6 +6,7 @@ var m_cache = require("location-cache");
 var config = require("../config.json");
 var type = require("./lean_type.js");
 var logger = require("./logger");
+var _ = require("underscore");
 var AV = require("avoscloud-sdk").AV;
 ////log 3
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
@@ -14,7 +15,7 @@ var suc_ids = [];
 
 var lean_post = function (APP_ID, APP_KEY, params) {
 
-    logger.debug("body params' type is %s, \n params is %s", (typeof params), JSON.stringify(params));
+    logger.debug("body params is "  + JSON.stringify(params));
     var promise = new AV.Promise();
     req.post(
         {
@@ -29,11 +30,11 @@ var lean_post = function (APP_ID, APP_KEY, params) {
         function(err,res,body){
 
             if(err != null ){
-                promise.reject("batch request ERROR");}
+                promise.reject("lean request ERROR");}
 
             else {
-                logger.error("request error log is %s", err);
-                var body_str = JSON.stringify(body)
+                var body_str = JSON.stringify(body);
+                logger.debug("The body is " + body_str);
                 promise.resolve(body);
             }
         }
@@ -56,12 +57,9 @@ var batch_body = function (req_list) {
         lean_list.push(temp);
     });
     body["requests"] = lean_list;
-
     logger.debug("batch requests body " + body);
-
     return body
-
-}
+};
 
 var load_data = function(body) {
 
@@ -69,22 +67,34 @@ var load_data = function(body) {
     //console.log("response results" + typeof json_body);
     logger.error("type is %s %s",typeof pois,JSON.stringify(body));
 
-    body.results.parse_poi.forEach(function (obj) {
-        var params = {};
-        pois = obj.pois;
+    body.results.forEach(function (obj) {
 
-        var most_probable_poi = pois.sort(
-            function (a, b) {
-            return parseFloat(a.distance) - parseFloat(b.distance)
-        })[0];
+        var params = {};
+        var poi_probability = obj.poi_probability;
+        var timestamp = obj.timestamp;
+        var userRawdataId = obj.objectId;
+        var poiProbLv1, poiProbLv2;
+        var prob_lv1_object = {};
+        var prob_lv2_object = {};
+        var level_one = Object.keys(poi_probability);
+
+        level_one.forEach(function(type1){
+            var sum = null;
+            var type1_obj = poi_probability[type1];
+            prob_lv2_object = _.extend(prob_lv2_object,type1_obj);
+            Object.keys(type1_obj).forEach(function(type2){
+                sum += type1_obj[type2];
+            });
+            prob_lv1_object[type1] = sum;
+        });
+
         suc_ids.push(obj.objectId);
         params["isTrainingSample"] = config.is_sample;
-        params["userRawdataId"] = obj.objectId;
-        params["timestamp"] = obj.timestamp;
+        params["userRawdataId"] = userRawdataId;
+        params["timestamp"] = timestamp
         params["processStatus"] = "untreated";
-        params["poiType"] = most_probable_poi.poiType;
-        params["poiName"] = most_probable_poi.name;
-        logger.error(JSON.stringify(m_cache.get(obj.objectId)["user"]));
+        params["poiProbLv1"] = prob_lv1_object;
+        params["poiProbLv2"] = prob_lv2_object;
         params["user"] = type.leanUser(m_cache.get(obj.objectId)["user"].id);
         single_req_list.push(params);
         logger.debug("params are \n" + JSON.stringify(params));
@@ -111,7 +121,6 @@ var batch_post = function (url, params, max_timeout) {
             else {
                 var body_str = JSON.stringify(body);
                 if(body == null || body == undefined || body =='' ) {
-                    console.log("11111");
                     logger.error("send to the administrator, the geopoint can't decode the right poi info");
                     promise.reject("ERROR! please see the error log");
 
