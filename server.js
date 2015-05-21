@@ -57,9 +57,9 @@ var configuration = {
     //
     // Log logs and associated logging options for this instance
     //
-    'logFile': '.cloud/logs/logfile', // Path to log output from forever process (when daemonized)
-    'outFile': '.cloud/logs/output', // Path to log output from child stdout
-    'errFile': '.cloud/logs/error', // Path to log output from child stderr
+    'logFile': './cloud/logs/logfile', // Path to log output from forever process (when daemonized)
+    'outFile': './cloud/logs/output', // Path to log output from child stdout
+    'errFile': './cloud/logs/error', // Path to log output from child stderr
 
     //
     // ### function parseCommand (command, args)
