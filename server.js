@@ -10,7 +10,7 @@ var configuration = {
     //
     'silent': false,            // Silences the output from stdout and stderr in the parent process
     'uid': 'senz-log-hooker-UID',          // Custom uid for this forever process. (default: autogen)
-    'pidFile': '../senz-log.pid', // Path to put pid information for the process(es) started
+    'pidFile': './senz-log.pid', // Path to put pid information for the process(es) started
     'max': 3,                  // Sets the maximum number of times a given script should run
     'killTree': true,           // Kills the entire child process tree on `exit`
 
@@ -57,9 +57,9 @@ var configuration = {
     //
     // Log logs and associated logging options for this instance
     //
-    'logFile': './logs/logfile', // Path to log output from forever process (when daemonized)
-    'outFile': './logs/output', // Path to log output from child stdout
-    'errFile': './logs/error', // Path to log output from child stderr
+    'logFile': '.cloud/logs/logfile', // Path to log output from forever process (when daemonized)
+    'outFile': '.cloud/logs/output', // Path to log output from child stdout
+    'errFile': '.cloud/logs/error', // Path to log output from child stderr
 
     //
     // ### function parseCommand (command, args)
