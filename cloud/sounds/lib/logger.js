@@ -5,7 +5,12 @@ var config = require("../config.json");
 var log_tag = config.log_tag;
 var debug = config.debug;
 if(debug){
-    var log = require("tracer").colorConsole();
+    var log = require("tracer").colorConsole(
+        {
+            format : "{{timestamp}} <{{title}}> {{message}} (in {{file}}:{{line}})",
+            dateformat : "isoDateTime"
+        }
+    );
 }
 else{
     var logentries = require('node-logentries');

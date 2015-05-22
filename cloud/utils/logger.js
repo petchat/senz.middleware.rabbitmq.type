@@ -10,7 +10,12 @@ var debug = true;
 
 
 if(debug){
-    var log = require("tracer").colorConsole();
+    var log = require("tracer").colorConsole(
+        {
+            format : "{{timestamp}} <{{title}}> {{message}} (in {{file}}:{{line}})",
+            dateformat : "isoDateTime"
+        }
+    );
 }
 else{
     var logentries = require('node-logentries');
