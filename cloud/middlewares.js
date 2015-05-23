@@ -10,204 +10,87 @@ var location_log = require("./places/lib/logger");
 var sound_log = require("./sounds/lib/logger");
 var main_log = require("./utils/logger");
 var json = require("jsonfile");
-
+var util = require("util");
 var location_config = "./cloud/places/config.json";
 var motion_config = "./cloud/motions/config.json";
 var sound_config = "./cloud/sounds/config.json";
+//var sound_config = "./config.json";
 var main_config = "./config.json";
+
+
+var rewriteData = function(file,logger,type,target,value,aim){
+
+    console.log("file is " + file);
+    json.readFile(file,function(err,obj){
+        if(!err){
+
+            logger.debug(util.inspect(obj));
+            if(obj[target] != value){
+                obj[target] = value
+                json.writeFile(file,obj,function(err){
+                    if(!err){
+                        console.log("type is " + type);
+                        logger.info("now! " + type + " is " + aim)
+                    }
+                    else{
+                        logger.error(err);
+                    }
+                })
+            }
+            else{
+                logger.info(type + " is already " + aim)
+            }
+        }
+    })
+
+}
+
+
 
 exports.toDebug = function(){
 
-    var l_obj = json.readFileSync(location_config);
-    var m_obj = json.readFileSync(motion_config);
-    var s_obj = json.readFileSync(sound_config);
-    var main_obj = json.readFileSync(main_config)
-    //todo write and read async
-    if (l_obj.debug) {
-        location_log.info("location is already in debug mode");
-    }
-    else{
-        l_obj.debug = true;
-        json.writeFile(location_config,l_obj,function(err){
-            if(!err){
-                location_log.info("now! location is in debug mode...");
+    var aim = "in debug mode";
+    var target = "debug";
 
-            }
-            else {
-                location_log.error(err);
-            }
-        });
-    }
+    //rewriteData(location_config,location_log,"location",target,true,aim);
+    //rewriteData(sound_config,sound_log,"sound",target,true,aim);
+    rewriteData(motion_config,motion_log,"motion",target,true,aim);
+    //rewriteData(main_config,main_log,"main",target,true,aim);
 
-
-    if (m_obj.debug) {
-        motion_log.info("motion is already in debug mode");
-    }
-    else{
-        m_obj.debug = true;
-        json.writeFile(motion_config,m_obj,function(err){
-            if(!err){
-                motion_log.info("now! motion is already in debug mode");
-            }
-            else{
-                motion_log.error(err);
-            }
-        });
-
-    }
-
-    if (s_obj.debug) {
-        sound_log.info("sound is already in debug mode");
-    }
-    else{
-        s_obj.debug = true;
-        json.writeFile(sound_config,s_obj,function(err){
-            if(!err){
-                sound_log.info("now! sound is already in debug mode");
-            }
-            else {
-                sound_log.error(err);
-            }
-        });
-
-    }
-
-    if (main_obj.debug) {
-        main_log.info("main module is already in debug mode");
-    }
-    else{
-        main_obj.debug = true;
-        json.writeFile(main_config,main_obj,function(err){
-            if(!err){
-                main_log.info("now! main module is already in debug mode");
-            }
-            else{
-                main_log.error(err);
-            }
-        });
-    }
 };
 
 //todo complete the following three functions
 exports.toProd = function(){
 
-    //todo write and read async
-    var l_obj = json.readFileSync(location_config);
-    if (!l_obj.debug) {
-        location_log.info("location is already in production mode");
-    }
-    else{
-        l_obj.debug = false;
-        json.writeFile(location_config,l_obj);
-        location_log.info("now! location is in production mode...");
+    rewriteData(location_config,location_log,"location","debug",false,"in production mode");
+    rewriteData(sound_config,sound_log,"sound","debug",false,"in production mode");
+    rewriteData(motion_config,motion_log,"motion","debug",false,"in production mode");
+    rewriteData(main_config,main_log,"main","debug",false,"in production mode");
 
-    }
-
-    var m_obj = json.readFileSync(motion_config);
-    if (!m_obj.debug) {
-        motion_log.info("motion is already in production mode");
-    }
-    else{
-        m_obj.debug = false;
-        json.writeFile(motion_config,m_obj);
-        motion_log.info("now! motion is already in production mode");
-
-    }
-
-    var s_obj = json.readFileSync(sound_config);
-    if (!s_obj.debug) {
-        sound_log.info("sound is already in production mode");
-    }
-    else{
-        s_obj.debug = false;
-        json.writeFile(sound_config,s_obj);
-        motion_log.info("now! sound is already in production mode");
-
-    }
-
-    if (!main_obj.debug) {
-        main_log.info("main module is already in production mode");
-    }
-    else{
-        main_obj.debug = false;
-        json.writeFile(main_config,main_obj);
-        main_log.info("now! main module is already in debug mode");
-
-    }
 
 };
 
-exports.isNotTraining = function(){
 
-    var l_obj = json.readFileSync(location_config);
-    if (l_obj.isS) {
-        location_log.info("location is already in debug mode");
-    }
-    else{
-        l_obj.debug = true;
-        json.writeFile(location_config,l_obj);
-        location_log.info("now! location is in debug mode...");
 
-    }
+exports.toPredictionData = function(){
 
-    var m_obj = json.readFileSync(motion_config);
-    if (m_obj.debug) {
-        motion_log.info("motion is already in debug mode");
-    }
-    else{
-        m_obj.debug = true;
-        json.writeFile(motion_config,m_obj);
-        motion_log.info("now! motion is already in debug mode");
 
-    }
+    rewriteData(location_config,location_log,"location","is_sample",false,"providing prediction data");
+    rewriteData(motion_config,motion_log,"motion","is_sample",false,"providing prediction data");
+    rewriteData(sound_config,sound_log,"sound","is_sample",false,"providing prediction data");
 
-    var s_obj = json.readFileSync(sound_config);
-    if (s_obj.debug) {
-        sound_log.info("location is already in debug mode");
-    }
-    else{
-        s_obj.debug = true;
-        json.writeFile(sound_config,s_obj);
-        motion_log.info("now! sound is already in debug mode");
 
-    }
+
 };
 
-exports.isTraining = function(){
+exports.toTrainingData = function(){
 
-    var l_obj = json.readFileSync(location_config);
-    if (l_obj.debug) {
-        location_log.info("location is already in debug mode");
-    }
-    else{
-        l_obj.debug = true;
-        json.writeFile(location_config,l_obj);
-        location_log.info("now! location is in debug mode...");
+    rewriteData(location_config,location_log,"location","is_sample",true,"providing training data");
+    rewriteData(motion_config,motion_log,"motion","is_sample",true,"providing training data");
+    rewriteData(sound_config,sound_log,"sound","is_sample",true,"providing training data");
 
-    }
-
-    var m_obj = json.readFileSync(motion_config);
-    if (m_obj.debug) {
-        motion_log.info("motion is already in debug mode");
-    }
-    else{
-        m_obj.debug = true;
-        json.writeFile(motion_config,m_obj);
-        motion_log.info("now! motion is already in debug mode");
-
-    }
-
-    var s_obj = json.readFileSync(sound_config);
-    if (s_obj.debug) {
-        sound_log.info("location is already in debug mode");
-    }
-    else{
-        s_obj.debug = true;
-        json.writeFile(sound_config,s_obj);
-        motion_log.info("now! sound is already in debug mode");
-
-    }
 };
+
 
 exports.start_location_service = function(){
     location.init();

@@ -38,13 +38,14 @@ app.get("/production/",function(req,res){
 
 app.get("/train-set/",function(req,res){
 
-    middle.isTraining();
+    middle.toTrainingData();
     res.send({"status":"data set is training set"});
 
 });
 
 app.get("/real-data/",function(req,res){
-    middle.isNotTraining();
+
+    middle.toPredictionData();
     res.send({"status":"data set is not training set"});
 
 
@@ -70,6 +71,11 @@ app.get("/services/sound/start/",function(req,res){
 
 logger.info("service interchange api opened,");
 app.use(rollbar.errorHandler('ca7f0172c3d44f54a17c75367116bd2a'));
-app.listen(3001);
+var server = app.listen(3000, function () {
 
+    var host = server.address().address
+    var port = server.address().port
+    logger.debug('Example app listening at http://%s:%s', host, port)
+
+})
 
