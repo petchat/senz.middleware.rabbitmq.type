@@ -7,9 +7,9 @@ var motion = require("./motions/init");
 var logger = require("./utils/logger");
 var rollbar = require("rollbar");
 var request = require("request");
-location.init();
-motion.init();
-sound.init();
+//location.init();
+//motion.init();
+//sound.init();
 //
 //rollbar.init("ca7f0172c3d44f54a17c75367116bd2a");
 
@@ -37,6 +37,7 @@ app.get("/production/",function(req,res){
 });
 
 app.get("/train-set/",function(req,res){
+
     middle.isTraining();
     res.send({"status":"data set is training set"});
 
