@@ -1,6 +1,4 @@
 {
-    "debug":
-        true,
     "source_db":
     {
         "APP_KEY": "7pu1411dmmuvrv51caudehxa1c7sdjcle07nh4knja6sm59m" ,
@@ -20,7 +18,9 @@
     "stat_dict":["sitting", "driving", "riding", "walking", "running"],
 
     "log_tag": "[Motions] ",
-    "is_sample" : 1
+    "is_sample" : true,
+     "debug": false
+
 
 }
 

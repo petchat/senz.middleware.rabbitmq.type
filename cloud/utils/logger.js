@@ -6,8 +6,8 @@
  * Created by zhanghengyang on 15/4/29.
  */
 var log_tag = "[main module] ";
-var debug = true;
-
+var config = require("../config.json");
+var debug = config.debug;
 
 if(debug){
     var log = require("tracer").colorConsole(
@@ -20,7 +20,7 @@ if(debug){
 else{
     var logentries = require('node-logentries');
     var log = logentries.logger({
-        token:'1a528118-f843-4124-87d9-2843eace4998'
+        token:'ad2b1f4a-8c29-487a-ad8b-cae67c834c4b'
     });
 }
 

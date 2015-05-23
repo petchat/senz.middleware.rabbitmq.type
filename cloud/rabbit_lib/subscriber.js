@@ -1,12 +1,13 @@
 var rabbit = require('wascally');
 var configuration = require('./configuration.js');
+var logger = require("../utils/logger");
 
 function handleMessage(callback,type){
     //setting up the handler for the subscriber
     var final_type = "senz.message." + type ;
     rabbit.handle(final_type, function(msg) {
         try {
-            console.log('* Received Msg from event.');
+            logger.debug('* Received Msg from event.');
             callback(msg.body);
             msg.ack();
         }

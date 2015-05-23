@@ -1,7 +1,4 @@
 {
-
-    "debug":
-        true,
     "source_db":
     {
       "APP_KEY": "7pu1411dmmuvrv51caudehxa1c7sdjcle07nh4knja6sm59m" ,
@@ -38,7 +35,9 @@
         "classroom"
     ],
     "log_tag":"[Sounds] ",
-    "is_sample" : 1
+    "is_sample" : true,
+    "debug": false
+
 
 }
 
