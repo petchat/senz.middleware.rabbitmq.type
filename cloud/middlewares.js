@@ -11,9 +11,9 @@ var sound_log = require("./sounds/lib/logger");
 var main_log = require("./utils/logger");
 var json = require("jsonfile");
 var util = require("util");
-var location_config = "./cloud/places/config.json";
-var motion_config = "./cloud/motions/config.json";
-var sound_config = "./cloud/sounds/config.json";
+var location_config = "./places/config.json";
+var motion_config = "./motions/config.json";
+var sound_config = "./sounds/config.json";
 //var sound_config = "./config.json";
 var main_config = "./config.json";
 
@@ -51,11 +51,10 @@ exports.toDebug = function(){
 
     var aim = "in debug mode";
     var target = "debug";
-
-    //rewriteData(location_config,location_log,"location",target,true,aim);
-    //rewriteData(sound_config,sound_log,"sound",target,true,aim);
+    rewriteData(location_config,location_log,"location",target,true,aim);
+    rewriteData(sound_config,sound_log,"sound",target,true,aim);
     rewriteData(motion_config,motion_log,"motion",target,true,aim);
-    //rewriteData(main_config,main_log,"main",target,true,aim);
+    rewriteData(main_config,main_log,"main",target,true,aim);
 
 };
 
