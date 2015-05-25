@@ -21,6 +21,9 @@ var fetch_trace = function(ids){
 
     logger.info("fetch trace starting !!!!!!");
     var UserLocation = AV.Object.extend(config.source_db.target_class);
+    var User = AV.Object.extend("_User");
+    var Installation = AV.Object.extend("_Installation");
+
     var query_promise = function(id) {
         var promise = new AV.Promise();
         var query = new AV.Query(UserLocation);
@@ -32,24 +35,49 @@ var fetch_trace = function(ids){
                 if (obj_list.length > 1){
                     logger.error("there are errors in the leancloud query api");
                 }
+
                 var obj = obj_list[0];
                 logger.info("fetch leancloud trace successfully");
                 var a = {};
-                var user = obj.get("user");
-                var location = obj.get("location");
-                var timestamp = obj.get("timestamp");
-                a[obj.id] = {
-                    "location": location,
-                    "user": user,
-                    "timestamp": timestamp
-                };
-                m_cache.get(obj.id)["user"] = user;
-                suc_ids.push(id);
-                promise.resolve(a);
+                var installationId = obj.get("installation").objectId;
+                var install_query = new AV.Query(Installation);
+                install_query.get(installationId,{
+                    success:function(installation){
+                        var user_query = new AV.Query(User);
+                            var userId = installation.get("user").objectId
+                            user_query.get(userId,{
+                            success:function(user){
+
+                                logger.error("user is " + JSON.stringify(user));
+                                var location = obj.get("location");
+                                var timestamp = obj.get("timestamp");
+                                a[obj.id] = {
+                                    "location": location,
+                                    "user": user,
+                                    "timestamp": timestamp
+                                };
+                                m_cache.get(obj.id)["user"] = user;
+                                suc_ids.push(id);
+                                promise.resolve(a);
+
+                        },
+                            error:function(object,error){
+                                logger.error("user retrieve error " + JSON.stringify(error))
+                                promise.reject(error)
+                        }
+                            })
+
+                    },
+                    error:function(object,error){
+                        logger.error("installation retrieve error " + JSON.stringify(error))
+                        promise.reject(error)
+                    }
+                })
+
             },
             function (err) {
                 //
-                promise.resolve(id);
+                promise.reject("id is " + id + ", error is " + err );
                 logger.error("error is " + err);
                 logger.error("error id is " + id);
             }
@@ -83,7 +111,7 @@ var batch_body = function(obj_l){
     });
     var body = {"user_trace":locations};
     //console.log("body is ,%s",JSON.stringify(body));
-    logger.error("requests body is ");
+    logger.debug("requests body is ");
     logger.debug(JSON.stringify(body))
     return body
 
@@ -137,7 +165,7 @@ var write_batch_data = function(body){
 
 }
 
-var expired = function(values){
+var expired = function(values,id){
 
     if (values.tries >= 3) {
 
@@ -159,7 +187,7 @@ var check_exhausted = function(i){
     var p = {};
     var ids = request_ids;
     ids.each(function (id) {
-        var r = expired(m_cache.get(id));
+        var r = expired(m_cache.get(id),id);
 
     });
 };

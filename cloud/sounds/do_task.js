@@ -5,16 +5,15 @@
 var logger = require("./lib/logger");
 var config = require("./config.json");
 var m_cache = require("sound-cache");
-var AV = require("avoscloud-sdk").AV;
 var req_lib = require("./lib/http_wrapper");
 var AV = require("avoscloud-sdk").AV;
-////log 3
+////senz.log.tracer
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
 var get_audio = function(id){
     //questions on whether to set a request timeout
     logger.info("fetch trace started")
-    UserMic = AV.Object.extend("UserMic");
+    var UserMic = AV.Object.extend(config.source_db.target_class);
 
     var query_promise = function(id) {
         var promise = new AV.Promise();
@@ -25,8 +24,8 @@ var get_audio = function(id){
                 logger.debug("the object is " + JSON.stringify(obj_list[0]));
                 var o = obj_list[0];
                 var obj = {};
-                var audio_url = o.get("audio").url();
-                var user = o.get("user");
+                var audio_url = o.get("file").url();
+                var user = o.get("installation").get("user");
                 var timestamp = o.get("timestamp");
 
                 obj[o.id] = {
@@ -91,7 +90,7 @@ var write_data = function(body){
 
 }
 
-var delete_obj = function(values){
+var delete_obj = function(values,id){
 
     if (values.tries >= 3) {
 
@@ -107,7 +106,7 @@ var delete_obj = function(values){
 
 var check_exhausted = function(id){
 
-    var r = delete_obj(m_cache.get(id));
+    var r = delete_obj(m_cache.get(id),id);
     return r;
 };
 

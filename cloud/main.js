@@ -7,9 +7,10 @@ var motion = require("./motions/init");
 var logger = require("./utils/logger");
 var rollbar = require("rollbar");
 var request = require("request");
-//location.init();
 var bodyParser = require("body-parser");
-//motion.init();
+
+//location.init();
+motion.init();
 //sound.init();
 //
 //rollbar.init("ca7f0172c3d44f54a17c75367116bd2a");
@@ -90,8 +91,8 @@ app.get("/services/sound/start/",function(req,res){
 
 logger.info("service interchange api opened,");
 
-
-var server = app.listen(3000, function () {
+//todo the listen port must be 3000
+var server = app.listen(3001, function () {
 
     var host = server.address().address
     var port = server.address().port

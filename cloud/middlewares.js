@@ -73,10 +73,10 @@ exports.toProd = function(){
 
 exports.toPredictionData = function(){
 
-
-    rewriteData(location_config,location_log,"location","is_sample",false,"providing prediction data");
-    rewriteData(motion_config,motion_log,"motion","is_sample",false,"providing prediction data");
-    rewriteData(sound_config,sound_log,"sound","is_sample",false,"providing prediction data");
+    var target = 0;
+    rewriteData(location_config,location_log,"location","is_sample",target,"providing prediction data");
+    rewriteData(motion_config,motion_log,"motion","is_sample",target,"providing prediction data");
+    rewriteData(sound_config,sound_log,"sound","is_sample",target,"providing prediction data");
 
 
 
@@ -84,9 +84,10 @@ exports.toPredictionData = function(){
 
 exports.toTrainingData = function(){
 
-    rewriteData(location_config,location_log,"location","is_sample",true,"providing training data");
-    rewriteData(motion_config,motion_log,"motion","is_sample",true,"providing training data");
-    rewriteData(sound_config,sound_log,"sound","is_sample",true,"providing training data");
+    var target = 1;
+    rewriteData(location_config,location_log,"location","is_sample",target,"providing training data");
+    rewriteData(motion_config,motion_log,"motion","is_sample",target,"providing training data");
+    rewriteData(sound_config,sound_log,"sound","is_sample",target,"providing training data");
 
 };
 

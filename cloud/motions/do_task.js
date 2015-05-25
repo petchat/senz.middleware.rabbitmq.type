@@ -11,32 +11,60 @@ AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 var req_lib = require("./lib/http_wrapper");
 
 
+
+
 var get_raw_data = function(id){
     //questions on whether to set a request timeout
     logger.info("fetch sensor data started");
     var UserSensor = AV.Object.extend(config.source_db.target_class);
+    var User = AV.Object.extend("_User");
+    var Installation = AV.Object.extend("_Installation");
 
     var query_promise = function(id) {
         var promise = new AV.Promise();
         var query = new AV.Query(UserSensor);
         query.equalTo("objectId", id);
         query.find().then(
-            function (o) {
-                logger.debug("the object is " + JSON.stringify(o[0]));
-                o = o[0];
+            function (obj) {
+                logger.debug("the object is " + JSON.stringify(obj[0]));
+                obj = obj[0];
                 var a = {};
-                var user = o.get("user");
-                var raw_data = o.get("events");
-                var timestamp = o.get("timestamp");
+                var installationId = obj.get("installation").objectId;
+                var install_query = new AV.Query(Installation);
+                install_query.get(installationId,{
+                    success:function(installation){
+                        var user_query = new AV.Query(User);
+                        var userId = installation.get("user").objectId
+                        user_query.get(userId,{
+                            success:function(user){
 
-                a[o.id] = {
-                    "rawData": raw_data,
-                    "user": user,
-                    "timestamp": timestamp
-                };
-                m_cache.get(o.id)["user"] = user;
-                promise.resolve(a);
-                logger.info("sensor data fetched successfully")
+                                logger.error("user is " + JSON.stringify(user));
+                                var raw_data = obj.get("value").events;
+                                var timestamp = obj.get("timestamp");
+                                a[obj.id] = {
+                                    "rawData": raw_data,
+                                    "user": user,
+                                    "timestamp": timestamp
+                                };
+                                m_cache.get(obj.id)["user"] = user;
+                                logger.info("sensor data fetched successfully")
+                                promise.resolve(a);
+
+                            },
+                            error:function(object,error){
+                                logger.error("user retrieve error " + JSON.stringify(error))
+                                promise.reject(error)
+                            }
+                        })
+
+                    },
+                    error:function(object,error){
+                        logger.error("installation retrieve error " + JSON.stringify(error))
+                        promise.reject(error)
+                    }
+                });
+
+
             },
             function (err) {
                 promise.reject(id);
@@ -93,7 +121,7 @@ var write_data = function(body){
 
 }
 
-var delete_obj = function(values){
+var delete_obj = function(values,id){
 
     if (values.tries >= 3) {
 
@@ -110,7 +138,7 @@ var delete_obj = function(values){
 
 var check_exhausted = function(id){
 
-    var r = delete_obj(m_cache.get(id));
+    var r = delete_obj(m_cache.get(id),id);
     //var r = JSON.stringify(m_cache.get(id));
     //logger.error(r);
     return r;

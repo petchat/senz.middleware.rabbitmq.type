@@ -65,8 +65,8 @@ var load_data = function(body) {
 
     var single_req_list = [];
     //console.log("response results" + typeof json_body);
-    logger.error("type is %s %s",typeof pois,JSON.stringify(body));
-
+    logger.error("type is %s %s",JSON.stringify(body));
+    console.log("fuck here");
     body.results.forEach(function (obj) {
 
         var params = {};
@@ -120,6 +120,8 @@ var batch_post = function (url, params, max_timeout) {
             }
             else {
                 var body_str = JSON.stringify(body);
+                logger.debug("type of body is " + typeof body);
+                logger.debug("body is " + JSON.stringify(body));
                 if(body == null || body == undefined || body =='' ) {
                     logger.error("send to the administrator, the geopoint can't decode the right poi info");
                     promise.reject("ERROR! please see the error log");
