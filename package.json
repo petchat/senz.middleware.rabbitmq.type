@@ -16,7 +16,10 @@
         "avoscloud-sdk": "",
         "rollbar":"",
         "request":"",
-        "simplesets":""
+        "simplesets":"",
+        "supertest":"",
+        "should":"",
+        "body-parser":""
     }
 
 }

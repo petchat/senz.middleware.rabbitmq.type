@@ -8,19 +8,38 @@ var logger = require("./utils/logger");
 var rollbar = require("rollbar");
 var request = require("request");
 //location.init();
+var bodyParser = require("body-parser");
 //motion.init();
 //sound.init();
 //
 //rollbar.init("ca7f0172c3d44f54a17c75367116bd2a");
 
+
 var app = express();
+
+//<-- middlwares
+app.use(rollbar.errorHandler('ca7f0172c3d44f54a17c75367116bd2a'));
+//app.use(bodyParser.urlencoded({
+//    extended: true
+//}));
+app.use(bodyParser.json());
+//middlewares --!>
 
 app.get("/",function(req,res){
 
-
-    res.send("index page");
+    res.send({"return_type":"json"});
+    //res.send("index page");
 
 });
+
+
+app.post("/test_post/",function(req,res){
+
+    var params = req.body
+    res.send(params);
+})
+
+
 
 app.get("/debug/",function(req,res){
 
@@ -70,7 +89,8 @@ app.get("/services/sound/start/",function(req,res){
 });
 
 logger.info("service interchange api opened,");
-app.use(rollbar.errorHandler('ca7f0172c3d44f54a17c75367116bd2a'));
+
+
 var server = app.listen(3000, function () {
 
     var host = server.address().address
@@ -79,3 +99,5 @@ var server = app.listen(3000, function () {
 
 })
 
+
+exports.express_app = app
