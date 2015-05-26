@@ -46,7 +46,7 @@ var parse_body = function(body) {
     var params = {};
     params["processStatus"] = "untreated";
     params["isTrainingSample"] = config.is_sample;
-    params["sceneProb"] = body.ctxProba;
+    params["soundProb"] = body.ctxProba;
 
     return params;
 
