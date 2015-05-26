@@ -187,7 +187,7 @@ var start = function(request_id){
 
         },
         function (errors) {
-            logger.error("objects retrieving failed, failed ids are ,%s",errors);
+            logger.error("objects retrieved failed, failed ids are ,%s",errors);
         })
 
     };
