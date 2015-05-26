@@ -79,8 +79,12 @@ exports.init = function(){
 
 };
 
-var SoundCallback = function(msg)
-{
+var SoundCallback = function(msg) {
+
+    
+    if(m_cache.get(msg.objectId)){
+        return ;
+    }
     logger.info("a new sound data arrived");
     logger.info("data is " + JSON.stringify(msg));
     var obj = {};

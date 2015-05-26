@@ -66,7 +66,9 @@ exports.init = function(){
 
 var SensorCallback = function(msg)
 {
-
+    if(m_cache.get(msg.objectId)){
+        return ;
+    }
     logger.info("a new motion data arrived");
     //logger.info("data is " + msg);
     var obj = {};
