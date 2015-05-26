@@ -1,0 +1,14 @@
+/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/cloud/places/do_task.js:59
+                                m_cache.get(obj.id)["user"] = user;
+                                                            ^
+TypeError: Cannot set property 'user' of null
+    at user_query.get.success (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/cloud/places/do_task.js:59:61)
+    at promise.js:509:27
+    at wrappedResolvedCallback (promise.js:367:40)
+    at promise.js:290:26
+    at Array.forEach (native)
+    at Object._.each._.forEach [as _arrayEach] (underscore.js:78:11)
+    at _.extend.resolve (promise.js:289:10)
+    at wrappedResolvedCallback (promise.js:377:27)
+    at promise.js:290:26
+    at Array.forEach (native)
