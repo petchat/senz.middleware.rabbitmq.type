@@ -67,7 +67,7 @@ var motion_post = function (url, params) {
                 logger.error(JSON.stringify(err));
                 promise.reject("request error");
             }
-            else if(body.responseOk){
+            else if(body.response_ok){
                 var body_str = JSON.stringify(body);
                 logger.debug("body is ,s%", body_str);
                 var processed_data = parse_body(body);
@@ -80,6 +80,7 @@ var motion_post = function (url, params) {
             }
             else{
                 logger.error(JSON.stringify(body))
+                logger.debug("fuck/n/n/n\n\n\n\n\\n\n\faadfadsfadsf");
                 promise.reject(JSON.stringify(body));
             }
         }

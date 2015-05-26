@@ -14,28 +14,57 @@ var get_audio = function(id){
     //questions on whether to set a request timeout
     logger.info("fetch trace started")
     var UserMic = AV.Object.extend(config.source_db.target_class);
+    var User = AV.Object.extend("_User");
+    var Installation = AV.Object.extend("_Installation");
 
     var query_promise = function(id) {
         var promise = new AV.Promise();
         var query = new AV.Query(UserMic);
         query.equalTo("objectId", id);
         query.find().then(
-            function (obj_list) {
-                logger.debug("the object is " + JSON.stringify(obj_list[0]));
-                var o = obj_list[0];
-                var obj = {};
-                var audio_url = o.get("file").url();
-                var user = o.get("installation").get("user");
-                var timestamp = o.get("timestamp");
+            function (obj) {
 
-                obj[o.id] = {
-                    "soundUrl": audio_url,
-                    "user": user,
-                    "timestamp": timestamp
-                };
-                m_cache.get(o.id)["user"] = user;
-                promise.resolve(obj);
-                logger.info("sounds fetched successfully")
+
+
+                logger.debug("the object is " + JSON.stringify(obj[0]));
+                obj = obj[0];
+                var a = {};
+                var installationId = obj.get("installation").objectId;
+                var install_query = new AV.Query(Installation);
+                install_query.get(installationId,{
+                    success:function(installation){
+                        var user_query = new AV.Query(User);
+                        var userId = installation.get("user").objectId;
+                        user_query.get(userId,{
+                            success:function(user){
+
+                                logger.error("user is " + JSON.stringify(user));
+                                var audio_url = obj.get("file").url();
+                                var timestamp = obj.get("timestamp");
+                                a[obj.id] = {
+                                    "soundUrl": audio_url,
+                                    "user": user,
+                                    "timestamp": timestamp
+                                };
+                                if (!m_cache.get(obj.id)){
+                                    promise.reject("requested id " + obj.id + "has been deleted");
+                                }
+                                m_cache.get(obj.id)["user"] = user;
+                                logger.info("sensor data fetched successfully");
+                                promise.resolve(a);
+                            },
+                            error:function(object,error){
+                                logger.error("user retrieve error " + JSON.stringify(error))
+                                promise.reject(error)
+                            }
+                        })
+                    },
+                    error:function(object,error){
+                        logger.error("installation retrieve error " + JSON.stringify(error))
+                        promise.reject(error)
+                    }
+                });
+
             },
             function (err) {
                 promise.reject(id);

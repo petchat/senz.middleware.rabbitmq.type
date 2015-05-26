@@ -12,7 +12,6 @@ var req_lib = require("./lib/http_wrapper");
 
 
 
-
 var get_raw_data = function(id){
     //questions on whether to set a request timeout
     logger.info("fetch sensor data started");
@@ -26,6 +25,7 @@ var get_raw_data = function(id){
         query.equalTo("objectId", id);
         query.find().then(
             function (obj) {
+
                 logger.debug("the object is " + JSON.stringify(obj[0]));
                 obj = obj[0];
                 var a = {};
@@ -34,7 +34,7 @@ var get_raw_data = function(id){
                 install_query.get(installationId,{
                     success:function(installation){
                         var user_query = new AV.Query(User);
-                        var userId = installation.get("user").objectId
+                        var userId = installation.get("user").objectId;
                         user_query.get(userId,{
                             success:function(user){
 
@@ -46,17 +46,18 @@ var get_raw_data = function(id){
                                     "user": user,
                                     "timestamp": timestamp
                                 };
+                                if (!m_cache.get(obj.id)){
+                                    promise.reject("requested id " + obj.id + "has been deleted");
+                                }
                                 m_cache.get(obj.id)["user"] = user;
-                                logger.info("sensor data fetched successfully")
+                                logger.info("sensor data fetched successfully");
                                 promise.resolve(a);
-
                             },
                             error:function(object,error){
                                 logger.error("user retrieve error " + JSON.stringify(error))
                                 promise.reject(error)
                             }
                         })
-
                     },
                     error:function(object,error){
                         logger.error("installation retrieve error " + JSON.stringify(error))
@@ -83,7 +84,7 @@ var get_request_body = function(obj){
     /// batch request body for poi service
 
     logger.debug("object list is ",JSON.stringify(obj));
-    var body = new Object();
+    var body = {};
     var id = Object.keys(obj)[0];
     body["timestamp"] = obj[id].timestamp;
     body["objectId"] = id;// here save the object Id for latter operation
@@ -119,7 +120,7 @@ var write_data = function(body){
     app_id = config.target_db.APP_ID;
     return req_lib.lean_post(app_id,app_key,body);
 
-}
+};
 
 var delete_obj = function(values,id){
 
@@ -138,9 +139,12 @@ var delete_obj = function(values,id){
 
 var check_exhausted = function(id){
 
-    var r = delete_obj(m_cache.get(id),id);
+    var r = null;
+
+    r = delete_obj(m_cache.get(id),id);
     //var r = JSON.stringify(m_cache.get(id));
     //logger.error(r);
+    logger.error("aasdfadsfasdfasdf");
     return r;
 };
 
@@ -162,7 +166,7 @@ var start = function(request_id){
 
     if(check_exhausted(request_id)) {
         logger.warn("retries too much, throw the id's request")
-
+        return 0;
     };
 
     var promise = get_raw_data(request_id);
@@ -176,7 +180,8 @@ var start = function(request_id){
                     logger.info("motion service requested successfully");
                     return write_data(body);
                 },
-                function () {
+                function (error) {
+                    logger.error(error);
                     logger.error("motion service requested into failure");
                 }
             ).then(
@@ -186,8 +191,9 @@ var start = function(request_id){
                     logger.info("one process end ");
 
                 },
-                function(result){
-                    logger.info("data writing failed ")
+                function(error){
+                    logger.error(error)
+                    logger.error("data writing failed ")
                     failed(request_id);
                 }
             )
