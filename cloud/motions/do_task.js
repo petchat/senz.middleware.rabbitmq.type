@@ -183,6 +183,8 @@ var start = function(request_id){
                 function (error) {
                     logger.error(error);
                     logger.error("motion service requested into failure");
+                    return AV.Promise.error(error);
+
                 }
             ).then(
                 function(result){
@@ -200,6 +202,7 @@ var start = function(request_id){
 
         },
         function (errors) {
+            failed(request_id);
             logger.error("objects retrieving failed, failed ids are ,%s",errors);
         })
 

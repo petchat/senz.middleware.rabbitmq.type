@@ -169,8 +169,9 @@ var start = function(request_id){
                     logger.info("motion service requested successfully");
                     return write_data(body);
                 },
-                function () {
+                function (error) {
                     logger.error("motion service requested into failure");
+                    return AV.Promise.error(error);
                 }
             ).then(
                 function(result){
@@ -179,15 +180,18 @@ var start = function(request_id){
                     logger.info("one process end ");
 
                 },
-                function(result){
+                function(error){
+                    logger.error("error is " + error);
                     logger.info("data writing failed ")
                     failed(request_id);
                 }
             )
 
         },
-        function (errors) {
-            logger.error("objects retrieved failed, failed ids are ,%s",errors);
+        function (error) {
+            logger.error("objects retrieved failed, failed ids are ,%s",error);
+            failed(request_id);
+
         })
 
     };
