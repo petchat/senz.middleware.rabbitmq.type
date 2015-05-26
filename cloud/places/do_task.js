@@ -188,7 +188,6 @@ var check_exhausted = function(i){
     var ids = request_ids;
     ids.each(function (id) {
         var r = expired(m_cache.get(id),id);
-
     });
 };
 
@@ -230,8 +229,9 @@ var start = function(){
                     suc_ids = tuple[1];
                     return write_batch_data(tuple[0]);
                 },
-                function () {
+                function (error) {
                     logger.warn("location service requested in fail");
+                    return AV.Promise.error(error);
 
                 }
             ).then(
@@ -248,14 +248,16 @@ var start = function(){
                     logger.info("one process ends successfully");
 
                 },
-                function(result){
+                function(error){
+                    cache_purge([]);
                     logger.error("one process ends in fail");
-                    logger.error("result error is" + result);
+                    logger.error("result error is" + error);
                 }
             )
         },
-        function (errors) {
-            logger.error("id list retrieve failed, failed ids are ,%s",errors);
+        function (error) {
+            cache_purge([]);
+            logger.error("id list retrieve failed, failed ids are ,%s",error);
         })
 
     };
