@@ -38,7 +38,7 @@ var get_audio = function(id){
                         user_query.get(userId,{
                             success:function(user){
 
-                                logger.error("user is " + JSON.stringify(user));
+                                logger.debug("user is " + JSON.stringify(user));
                                 var audio_url = obj.get("file").url();
                                 var timestamp = obj.get("timestamp");
                                 a[obj.id] = {
@@ -215,7 +215,7 @@ var start = function(request_id){
                 },
                 function(error){
                     logger.error("error is " + error);
-                    logger.info("data writing failed ")
+                    logger.error("data writing failed ")
                     failed(request_id);
                 }
             )

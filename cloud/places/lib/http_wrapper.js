@@ -65,8 +65,7 @@ var load_data = function(body) {
 
     var single_req_list = [];
     //console.log("response results" + typeof json_body);
-    logger.error("type is %s %s",JSON.stringify(body));
-    console.log("fuck here");
+    logger.debug("type is " + JSON.stringify(body));
     body.results.forEach(function (obj) {
 
         var params = {};

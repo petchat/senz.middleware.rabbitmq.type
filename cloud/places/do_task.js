@@ -48,7 +48,7 @@ var fetch_trace = function(ids){
                             user_query.get(userId,{
                             success:function(user){
 
-                                logger.error("user is " + JSON.stringify(user));
+                                logger.debug("user is " + JSON.stringify(user));
                                 var location = obj.get("location");
                                 var timestamp = obj.get("timestamp");
                                 a[obj.id] = {
