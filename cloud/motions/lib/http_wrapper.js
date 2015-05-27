@@ -73,14 +73,29 @@ var motion_post = function (url, params) {
                 var processed_data = parse_body(body);
                 processed_data["timestamp"] = params.timestamp;
                 processed_data["userRawdataId"] = params.objectId;
-                processed_data["user"] = type.leanUser(m_cache.get(params.objectId)["user"].id);
+
+
+
+                if(!m_cache.get(params.objectId)){
+                    var inner_error = " the error is due to the cache confliction, IGNORE!"
+                    logger.error(inner_error);
+                    promise.reject(inner_error);
+                }
+                try{
+                    processed_data["user"] = type.leanUser(m_cache.get(params.objectId)["user"].id);
+                }
+                catch(e){
+                    var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
+                    logger.error(inner_error);
+                    promise.reject(inner_error);
+                }
+
                 logger.info("data proccessed");
                 ///write_in_db body wrapping
                 promise.resolve(processed_data);
             }
             else{
                 logger.error(JSON.stringify(body))
-                logger.debug("fuck/n/n/n\n\n\n\n\\n\n\faadfadsfadsf");
                 promise.reject(JSON.stringify(body));
             }
         }

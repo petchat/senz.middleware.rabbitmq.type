@@ -49,7 +49,14 @@ var get_raw_data = function(id){
                                 if (!m_cache.get(obj.id)){
                                     promise.reject("requested id " + obj.id + "has been deleted");
                                 }
-                                m_cache.get(obj.id)["user"] = user;
+                                try{
+                                    m_cache.get(obj.id)["user"] = user;
+                                }
+                                catch(e){
+                                    var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
+                                    logger.error(inner_error);
+                                    promise.reject(inner_error);
+                                }
                                 logger.info("sensor data fetched successfully");
                                 promise.resolve(a);
                             },
@@ -139,18 +146,36 @@ var delete_obj = function(values,id){
 
 var check_exhausted = function(id){
 
-    var r = null;
-
-    r = delete_obj(m_cache.get(id),id);
+    var r = false;
+    if(!m_cache.get(id)){
+        return true; // for if the id has been deleted by other process, it means the same as tries > 3 and being deleted in the context
+    }
+    try{
+        r = delete_obj(m_cache.get(id),id);
+    }
+    catch(e){
+        var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
+        logger.error(inner_error);
+        return true; // for if the id has been deleted by other process, it means the same as tries > 3 and being deleted in the context
+    }
     //var r = JSON.stringify(m_cache.get(id));
     //logger.error(r);
-    logger.error("aasdfadsfasdfasdf");
     return r;
 };
 
 
 function failed(request_id) {
-    m_cache.get(request_id).tries += 1;
+
+    if(!m_cache.get(id)) {
+        return;
+    }
+    try {
+        m_cache.get(request_id).tries += 1;
+    }
+    catch(e){
+        var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
+        logger.error(inner_error);
+    }
 }
 
 var start = function(request_id){
@@ -166,7 +191,7 @@ var start = function(request_id){
 
     if(check_exhausted(request_id)) {
         logger.warn("retries too much, throw the id's request")
-        return 0;
+        return ;
     };
 
     var promise = get_raw_data(request_id);
