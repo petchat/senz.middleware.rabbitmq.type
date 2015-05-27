@@ -175,7 +175,7 @@ var check_exhausted = function(id){
 
 function failed(request_id) {
 
-    if(!m_cache.get(id)) {
+    if(!m_cache.get(request_id)) {
         return;
     }
     try {
