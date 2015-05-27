@@ -88,15 +88,30 @@ var load_data = function(body) {
             prob_lv1_object[type1] = sum;
         });
 
-        suc_ids.push(obj.objectId);
         params["isTrainingSample"] = config.is_sample;
         params["userRawdataId"] = userRawdataId;
         params["timestamp"] = timestamp
         params["processStatus"] = "untreated";
         params["poiProbLv1"] = prob_lv1_object;
         params["poiProbLv2"] = prob_lv2_object;
-        params["user"] = type.leanUser(m_cache.get(obj.objectId)["user"].id);
+        if(!m_cache.get(obj.objectId)){
+            return;
+        }
+
+        //async error catch using domain, although it may cause memory leaks.
+        //http://www.alloyteam.com/2013/12/node-js-series-exception-caught/
+
+        try{
+            params["user"] = type.leanUser(m_cache.get(obj.objectId)["user"].id);
+
+        }
+        catch (e){
+            logger.error("error is " + e + ", if the error is due to the cache confliction, IGNORE");
+            return ;
+        }
         single_req_list.push(params);
+        suc_ids.push(obj.objectId);
+
         logger.debug("params are \n" + JSON.stringify(params));
 
     });

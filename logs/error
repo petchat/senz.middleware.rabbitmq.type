@@ -1,0 +1,43 @@
+{ [Error: read ECONNRESET] code: 'ECONNRESET', errno: 'ECONNRESET', syscall: 'read' }
+/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/cloud/places/lib/http_wrapper.js:98
+        params["user"] = type.leanUser(m_cache.get(obj.objectId)["user"].id);
+                                                                ^
+TypeError: Cannot read property 'user' of null
+    at /Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/cloud/places/lib/http_wrapper.js:98:65
+    at Array.forEach (native)
+    at load_data (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/cloud/places/lib/http_wrapper.js:70:18)
+    at Request._callback (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/cloud/places/lib/http_wrapper.js:132:33)
+    at Request.self.callback (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/node_modules/request/request.js:368:22)
+    at Request.emit (events.js:110:17)
+    at Request.<anonymous> (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/node_modules/request/request.js:1219:14)
+    at Request.emit (events.js:129:20)
+    at IncomingMessage.<anonymous> (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/node_modules/request/request.js:1167:12)
+    at IncomingMessage.emit (events.js:129:20)
+/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/cloud/places/do_task.js:157
+            continue;
+            ^^^^^^^^
+SyntaxError: Illegal continue statement
+    at exports.runInThisContext (vm.js:73:16)
+    at Module._compile (module.js:443:25)
+    at Object.Module._extensions..js (module.js:478:10)
+    at Module.load (module.js:355:32)
+    at Function.Module._load (module.js:310:12)
+    at Module.require (module.js:365:17)
+    at require (module.js:384:17)
+    at Object.<anonymous> (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/cloud/places/init.js:7:14)
+    at Module._compile (module.js:460:26)
+    at Object.Module._extensions..js (module.js:478:10)
+/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/cloud/places/do_task.js:157
+            continue;
+            ^^^^^^^^
+SyntaxError: Illegal continue statement
+    at exports.runInThisContext (vm.js:73:16)
+    at Module._compile (module.js:443:25)
+    at Object.Module._extensions..js (module.js:478:10)
+    at Module.load (module.js:355:32)
+    at Function.Module._load (module.js:310:12)
+    at Module.require (module.js:365:17)
+    at require (module.js:384:17)
+    at Object.<anonymous> (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/cloud/places/init.js:7:14)
+    at Module._compile (module.js:460:26)
+    at Object.Module._extensions..js (module.js:478:10)

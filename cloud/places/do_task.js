@@ -56,7 +56,18 @@ var fetch_trace = function(ids){
                                     "user": user,
                                     "timestamp": timestamp
                                 };
-                                m_cache.get(obj.id)["user"] = user;
+                                if(!m_cache.get(obj.id)){
+                                    promise.reject("error is one id is already be deleted by other process, please IGNORE this error!")
+                                }
+                                try{
+                                    m_cache.get(obj.id)["user"] = user;
+
+                                }
+                                catch(e){
+                                    var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
+                                    logger.error(inner_error);
+                                    promise.reject(inner_error);
+                                }
                                 suc_ids.push(id);
                                 promise.resolve(a);
 
@@ -149,7 +160,17 @@ var cache_purge = function(suc_ids){
     var fail_ids = request_ids;
 
     fail_ids.each(function(id){
-        m_cache.get(id).tries += 1;
+
+        if(!m_cache.get(id)){
+            return;
+        }
+        try{
+            m_cache.get(id).tries += 1;
+        }
+        catch(e){
+            var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
+            logger.error(inner_error);
+        }
 
 
     });
@@ -187,7 +208,16 @@ var check_exhausted = function(i){
     var p = {};
     var ids = request_ids;
     ids.each(function (id) {
-        var r = expired(m_cache.get(id),id);
+        if(!m_cache.get(id)){
+            return;
+        }
+        try{
+            var r = expired(m_cache.get(id),id);
+        }
+        catch(e){
+            var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
+            logger.error(inner_error);
+        }
     });
 };
 
@@ -198,7 +228,7 @@ var get_cache_ids = function(){
         id_set.add(id);
     });
     return id_set
-}
+};
 
 var start = function(){
 
