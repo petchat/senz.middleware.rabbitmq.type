@@ -15,17 +15,19 @@ var suc_ids = [];//global value for filter the final save rawDataIds.
 var request_ids = new Set(); //global value for deletion
 var timeout =  100000; //0.5 * interval.task_interval.check_interval;
 
+var UserLocation = AV.Object.extend(config.source_db.target_class);
+var User = AV.Object.extend("_User");
+var Installation = AV.Object.extend("_Installation");
+
 var fetch_trace = function(ids){
 
     //questions on whether to set a request timeout
 
     logger.info("fetch trace starting !!!!!!");
-    var UserLocation = AV.Object.extend(config.source_db.target_class);
-    var User = AV.Object.extend("_User");
-    var Installation = AV.Object.extend("_Installation");
 
-    var query_promise = function(id) {
-        var promise = new AV.Promise();
+
+    var query_promise = function(id,promise) {
+
         var query = new AV.Query(UserLocation);
         query.equalTo("objectId", id);
         logger.debug("request id =====>" + id);
@@ -37,7 +39,7 @@ var fetch_trace = function(ids){
                     logger.error("there are errors in the leancloud query api, Please notify the ADMIN!"); // do not invoke the error function
                 }
                 if (obj_list.length === 0){
-                    var inner_error = "The id " + id + "doesn't exist in the source db, please notify the ADMIN!";
+                    var inner_error = "The id " + id + " " + "doesn't exist in the source db, please notify the ADMIN!";
                     logger.error(inner_error);
                     promise.reject(inner_error);
                     return;
@@ -105,8 +107,10 @@ var fetch_trace = function(ids){
 
     };
     var promises = [];
+
     ids.each(function(id) {
-        promises.push(query_promise(id));
+        var temp_promise = new AV.Promise();
+        promises.push(query_promise(id,temp_promise));
     });
     return AV.Promise.all(promises);
 
@@ -115,7 +119,7 @@ var fetch_trace = function(ids){
 var batch_body = function(obj_l){
     /// batch request body for poi service
 
-    logger.debug("object list is ,%s >>>>>",JSON.stringify(obj_l));
+    logger.debug("object list is " + JSON.stringify(obj_l));
     var locations = [];
     obj_l.forEach(function(obj){
         //console.log("obj is >>>>>>>>" + JSON.stringify(obj));
@@ -199,6 +203,7 @@ var expired = function(values,id){
     if (values.tries >= 3) {
 
         request_ids.remove(id);
+        logger.debug("requested ids are" + request_ids);
         logger.warn("the objectId (" + id + ")" + " tries too much,throw away~");
         try{
             return m_cache.del(id);
@@ -211,7 +216,7 @@ var expired = function(values,id){
     }
 };
 
-var check_exhausted = function(i){
+var check_exhausted = function(){
 
     var p = {};
     var ids = request_ids;
@@ -243,21 +248,25 @@ var start = function(){
     logger.info("task started");
     request_ids = get_cache_ids();
 
+    check_exhausted();
     if (!request_ids.size()) {
         logger.warn("empty list,no need to go on. let's return");
         return;
     }
-    check_exhausted();
+
     var promise = fetch_trace(request_ids);
     promise.then(
         function (local_fetch_objs) {
 
+            logger.debug("local fetch objects are " +  JSON.stringify(local_fetch_objs));
+            logger.debug("local_fetch_objects type are " + typeof local_fetch_objs);
             var temp_list  = [];
             local_fetch_objs.forEach(function(e){
                 if (typeof e != typeof "1"){
                     temp_list.push(e);
                 }
             });
+
             var body = batch_body(temp_list);
             var p = location_service(body, "batch");
             p.then(
@@ -268,7 +277,7 @@ var start = function(){
                     return write_batch_data(tuple[0]);
                 },
                 function (error) {
-                    logger.warn("location service requested in fail");
+                    logger.error("location service requested in fail");
                     return AV.Promise.error(error);
 
                 }

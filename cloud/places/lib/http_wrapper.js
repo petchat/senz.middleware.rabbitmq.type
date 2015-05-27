@@ -57,7 +57,7 @@ var batch_body = function (req_list) {
         lean_list.push(temp);
     });
     body["requests"] = lean_list;
-    logger.debug("batch requests body " + body);
+    logger.debug("batch requests body " + JSON.stringify(body));
     return body
 };
 
@@ -65,7 +65,7 @@ var load_data = function(body) {
 
     var single_req_list = [];
     //console.log("response results" + typeof json_body);
-    logger.debug("type is " + JSON.stringify(body));
+    logger.debug("body is " + JSON.stringify(body));
     body.results.forEach(function (obj) {
 
         var params = {};
@@ -102,7 +102,6 @@ var load_data = function(body) {
 
         try{
             params["user"] = type.leanUser(m_cache.get(obj.objectId)["user"].id);
-
         }
         catch (e){
             logger.error("error is " + e + ", if the error is due to the cache confliction, IGNORE");

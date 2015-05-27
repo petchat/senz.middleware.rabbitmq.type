@@ -10,12 +10,14 @@ var AV = require("avoscloud-sdk").AV;
 ////senz.log.tracer
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
+var UserMic = AV.Object.extend(config.source_db.target_class);
+var User = AV.Object.extend("_User");
+var Installation = AV.Object.extend("_Installation");
+
 var get_audio = function(id){
+
     //questions on whether to set a request timeout
     logger.info("fetch trace started")
-    var UserMic = AV.Object.extend(config.source_db.target_class);
-    var User = AV.Object.extend("_User");
-    var Installation = AV.Object.extend("_Installation");
 
     var query_promise = function(id) {
         var promise = new AV.Promise();
@@ -28,9 +30,10 @@ var get_audio = function(id){
                     var inner_error = "The id " + id + "doesn't exist in the source db, please notify the ADMIN!";
                     logger.error(inner_error);
                     promise.reject(inner_error);
+                    return;
                 }
 
-                logger.debug("the object is " + JSON.stringify(obj[0]));
+                logger.debug("the object is " + JSON.stringify(obj_list[0]));
                 var obj = obj_list[0];
                 var a = {};
                 var installationId = obj.get("installation").objectId;

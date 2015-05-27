@@ -10,14 +10,14 @@ var AV = require("avoscloud-sdk").AV;
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 var req_lib = require("./lib/http_wrapper");
 
-
+var UserSensor = AV.Object.extend(config.source_db.target_class);
+var User = AV.Object.extend("_User");
+var Installation = AV.Object.extend("_Installation");
 
 var get_raw_data = function(id){
     //questions on whether to set a request timeout
     logger.info("fetch sensor data started");
-    var UserSensor = AV.Object.extend(config.source_db.target_class);
-    var User = AV.Object.extend("_User");
-    var Installation = AV.Object.extend("_Installation");
+
 
     var query_promise = function(id) {
         var promise = new AV.Promise();
