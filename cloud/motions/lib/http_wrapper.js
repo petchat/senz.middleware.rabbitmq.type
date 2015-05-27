@@ -80,6 +80,7 @@ var motion_post = function (url, params) {
                     var inner_error = " the error is due to the cache confliction, IGNORE!"
                     logger.error(inner_error);
                     promise.reject(inner_error);
+                    return;
                 }
                 try{
                     processed_data["user"] = type.leanUser(m_cache.get(params.objectId)["user"].id);
@@ -88,6 +89,7 @@ var motion_post = function (url, params) {
                     var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
                     logger.error(inner_error);
                     promise.reject(inner_error);
+                    return;
                 }
 
                 logger.info("data proccessed");

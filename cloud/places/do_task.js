@@ -31,11 +31,17 @@ var fetch_trace = function(ids){
         logger.debug("request id =====>" + id);
         query.find().then(
             function (obj_list) {
+
                 logger.debug(JSON.stringify(obj_list));
                 if (obj_list.length > 1){
-                    logger.error("there are errors in the leancloud query api");
+                    logger.error("there are errors in the leancloud query api, Please notify the ADMIN!"); // do not invoke the error function
                 }
-
+                if (obj_list.length === 0){
+                    var inner_error = "The id " + id + "doesn't exist in the source db, please notify the ADMIN!";
+                    logger.error(inner_error);
+                    promise.reject(inner_error);
+                    return;
+                };
                 var obj = obj_list[0];
                 logger.info("fetch leancloud trace successfully");
                 var a = {};
@@ -57,7 +63,8 @@ var fetch_trace = function(ids){
                                     "timestamp": timestamp
                                 };
                                 if(!m_cache.get(obj.id)){
-                                    promise.reject("error is one id is already be deleted by other process, please IGNORE this error!")
+                                    promise.reject("error is one id is already be deleted by other process, please IGNORE this error!");
+                                    return;
                                 }
                                 try{
                                     m_cache.get(obj.id)["user"] = user;
@@ -67,6 +74,7 @@ var fetch_trace = function(ids){
                                     var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
                                     logger.error(inner_error);
                                     promise.reject(inner_error);
+                                    return;
                                 }
                                 suc_ids.push(id);
                                 promise.resolve(a);

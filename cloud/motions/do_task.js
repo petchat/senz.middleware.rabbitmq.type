@@ -24,10 +24,17 @@ var get_raw_data = function(id){
         var query = new AV.Query(UserSensor);
         query.equalTo("objectId", id);
         query.find().then(
-            function (obj) {
+            function (obj_list) {
 
-                logger.debug("the object is " + JSON.stringify(obj[0]));
-                obj = obj[0];
+                if (obj_list.length === 0){
+                    var inner_error = "The id " + id + "doesn't exist in the source db, please notify the ADMIN!";
+                    logger.error(inner_error);
+                    promise.reject(inner_error);
+                    return;
+                }
+
+                logger.debug("the object is " + JSON.stringify(obj_list[0]));
+                var obj = obj_list[0];
                 var a = {};
                 var installationId = obj.get("installation").objectId;
                 var install_query = new AV.Query(Installation);
@@ -48,6 +55,7 @@ var get_raw_data = function(id){
                                 };
                                 if (!m_cache.get(obj.id)){
                                     promise.reject("requested id " + obj.id + "has been deleted");
+                                    return;
                                 }
                                 try{
                                     m_cache.get(obj.id)["user"] = user;
@@ -56,6 +64,7 @@ var get_raw_data = function(id){
                                     var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
                                     logger.error(inner_error);
                                     promise.reject(inner_error);
+                                    return;
                                 }
                                 logger.info("sensor data fetched successfully");
                                 promise.resolve(a);
