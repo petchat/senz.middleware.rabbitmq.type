@@ -29,7 +29,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
         },
         function(err,res,body){
 
-            if(err != null ){
+            if(err != null || res.statusCode != 200 ){
                 promise.reject("lean request ERROR");}
 
             else {
@@ -127,13 +127,15 @@ var batch_post = function (url, params, max_timeout) {
 
         },
         function(err,res,body){
-            if(err != null ){
+            if(err != null || res.statusCode != 200 ){
                 logger.error("locations batch post meets errors: " + err);
                 promise.reject("request error");
             }
             else {
                 var body_str = JSON.stringify(body);
                 logger.debug("type of body is " + typeof body);
+                logger.debug("response status code is " + res.statusCode);
+
                 logger.debug("body is " + JSON.stringify(body));
                 if(body == null || body == undefined || body =='' ) {
                     logger.error("send to the administrator, the geopoint can't decode the right poi info");

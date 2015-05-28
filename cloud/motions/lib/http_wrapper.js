@@ -24,7 +24,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
             json: params
         },
         function(err,res,body){
-            if(err != null ){
+            if(err != null || res.statusCode != 200 ){
                 logger.error("request error log is" + err);
                 promise.reject("request error");}
             else {
@@ -63,7 +63,7 @@ var motion_post = function (url, params) {
 
         },
         function(err,res,body){
-            if(err != null ){
+            if(err != null || res.statusCode != 200 ){
                 logger.error(JSON.stringify(err));
                 promise.reject("request error");
             }

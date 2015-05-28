@@ -24,7 +24,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
             json: params
         },
         function(err,res,body_str){
-            if(err != null ){
+            if(err != null || res.statusCode != 200 ){
                 
                 logger.error("request error log is,%s", err);
                 promise.reject("request error");}
@@ -65,7 +65,7 @@ var sound_post = function (url, params) {
 
         },
         function(err,res,body){
-            if(err != null ){
+            if(err != null || res.statusCode != 200 ){
                 logger.error("this is the req error" + JSON.stringify(err))
                 promise.reject("request error");
             }
