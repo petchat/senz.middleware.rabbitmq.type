@@ -191,12 +191,12 @@ var start = function(request_id){
     logger.info("task started");
     logger.info("id > " + request_id );
     if (typeof request_id != typeof "str" ) {
-        logger.error("type of requestId is illegal")
+        logger.error("type of requestId is illegal");
         return;
     }
 
     if(check_exhausted(request_id)) {
-        logger.warn("retries too much, throw the id's request")
+        logger.warn("retries too much, throw the id's request");
         return ;
     };
 
@@ -208,11 +208,11 @@ var start = function(request_id){
             var promise = get_sound_type(body);
             promise.then(
                 function (body) {
-                    logger.info("motion service requested successfully");
+                    logger.info("sound service requested successfully");
                     return write_data(body);
                 },
                 function (error) {
-                    logger.error("motion service requested into failure");
+                    logger.error("sound service requested into failure");
                     return AV.Promise.error(error);
                 }
             ).then(

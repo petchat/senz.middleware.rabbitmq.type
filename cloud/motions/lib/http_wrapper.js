@@ -64,7 +64,7 @@ var motion_post = function (url, params) {
 
         },
         function(err,res,body){
-            if(err != null || res.statusCode != 200 ){
+            if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
                 logger.error(JSON.stringify(err));
                 promise.reject("request error");
             }

@@ -128,7 +128,7 @@ var batch_post = function (url, params, max_timeout) {
 
         },
         function(err,res,body){
-            if(err != null || res.statusCode != 200 ){
+            if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
                 logger.error("locations batch post meets errors: " + err);
                 promise.reject("request error");
             }

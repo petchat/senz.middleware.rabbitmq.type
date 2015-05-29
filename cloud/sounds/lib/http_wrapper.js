@@ -12,7 +12,7 @@ AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
 var lean_post = function (APP_ID, APP_KEY, params) {
 
-    logger.info("lean post started")
+    logger.info("lean post started");
     var promise = new AV.Promise();
     req.post(
         {
@@ -24,7 +24,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
             json: params
         },
         function(err,res,body_str){
-            
+
             if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
                 logger.error("request error log is,%s", err);
                 promise.reject("error is " + err + " " + "response code is " + res.statusCode)
@@ -66,8 +66,8 @@ var sound_post = function (url, params) {
 
         },
         function(err,res,body){
-            if(err != null || res.statusCode != 200 ){
-                logger.error("this is the req error" + JSON.stringify(err))
+            if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
+                logger.error("this is the req error,error is " + JSON.stringify(err))
                 promise.reject("request error");
             }
             else if(body.responseOk){
