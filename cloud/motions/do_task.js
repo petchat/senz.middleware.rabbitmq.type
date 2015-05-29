@@ -208,8 +208,8 @@ var start = function(request_id){
     promise.then(
         function (obj) {
             var body = get_request_body(obj);
-            var promise = get_motion_type(body);
-            promise.then(
+            var service_promise = get_motion_type(body);
+            service_promise.then(
                 function (body) {
                     logger.info("motion service requested successfully");
                     return write_data(body);

@@ -205,8 +205,8 @@ var start = function(request_id){
     promise.then(
         function (obj) {
             var body = get_request_body(obj);
-            var promise = get_sound_type(body);
-            promise.then(
+            var service_promise = get_sound_type(body);
+            service_promise.then(
                 function (body) {
                     logger.info("sound service requested successfully");
                     return write_data(body);
