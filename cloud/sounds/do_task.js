@@ -18,16 +18,16 @@ var get_audio = function(id){
 
     //questions on whether to set a request timeout
     logger.info("fetch trace started")
+    var promise = new AV.Promise();
 
-    var query_promise = function(id) {
-        var promise = new AV.Promise();
+    var query_promise = function(id,promise) { // todo check if need get one promise from outside of get_audio
         var query = new AV.Query(UserMic);
         query.equalTo("objectId", id);
         query.find().then(
             function (obj_list) {
 
                 if (obj_list.length === 0){
-                    var inner_error = "The id " + id + "doesn't exist in the source db, please notify the ADMIN!";
+                    var inner_error = "The id " + id + " " + "doesn't exist in the source db, please notify the ADMIN!";
                     logger.error(inner_error);
                     promise.reject(inner_error);
                     return;
@@ -91,7 +91,7 @@ var get_audio = function(id){
 
     };
 
-    return query_promise(id);
+    return query_promise(id,promise);
 
 };
 
@@ -231,7 +231,7 @@ var start = function(request_id){
 
         },
         function (error) {
-            logger.error("objects retrieved failed, failed ids are ,%s",error);
+            logger.error("objects retrieved failed, errors are " + error);
             failed(request_id);
 
         })

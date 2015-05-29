@@ -24,9 +24,10 @@ var lean_post = function (APP_ID, APP_KEY, params) {
             json: params
         },
         function(err,res,body){
-            if(err != null || res.statusCode != 200 ){
+            if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
                 logger.error("request error log is" + err);
-                promise.reject("request error");}
+                promise.reject("error is " + err + " " + "response code is " + res.statusCode);
+            }
             else {
                 var body_str = JSON.stringify(body)
                 logger.info("body is " + body_str);

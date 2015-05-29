@@ -5,10 +5,10 @@
 var logger = require("./lib/logger");
 var config = require("./config.json");
 var m_cache = require("motion-cache");
+var req_lib = require("./lib/http_wrapper");
 var AV = require("avoscloud-sdk").AV;
 ////log 3
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
-var req_lib = require("./lib/http_wrapper");
 
 var UserSensor = AV.Object.extend(config.source_db.target_class);
 var User = AV.Object.extend("_User");
@@ -18,16 +18,16 @@ var get_raw_data = function(id){
     //questions on whether to set a request timeout
     logger.info("fetch sensor data started");
 
+    var promise = new AV.Promise();
 
-    var query_promise = function(id) {
-        var promise = new AV.Promise();
+    var query_promise = function(id,promise) {
         var query = new AV.Query(UserSensor);
         query.equalTo("objectId", id);
         query.find().then(
             function (obj_list) {
 
                 if (obj_list.length === 0){
-                    var inner_error = "The id " + id + "doesn't exist in the source db, please notify the ADMIN!";
+                    var inner_error = "The id " + id + " doesn't exist in the source db, please notify the ADMIN!";
                     logger.error(inner_error);
                     promise.reject(inner_error);
                     return;
@@ -92,7 +92,7 @@ var get_raw_data = function(id){
 
     };
 
-    return query_promise(id);
+    return query_promise(id,promise);
 
 };
 
