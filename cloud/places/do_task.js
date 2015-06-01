@@ -59,6 +59,7 @@ var fetch_trace = function(ids){
                                 logger.debug("user is " + JSON.stringify(user));
                                 var location = obj.get("location");
                                 var timestamp = obj.get("timestamp");
+                                var radius = obj.get("locationRadius");
                                 a[obj.id] = {
                                     "location": location,
                                     "user": user,
@@ -129,6 +130,7 @@ var batch_body = function(obj_l){
         new_obj["timestamp"] = obj[id].timestamp;
         new_obj["objectId"] = id;
         new_obj["location"] = obj[id].location;
+        new_obj["radius"] = obj[id].radius;
         //console.log("a is " + JSON.stringify(a));
         locations.push(new_obj);
     });
@@ -261,12 +263,19 @@ var start = function(){
             logger.debug("local fetch objects are " +  JSON.stringify(local_fetch_objs));
             logger.debug("local_fetch_objects type are " + typeof local_fetch_objs);
             var temp_list  = [];
+            var isIllegal = true;
             local_fetch_objs.forEach(function(e){
                 if (typeof e != typeof "1"){
                     temp_list.push(e);
                 }
+                else{
+                    logger.error("fetch objects' type is wrong");
+                    isIllegal = false;
+                }
             });
-
+            if(!isIllegal){
+                return;
+            };
             var body = batch_body(temp_list);
             var p = location_service(body, "batch");
             p.then(
