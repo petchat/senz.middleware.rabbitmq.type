@@ -27,7 +27,7 @@ var get_raw_data = function(id){
             function (obj_list) {
 
                 if (obj_list.length === 0){
-                    var inner_error = "The id " + id + " doesn't exist in the source db, please notify the ADMIN!";
+                    var inner_error = "The id " + id + " " + "doesn't exist in the source db, please notify the ADMIN!";
                     logger.error(inner_error);
                     promise.reject(inner_error);
                     return;
@@ -235,9 +235,9 @@ var start = function(request_id){
             )
 
         },
-        function (errors) {
+        function (error) {
             failed(request_id);
-            logger.error("objects retrieving failed, failed ids are ,%s",errors);
+            logger.error("objects retrieving failed, error is " + error);
         })
 
     };
