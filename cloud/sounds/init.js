@@ -29,7 +29,7 @@ exports.init = function(){
 
     sub.registerEvent(SoundCallback,queue_name,event);
     logger.debug("task_interval " + task_interval);
-
+    //todo scheduleCleanFromLeanCloud();
     setInterval(
         function () {
             if(m_cache.size()>0){
@@ -96,5 +96,17 @@ var SoundCallback = function(msg) {
     logger.warn("request new id service started, id >>" + msg.objectId);
     m_task.start(msg.objectId);
 
+}
 
+var scheduleCleanFromLeanCloud = function(){
+
+    var rule = new timer.RecurrenceRule();
+    //todo add the failing ids to the memory cache to check for 3 times
+
+    rule.minute = minute ;
+    rule.hour = hour ;
+    var fail_query = AV.Query(Fail);
+    //todo determine the 2 options: failing from leancloud once would throw the ids? or throw the ids according to the lastUpdatedAt?
+    fail_query.equalTo("isSuccess","0");
+    var j = schedule.scheduleJob(rule,m_task.start(id));
 }

@@ -32,7 +32,7 @@ exports.init = function(){
     logger.info("task_interval is " + task_interval);
     //logger.warn("fuck \n\n\n\n\n\\n\n\n\n\n\nn\fuck");
     setInterval(m_task.start,task_interval);
-
+    //todo scheduleCleanFromLeanCloud()
     //var rule = new timer.RecurrenceRule();
     //rule.minute = task_interval.check_interval;
     //var job = timer.scheduleJob(rule,m_task.start);
@@ -65,4 +65,17 @@ var PlaceCallback = function(msg)
     //m_task.start(msg.objectId);
 
 
+}
+
+var scheduleCleanFromLeanCloud = function(){
+
+    var rule = new timer.RecurrenceRule();
+    //todo add the failing ids to the memory cache to check for 3 times
+
+    rule.minute = minute ;
+    rule.hour = hour ;
+    var fail_query = AV.Query(Fail);
+    //todo determine the 2 options: failing from leancloud once would throw the ids? or throw the ids according to the lastUpdatedAt?
+    fail_query.equalTo("isSuccess","0");
+    var j = schedule.scheduleJob(rule,m_task.start(id));
 }

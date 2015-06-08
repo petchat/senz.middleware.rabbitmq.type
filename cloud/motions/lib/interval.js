@@ -6,3 +6,6 @@
 //default to be 10 seconds
 exports.task_interval = {"check_interval":10000};
 exports.prev_interval = 10000;
+//start the scheduler at free time
+exports.minute = 0;
+exports.hour = 0;

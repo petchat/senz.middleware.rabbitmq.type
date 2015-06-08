@@ -7,9 +7,14 @@ var m_cache = require("motion-cache");
 var m_task = require("./do_task");
 var interval = require("./lib/interval");
 var task_interval = interval.task_interval.check_interval;
+var minute = interval.minute;
+var hour = interval.hour;
 var logger = require("./lib/logger");
 
-
+var config = require("./config.json");
+var AV = require("avoscloud-sdk").AV;
+AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
+var Fail = AV.Object.extend("Failed");
 
 
 ///*
@@ -27,44 +32,15 @@ exports.init = function(){
 
     //
 
-
-    sub.registerEvent(SensorCallback,queue_name,event);
+    sub.registerEvent(sensorCallback,queue_name,event);
+    logger.info("now listening to the rabbitmq ...")
     logger.debug("task_interval " + task_interval);
-
-
-    setInterval(
-        function () {
-        if(m_cache.size()>0){
-            var keys = m_cache.keys();
-            var id = keys.pop();
-            var tries = m_cache.get(id).tries;
-            if(tries>0){
-                logger.warn("the id " + id + "tried" + m_cache.get(id).tries+ "times");
-                logger.warn("request pre-failed id service started, id >>" + id);
-                m_task.start(id);
-            }
-        }
-
-    },task_interval);
-
-    //var rule = new timer.RecurrenceRule();
-    //rule.minute = task_interval.check_interval;
-    //var job = timer.scheduleJob(rule,m_task.start);
-    //var cycle_check = timer.scheduleJob(rule,function(){
-    //
-    //    if (task_interval.check_interval === prev_interval){
-    //
-    //    }
-    //    else {
-    //        job.cancel();
-    //        rule.minute = check_interval;
-    //        job = timer.scheduleJob(rule,m_task.start);
-    //    }
-    //});
+    //todo scheduleCleanFromLeanCloud();
+    scheduleCleanFromMemoryCache();
 
 };
 
-var SensorCallback = function(msg)
+var sensorCallback = function(msg)
 {
     if(m_cache.get(msg.objectId)){
         return ;
@@ -81,4 +57,37 @@ var SensorCallback = function(msg)
     m_task.start(msg.objectId);
 
 
+}
+
+var scheduleCleanFromMemoryCache = function(){
+
+
+    setInterval(
+        function () {
+            if(m_cache.size()>0){
+                var keys = m_cache.keys();
+                var id = keys.pop();
+                var tries = m_cache.get(id).tries;
+                if(tries>0){
+                    logger.warn("the id " + id + "tried" + m_cache.get(id).tries+ "times");
+                    logger.warn("request pre-failed id service started, id >>" + id);
+                    m_task.start(id);
+                }
+            }
+
+        },task_interval);
+
+};
+
+var scheduleCleanFromLeanCloud = function(){
+
+    var rule = new timer.RecurrenceRule();
+    //todo add the failing ids to the memory cache to check for 3 times
+
+    rule.minute = minute ;
+    rule.hour = hour ;
+    var fail_query = AV.Query(Fail);
+    //todo determine the 2 options: failing from leancloud once would throw the ids? or throw the ids according to the lastUpdatedAt?
+    fail_query.equalTo("isSuccess","0");
+    var j = schedule.scheduleJob(rule,m_task.start(id));
 }

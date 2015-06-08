@@ -70,7 +70,12 @@ var load_data = function(body) {
     body.results.forEach(function (obj) {
 
         var params = {};
+
         var poi_probability = obj.poi_probability;
+        if(typeof poi_probability !== typeof {}){
+            logger.error("error is " + "key error and the error object is " + obj);
+            return;
+        }
         var timestamp = obj.timestamp;
         var userRawdataId = obj.objectId;
         var poiProbLv1, poiProbLv2;

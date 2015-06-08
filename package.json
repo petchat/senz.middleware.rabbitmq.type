@@ -19,7 +19,8 @@
         "simplesets":"",
         "supertest":"",
         "should":"",
-        "body-parser":""
+        "body-parser":"",
+        "node-schedule":""
     }
 
 }
