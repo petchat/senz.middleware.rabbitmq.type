@@ -41,6 +41,9 @@ var rewriteData = function(file,logger,type,target,value,aim){
                 logger.info(type + " is already " + aim)
             }
         }
+        else{
+            logger.error(JSON.stringify(err));
+        }
     })
 
 }
