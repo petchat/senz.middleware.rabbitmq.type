@@ -7,7 +7,8 @@ var m_cache = require("motion-cache");
 var config = require("../config.json");
 var type = require("./lean_type.js");
 var AV = require("avoscloud-sdk").AV;
-////log 3
+var uuid = require("uuid");
+
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
 var lean_post = function (APP_ID, APP_KEY, params) {
@@ -55,11 +56,15 @@ var parse_body = function(body) {
 
 var motion_post = function (url, params) {
 
+    var x_request_id = uuid.v4();
     var promise = new AV.Promise();
     req.post(
         {
             url: url,
             //url:"http://httpbin.org/post",
+            headers:{
+                "X-request-Id":x_request_id
+            },
             json: params
 
         },

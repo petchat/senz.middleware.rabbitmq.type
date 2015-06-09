@@ -20,7 +20,8 @@
         "supertest":"",
         "should":"",
         "body-parser":"",
-        "node-schedule":""
+        "node-schedule":"",
+        "uuid":""
     }
 
 }

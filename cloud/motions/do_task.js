@@ -7,6 +7,7 @@ var config = require("./config.json");
 var m_cache = require("motion-cache");
 var req_lib = require("./lib/http_wrapper");
 var AV = require("avoscloud-sdk").AV;
+var uuid = require("uuid");
 ////log 3
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
@@ -196,7 +197,6 @@ var start = function(request_id){
         return;
     }
     //
-
 
     if(check_exhausted(request_id)) {
         logger.warn("retries too much, throw the id's request")
