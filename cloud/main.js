@@ -9,7 +9,9 @@ var rollbar = require("rollbar");
 var request = require("request");
 var bodyParser = require("body-parser");
 
+console.log(JSON.stringify(location));
 location.init();
+
 motion.init();
 sound.init();
 //

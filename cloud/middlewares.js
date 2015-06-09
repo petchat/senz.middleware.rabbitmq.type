@@ -11,11 +11,17 @@ var sound_log = require("./sounds/lib/logger");
 var main_log = require("./utils/logger");
 var json = require("jsonfile");
 var util = require("util");
-var location_config = "./places/config.json";
-var motion_config = "./motions/config.json";
-var sound_config = "./sounds/config.json";
+
+
+var path = require("path");
+var cur_dir_name = path.dirname(__filename);
+console.log(cur_dir_name)
+main_log.error(cur_dir_name);
+var location_config = cur_dir_name + "/places/config.json";
+var motion_config = cur_dir_name + "/motions/config.json";
+var sound_config = cur_dir_name + "/sounds/config.json";
 //var sound_config = "./config.json";
-var main_config = "./config.json";
+var main_config = cur_dir_name + "/config.json";
 
 
 var rewriteData = function(file,logger,type,target,value,aim){
@@ -52,6 +58,7 @@ var rewriteData = function(file,logger,type,target,value,aim){
 
 exports.toDebug = function(){
 
+    //todo add promise
     var aim = "in debug mode";
     var target = "debug";
     rewriteData(location_config,location_log,"location",target,true,aim);
@@ -63,6 +70,8 @@ exports.toDebug = function(){
 
 //todo complete the following three functions
 exports.toProd = function(){
+
+    //todo add promise
 
     rewriteData(location_config,location_log,"location","debug",false,"in production mode");
     rewriteData(sound_config,sound_log,"sound","debug",false,"in production mode");
@@ -76,6 +85,8 @@ exports.toProd = function(){
 
 exports.toPredictionData = function(){
 
+    //todo add promise
+
     var target = 0;
     rewriteData(location_config,location_log,"location","is_sample",target,"providing prediction data");
     rewriteData(motion_config,motion_log,"motion","is_sample",target,"providing prediction data");
@@ -86,6 +97,8 @@ exports.toPredictionData = function(){
 };
 
 exports.toTrainingData = function(){
+
+    //todo add promise
 
     var target = 1;
     rewriteData(location_config,location_log,"location","is_sample",target,"providing training data");
