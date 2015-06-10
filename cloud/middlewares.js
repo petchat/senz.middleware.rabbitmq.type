@@ -1,25 +1,17 @@
 /**
  * Created by zhanghengyang on 15/5/4.
  */
+var util = require("util");
+var path = require("path");
+var json = require("jsonfile");
 
 var location = require("./locations/init");
 var sound = require("./sounds/init");
 var motion = require("./motions/init");
-var motion_log = require("./utils/logger");
-var location_log = require("./utils/logger");
-var sound_log = require("./utils/logger");
-var main_log = require("./utils/logger");
-var json = require("jsonfile");
-var util = require("util");
-
-
-var path = require("path");
+var log = require("./utils/logger").log;
+var main_log = new log("[main]");
 var cur_dir_name = path.dirname(__filename);
-console.log(cur_dir_name)
 main_log.error(cur_dir_name);
-var location_config = cur_dir_name + "/places/config.json";
-var motion_config = cur_dir_name + "/motions/config.json";
-var sound_config = cur_dir_name + "/sounds/config.json";
 //var sound_config = "./config.json";
 var main_config = cur_dir_name + "/config.json";
 
@@ -61,9 +53,7 @@ exports.toDebug = function(){
     //todo add promise
     var aim = "in debug mode";
     var target = "debug";
-    rewriteData(location_config,location_log,"location",target,true,aim);
-    rewriteData(sound_config,sound_log,"sound",target,true,aim);
-    rewriteData(motion_config,motion_log,"motion",target,true,aim);
+
     rewriteData(main_config,main_log,"main",target,true,aim);
 
 };
@@ -73,9 +63,6 @@ exports.toProd = function(){
 
     //todo add promise
 
-    rewriteData(location_config,location_log,"location","debug",false,"in production mode");
-    rewriteData(sound_config,sound_log,"sound","debug",false,"in production mode");
-    rewriteData(motion_config,motion_log,"motion","debug",false,"in production mode");
     rewriteData(main_config,main_log,"main","debug",false,"in production mode");
 
 

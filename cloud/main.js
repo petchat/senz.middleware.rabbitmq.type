@@ -4,12 +4,12 @@ var middle = require("./middlewares");
 var location = require("./locations/init");
 var sound = require("./sounds/init");
 var motion = require("./motions/init");
-var logger = require("./utils/logger");
+var log = require("./utils/logger").log;
+var logger = new log("[main]");
 var rollbar = require("rollbar");
 var request = require("request");
 var bodyParser = require("body-parser");
 
-console.log(JSON.stringify(location));
 location.init();
 
 
@@ -92,14 +92,14 @@ app.get("/services/sound/start/",function(req,res){
 
 });
 
-logger.info("service interchange api opened,");
+logger.info("","Service interchange api opened,");
 
 //todo the listen port must be 3000
 var server = app.listen(3000, function () {
 
     var host = server.address().address
     var port = server.address().port
-    logger.debug('Example app listening at http://%s:%s', host, port)
+    logger.debug("",'App listening at http://' + host + ":" + port);
 
 })
 
