@@ -3,13 +3,14 @@
  */
 
 var log = require("../../utils/logger").log;
-var logger = new log("[motions]");
+var logger = new log("[locations]");
 var req = require("request");
 var m_cache = require("motion-cache");
 var config = require("../config.json");
 var sample_config = require("../../config.json");
 var type = require("./lean_type.js");
 var AV = require("avoscloud-sdk").AV;
+var _ = require("underscore");
 
 var lean_post = function (APP_ID, APP_KEY, params) {
 
@@ -51,7 +52,6 @@ var load_data = function(body) {
     var obj = body.results[0];
     var uuid = obj.objectId;
     //console.log("response results" + typeof json_body);
-    logger.debug(uuid, "Body is " + JSON.stringify(body));
         var poi_probability = obj.poi_probability;
         if(typeof poi_probability !== typeof {}){
             logger.error(uuid,"Error is " + "key error and the error object is " + obj);
@@ -106,7 +106,9 @@ var load_data = function(body) {
 
 var location_post = function (url, params) {
 
-    var uuid = params.objectId;
+    var uuid = params.user_trace[0].objectId;
+    logger.debug(uuid,"Params are " + JSON.stringify(params));
+
     var promise = new AV.Promise();
     req.post(
         {
@@ -120,12 +122,13 @@ var location_post = function (url, params) {
         },
         function(err,res,body){
             if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
-                logger.error(uuid, JSON.stringify(err));
+                logger.error(uuid, "Error is " + JSON.stringify(err));
+                logger.error(uuid,"Response code is " + res.statusCode);
                 promise.reject("Location service request error");
             }
             else{
                 var body_str = JSON.stringify(body);
-                logger.debug(uuid, "body is  " + body_str);
+                logger.debug(uuid, "Body is  " + body_str);
                 var processed_data = load_data(body);
 
                 if(!processed_data){

@@ -10,7 +10,7 @@ var task_interval = interval.task_interval.check_interval;
 var minute = interval.minute;
 var hour = interval.hour;
 var log = require("../utils/logger").log;
-var logger = new log("[location]");
+var logger = new log("[locations]");
 
 var config = require("./config.json");
 var AV = require("avoscloud-sdk").AV;
@@ -32,10 +32,10 @@ var queue_name = "placesOfInterests";
 exports.init = function(){
 
     //
-
-    sub.registerEvent(sensorCallback,queue_name,event);
+    sub.registerEvent(locationCallback,queue_name,event);
     logger.info("","now listening to the rabbitmq ...")
-    logger.debug("","Scheduler start ... \n Interval is " + task_interval);
+    logger.info("","Scheduler start ...");
+    logger.debug("","Interval is " + task_interval);
     //todo scheduleCleanFromLeanCloud();
     scheduleCleanFromMemoryCache();
 
@@ -46,6 +46,7 @@ var locationCallback = function(msg)
     if(m_cache.get(msg.objectId)){
         return ;
     }
+    console.log("fuck")
     logger.info(msg.objectId, "a new location data arrived");
     //logger.info("data is " + msg);
     var obj = {};
@@ -70,7 +71,7 @@ var scheduleCleanFromMemoryCache = function(){
                 var id = keys.pop();
                 var tries = m_cache.get(id).tries;
                 if(tries>0){
-                    logger.warn(id,"the id " + id + "tried" + m_cache.get(id).tries+ "times");
+                    logger.warn(id,"the id " + id + "tried" + m_cache.get(id).tries+ " times");
                     logger.warn(id,"request pre-failed id service started, id >>" + id);
                     m_task.start(id);
                 }

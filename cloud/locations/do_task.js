@@ -3,7 +3,7 @@
  */
 
 var log = require("../utils/logger").log;
-var logger = new log("[location]");
+var logger = new log("[locations]");
 var config = require("./config.json");
 var m_cache = require("location-cache");
 var req_lib = require("./lib/http_wrapper");

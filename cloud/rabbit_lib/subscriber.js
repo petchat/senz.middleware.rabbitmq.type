@@ -1,13 +1,14 @@
 var rabbit = require('wascally');
 var configuration = require('./configuration.js');
-var logger = require("../utils/logger");
+var log = require("../utils/logger").log;
+var logger = new log("[rabbitMQ]");
 
 function handleMessage(callback,type){
     //setting up the handler for the subscriber
     var final_type = "senz.message." + type ;
     rabbit.handle(final_type, function(msg) {
         try {
-            logger.debug('* Received Msg from event.');
+            logger.info("",'* Received Msg from event.');
             callback(msg.body);
             msg.ack();
         }
@@ -15,8 +16,8 @@ function handleMessage(callback,type){
             msg.nack();
         }
     });
-    console.log('------ Receiving ------');
-    console.log('* Waiting for Msg from publisher.');
+    logger.info("",'------ Receiving ------');
+    logger.info("",'* Waiting for Msg from publisher.');
 }
 
 exports.registerEvent = function(callback, consumer_name, event){

@@ -11,7 +11,6 @@ var motion = require("./motions/init");
 var log = require("./utils/logger").log;
 var main_log = new log("[main]");
 var cur_dir_name = path.dirname(__filename);
-main_log.error(cur_dir_name);
 //var sound_config = "./config.json";
 var main_config = cur_dir_name + "/config.json";
 
