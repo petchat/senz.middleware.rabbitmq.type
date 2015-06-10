@@ -7,6 +7,7 @@ var logger = new log("[motions]");
 var req = require("request");
 var m_cache = require("motion-cache");
 var config = require("../config.json");
+var sample_config = require("../../config.json");
 var type = require("./lean_type.js");
 var AV = require("avoscloud-sdk").AV;
 var uuid = require("uuid");
@@ -50,7 +51,7 @@ var parse_body = function(body) {
     var params = {};
     params["processStatus"] = "untreated";
     params["motionProb"] = body.pred[0]; // todo check if given a list..
-    params["isTrainingSample"] = config.is_sample;
+    params["isTrainingSample"] = sample_config.is_sample;
     return params;
 
 };

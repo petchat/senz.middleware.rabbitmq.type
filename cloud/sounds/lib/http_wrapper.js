@@ -6,6 +6,7 @@ var logger = new log("[sounds]");
 var req = require("request");
 var m_cache = require("sound-cache");
 var config = require("../config.json");
+var sample_config = require("../../config.json");
 var type = require("./lean_type.js");
 var AV = require("avoscloud-sdk").AV;
 ////log 3
@@ -47,7 +48,7 @@ var parse_body = function(body) {
 
     var params = {};
     params["processStatus"] = "untreated";
-    params["isTrainingSample"] = config.is_sample;
+    params["isTrainingSample"] = sample_config.is_sample;
     params["soundProb"] = body.ctxProba;
 
     return params;

@@ -44,7 +44,7 @@ var rewriteData = function(file,logger,type,target,value,aim){
         }
     })
 
-}
+};
 
 
 
@@ -65,7 +65,6 @@ exports.toProd = function(){
 
     rewriteData(main_config,main_log,"main","debug",false,"in production mode");
 
-
 };
 
 
@@ -75,23 +74,15 @@ exports.toPredictionData = function(){
     //todo add promise
 
     var target = 0;
-    rewriteData(location_config,location_log,"location","is_sample",target,"providing prediction data");
-    rewriteData(motion_config,motion_log,"motion","is_sample",target,"providing prediction data");
-    rewriteData(sound_config,sound_log,"sound","is_sample",target,"providing prediction data");
-
-
+    rewriteData(main_config,main_log,"main","debug",target ,"providing prediction data");
 
 };
 
 exports.toTrainingData = function(){
 
     //todo add promise
-
     var target = 1;
-    rewriteData(location_config,location_log,"location","is_sample",target,"providing training data");
-    rewriteData(motion_config,motion_log,"motion","is_sample",target,"providing training data");
-    rewriteData(sound_config,sound_log,"sound","is_sample",target,"providing training data");
-
+    rewriteData(main_config,main_log,"main","debug",target ,"in production mode");
 };
 
 

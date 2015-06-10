@@ -3,8 +3,8 @@
  */
 
 
-var request = require("supertest")
-var app = require("./main.js").express_app
+var request = require("supertest");
+var app = require("./main.js").express_app;
 var should = require("should");
 
 request(app)
