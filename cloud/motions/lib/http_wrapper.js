@@ -1,7 +1,9 @@
 /**
  * Created by zhanghengyang on 15/4/24.
  */
-var logger = require("./logger");
+
+var log = require("../../utils/logger").log;
+var logger = new log("[motions]");
 var req = require("request");
 var m_cache = require("motion-cache");
 var config = require("../config.json");
@@ -13,31 +15,32 @@ AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
 var lean_post = function (APP_ID, APP_KEY, params) {
 
-    logger.info("lean post started");
+    var uuid = params.userRawdataId;
+    logger.info(uuid, "Lean post started");
     var promise = new AV.Promise();
     req.post(
         {
             url: "https://leancloud.cn/1.1/classes/"+config.target_db.target_class,
             headers:{
                 "X-AVOSCloud-Application-Id":APP_ID,
-                "X-AVOSCloud-Application-Key":APP_KEY
+                "X-AVOSCloud-Application-Key":APP_KEY,
+                "X-request-Id":uuid
             },
             json: params
         },
         function(err,res,body){
             if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
-                logger.error("request error log is" + err);
-                promise.reject("error is " + err + " " + "response code is " + res.statusCode);
+                logger.error(uuid,"Request error log is" + err);
+                promise.reject("Error is " + err + " " + "response code is " + res.statusCode);
             }
             else {
                 var body_str = JSON.stringify(body)
-                logger.info("body is " + body_str);
-                promise.resolve("save success")
+                logger.info(uuid,"Body is " + body_str);
+                promise.resolve("Data save successfully")
             }
         }
     );
     return promise;
-   /// promise 传出去。。
 
 };
 
@@ -50,32 +53,32 @@ var parse_body = function(body) {
     params["isTrainingSample"] = config.is_sample;
     return params;
 
-}
+};
 
 
 
 var motion_post = function (url, params) {
 
-    var x_request_id = uuid.v4();
+    var uuid = params.objectId;
     var promise = new AV.Promise();
     req.post(
         {
             url: url,
             //url:"http://httpbin.org/post",
             headers:{
-                "X-request-Id":x_request_id
+                "X-request-Id":uuid
             },
             json: params
 
         },
         function(err,res,body){
             if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
-                logger.error(JSON.stringify(err));
-                promise.reject("request error");
+                logger.error(uuid, JSON.stringify(err));
+                promise.reject("motion service request error");
             }
             else if(body.response_ok){
                 var body_str = JSON.stringify(body);
-                logger.debug("body is ,s%", body_str);
+                logger.debug(uuid, "body is  " + body_str);
                 var processed_data = parse_body(body);
                 processed_data["timestamp"] = params.timestamp;
                 processed_data["userRawdataId"] = params.objectId;
@@ -84,7 +87,7 @@ var motion_post = function (url, params) {
 
                 if(!m_cache.get(params.objectId)){
                     var inner_error = " the error is due to the cache confliction, IGNORE!"
-                    logger.error(inner_error);
+                    logger.error(uuid, inner_error);
                     promise.reject(inner_error);
                     return;
                 }
@@ -93,17 +96,17 @@ var motion_post = function (url, params) {
                 }
                 catch(e){
                     var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
-                    logger.error(inner_error);
+                    logger.error(uuid, inner_error);
                     promise.reject(inner_error);
                     return;
                 }
 
-                logger.info("data proccessed");
+                logger.info(uuid, "data proccessed");
                 ///write_in_db body wrapping
                 promise.resolve(processed_data);
             }
             else{
-                logger.error(JSON.stringify(body))
+                logger.error(uuid,"Body is " + JSON.stringify(body))
                 promise.reject(JSON.stringify(body));
             }
         }

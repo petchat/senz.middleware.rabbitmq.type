@@ -1,33 +1,62 @@
 var AV = require("avoscloud-sdk").AV;
 
 var promise = new AV.Promise();
-
+var uuid = require("uuid");
 
 var NodeCache = require("node-cache");
-
-var mycache = new NodeCache();
-
-var a = function(tag){
-    return {
-        "logger":function(msg){
-            require("tracer").colorConsole(
-            {
-                format : "{{timestamp}} <{{title}}> {{message}} (in {{file}}:{{line}})",
-                dateformat : "isoDateTime"
-            }
-        ).info(tag + " " +msg)
-        },
-        "b":2
-    }
-};
-
-var a1 = new a("location");
-var a2 = new a("sound");
-
-a1.logger("fuck");
-a2.logger("fuck2");
+//
 
 
+
+//console.log(uuid.v4());
+//
+//var spawn = require('child_process').spawn,
+//    grep  = spawn('grep', ['ssh']);
+//
+
+
+var AV = require("avoscloud-sdk").AV;
+var promise = new AV.Promise();
+
+a = {"objectId":1}
+console.log(a.objectId);
+//var mycache = new NodeCache();
+//
+//var a = function(tag){
+//    return {
+//        "logger":function(id, msg){
+//            console.log(arguments);
+//            process.env
+//            require("tracer").colorConsole(
+//            {
+//                format : "{{timestamp}} <{{title}}> {{message}} (in {{file}}:{{line}})",
+//                dateformat : "isoDateTime"
+//            }
+//        ).info(tag + " " +msg + " "+ id)
+//        },
+//        "b":2
+//    }
+//};
+//
+//var a1 = new a("location");
+//var a2 = new a("sound");
+//
+//a1.logger("fuck");
+//a2.logger(msg = "fuck2");
+
+//
+//console.log('start');
+//process.nextTick(function() {
+//    console.log('nextTick callback');
+//});
+//console.log('scheduled');
+//for(i=0;i<=1000000;i++){
+//    console.log(i)
+//}
+//// Output:
+// start
+// scheduled
+// nextTick callback
 
 //
 //var a = function(id){
@@ -35,9 +64,12 @@ a2.logger("fuck2");
 //};
 //
 //var i = setInterval(function(){
-//    console.log(i._idleStart)
+//    //console.log(child.pid);
+//    console.log('Spawned child pid: ' + grep.pid);
+//    grep.stdin.end();
+//    //console.log(i._idleStart)
 //},1);
-
+//
 
 //
 //var s = function(){

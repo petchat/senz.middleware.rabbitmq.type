@@ -22,12 +22,12 @@ var log = function(log_tag) {
     }
 
     return {
-        "info": function (info) {
-            log.info(log_tag + info);
+        "info": function (id, info) {
+            log.info(log_tag + " " + id + " " + info);
         },
 
-        "debug": function (debug) {
-            log.debug(log_tag + debug);
+        "debug": function (id, debug) {
+            log.debug(log_tag + " " + id + " " + debug);
         },
 
         ////exports.notice = function(notice){
@@ -35,21 +35,21 @@ var log = function(log_tag) {
         //}
 
 
-        "warn": function (warn) {
+        "warn": function (id, warn) {
             if (debug) {
-                log.warn(log_tag + warn);
+                log.warn(log_tag + " " + id + " " + warn);
             }
             else {
-                log.warning(log_tag + warn);
+                log.warning(log_tag + " " + id + " " + warn);
             }
         },
 
-        "error": function (err) {
+        "error": function (id, err) {
             if (debug) {
-                log.error(log_tag + err);
+                log.error(log_tag + " " + id + " " + err);
             }
             else {
-                log.err(log_tag + err);
+                log.err(log_tag + " " + id + " " + err);
             }
         }
     }

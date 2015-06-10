@@ -2,12 +2,12 @@
  * Created by zhanghengyang on 15/5/4.
  */
 
-var location = require("./places/init");
+var location = require("./locations/init");
 var sound = require("./sounds/init");
 var motion = require("./motions/init");
-var motion_log = require("./motions/lib/logger");
-var location_log = require("./places/lib/logger");
-var sound_log = require("./sounds/lib/logger");
+var motion_log = require("./utils/logger");
+var location_log = require("./utils/logger");
+var sound_log = require("./utils/logger");
 var main_log = require("./utils/logger");
 var json = require("jsonfile");
 var util = require("util");

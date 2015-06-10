@@ -2,7 +2,8 @@
  * Created by zhanghengyang on 15/4/23.
  */
 
-var logger = require("./lib/logger");
+var log = require("../utils/logger").log;
+var logger = new log("[sounds]");
 var config = require("./config.json");
 var m_cache = require("sound-cache");
 var req_lib = require("./lib/http_wrapper");
@@ -14,13 +15,14 @@ var UserMic = AV.Object.extend(config.source_db.target_class);
 var User = AV.Object.extend("_User");
 var Installation = AV.Object.extend("_Installation");
 
-var get_audio = function(id){
+var get_raw_data = function(id){
 
     //questions on whether to set a request timeout
-    logger.info("fetch trace started")
+    logger.info(id, "Fetch trace started");
     var promise = new AV.Promise();
 
-    var query_promise = function(id,promise) { // todo check if need get one promise from outside of get_audio
+    var query_promise = function(id,promise) {
+
         var query = new AV.Query(UserMic);
         query.equalTo("objectId", id);
         query.find().then(
@@ -28,12 +30,12 @@ var get_audio = function(id){
 
                 if (obj_list.length === 0){
                     var inner_error = "The id " + id + " " + "doesn't exist in the source db, please notify the ADMIN!";
-                    logger.error(inner_error);
+                    logger.error(id, inner_error);
                     promise.reject(inner_error);
                     return;
                 }
 
-                logger.debug("the object is " + JSON.stringify(obj_list[0]));
+                logger.debug(id, "The object is " + JSON.stringify(obj_list[0]));
                 var obj = obj_list[0];
                 var a = {};
                 var installationId = obj.get("installation").objectId;
@@ -45,7 +47,7 @@ var get_audio = function(id){
                         user_query.get(userId,{
                             success:function(user){
 
-                                logger.debug("user is " + JSON.stringify(user));
+                                logger.debug(id, "User is " + JSON.stringify(user));
                                 var audio_url = obj.get("file").url();
                                 var timestamp = obj.get("timestamp");
                                 a[obj.id] = {
@@ -54,29 +56,29 @@ var get_audio = function(id){
                                     "timestamp": timestamp
                                 };
                                 if (!m_cache.get(obj.id)){
-                                    promise.reject("requested id " + obj.id + "has been deleted");
+                                    promise.reject("Requested id " + obj.id + "has been deleted");
                                     return;
                                 }
                                 try{
                                     m_cache.get(obj.id)["user"] = user;
                                 }
                                 catch (e){
-                                    var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
-                                    logger.error(inner_error);
+                                    var inner_error = "Error is " + e + ", if the error is due to the cache confliction, IGNORE"
+                                    logger.error(id, inner_error);
                                     promise.reject(inner_error);
                                     return;
                                 }
-                                logger.info("sensor data fetched successfully");
+                                logger.info(id, "Sensor data fetched successfully");
                                 promise.resolve(a);
                             },
                             error:function(object,error){
-                                logger.error("user retrieve error " + JSON.stringify(error))
+                                logger.error(id, "User retrieve error " + JSON.stringify(error))
                                 promise.reject(error)
                             }
                         })
                     },
                     error:function(object,error){
-                        logger.error("installation retrieve error " + JSON.stringify(error))
+                        logger.error(id, "Installation retrieve error " + JSON.stringify(error))
                         promise.reject(error)
                     }
                 });
@@ -84,7 +86,7 @@ var get_audio = function(id){
             },
             function (err) {
                 promise.reject(id);
-                logger.error("get the data from source db meeting error  " + err);
+                logger.error(id, "get the data from source db meeting error  " + err);
             }
         );
         return promise;
@@ -97,13 +99,14 @@ var get_audio = function(id){
 
 var get_request_body = function(obj){
 
-    logger.debug("object  is " + JSON.stringify(obj));
-    var body = new Object();
+    var body = {};
     var id = Object.keys(obj)[0];
+    logger.debug(id, "Object  is " + JSON.stringify(obj));
+
     body = obj[id];
     body["objectId"] = id;
 
-    logger.debug("sound service body is " + JSON.stringify(body));
+    logger.debug(id, "Sound service body is " + JSON.stringify(body));
 
     return body
 
@@ -140,7 +143,7 @@ var delete_obj = function(values,id){
     if (values.tries >= 3) {
 
         m_cache.del(id);
-        logger.debug("exhausted id is ," + id);
+        logger.debug(id, "Exhausted id is ," + id);
         return true;
     }
     else{
@@ -159,12 +162,11 @@ var check_exhausted = function(id){
         r = delete_obj(m_cache.get(id),id);
     }
     catch(e){
-        var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
-        logger.error(inner_error);
+        var inner_error = "Error is " + e + ", if the error is due to the cache confliction, IGNORE"
+        logger.error(id, inner_error);
         return true; // for if the id has been deleted by other process, it means the same as tries > 3 and being deleted in the context
     }
-    //var r = JSON.stringify(m_cache.get(id));
-    //logger.error(r);
+
     return r;
 
 
@@ -182,25 +184,25 @@ function failed(request_id) {
     }
     catch(e){
         var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
-        logger.error(inner_error);
+        logger.error(request_id, inner_error);
     }
 }
 
 var start = function(request_id){
 
-    logger.info("task started");
-    logger.info("id > " + request_id );
+    logger.info(request_id,"Task start ...");
+    logger.info(request_id,"id > " + request_id );
     if (typeof request_id != typeof "str" ) {
-        logger.error("type of requestId is illegal");
+        logger.error(request_id,"type of requestId is illegal");
         return;
     }
 
     if(check_exhausted(request_id)) {
-        logger.warn("retries too much, throw the id's request");
+        logger.warn(request_id,"retries too much, throw the id's request");
         return ;
     };
 
-    var promise = get_audio(request_id);
+    var promise = get_raw_data(request_id);
 
     promise.then(
         function (obj) {
@@ -208,30 +210,30 @@ var start = function(request_id){
             var service_promise = get_sound_type(body);
             service_promise.then(
                 function (body) {
-                    logger.info("sound service requested successfully");
+                    logger.info(request_id,"Sound service requested successfully");
                     return write_data(body);
                 },
                 function (error) {
-                    logger.error("sound service requested into failure");
+                    logger.error(request_id,"Sound service requested into failure");
                     return AV.Promise.error(error);
                 }
             ).then(
                 function(result){
-                    logger.info("data have been written")
+                    logger.info("Data have been written")
                     succeeded(request_id);
-                    logger.info("one process end ");
+                    logger.info("One process end ");
 
                 },
                 function(error){
-                    logger.error("error is " + error);
-                    logger.error("data writing failed ")
+                    logger.error(request_id,"Error is " + error);
+                    logger.error(request_id,"Data writing failed ")
                     failed(request_id);
                 }
             )
 
         },
         function (error) {
-            logger.error("objects retrieved failed, errors are " + error);
+            logger.error(request_id,"Objects retrieved failed, errors are " + error);
             failed(request_id);
 
         })

@@ -1,7 +1,8 @@
 /**
  * Created by zhanghengyang on 15/4/24.
  */
-var logger = require("./logger");
+var log = require("../../utils/logger").log;
+var logger = new log("[sounds]");
 var req = require("request");
 var m_cache = require("sound-cache");
 var config = require("../config.json");
@@ -12,7 +13,8 @@ AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
 var lean_post = function (APP_ID, APP_KEY, params) {
 
-    logger.info("lean post started");
+    var uuid = params.userRawdataId;
+    logger.info(uuid,"Lean post started");
     var promise = new AV.Promise();
     req.post(
         {
@@ -26,18 +28,17 @@ var lean_post = function (APP_ID, APP_KEY, params) {
         function(err,res,body_str){
 
             if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
-                logger.error("request error log is,%s", err);
-                promise.reject("error is " + err + " " + "response code is " + res.statusCode)
+                logger.error(uuid,"Request error log is,%s", err);
+                promise.reject(uuid,"Error is " + err + " " + "response code is " + res.statusCode)
             }
             else {
                 body_str = JSON.stringify(body_str);
-                logger.info("body is " + body_str);
-                promise.resolve("save success")
+                logger.info(uuid,"Body is " + body_str);
+                promise.resolve("Data saved successfully")
             }
         }
     );
     return promise
-   /// promise 传出去。。
 
 };
 
@@ -57,28 +58,32 @@ var parse_body = function(body) {
 
 var sound_post = function (url, params) {
 
+    var uuid = params.objectId;
     var promise = new AV.Promise();
     req.post(
         {
             url: url,
             //url:"http://httpbin.org/post",
-            json: params
+            json: params,
+            headers:{
+                "X-request-Id":uuid
+            }
 
         },
         function(err,res,body){
             if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
-                logger.error("this is the req error,error is " + JSON.stringify(err))
+                logger.error(uuid,"This is the req error,error is " + JSON.stringify(err))
                 promise.reject("request error");
             }
             else if(body.responseOk){
                 var body_str = JSON.stringify(body);
-                logger.debug("body is ,s%", body_str);
+                logger.debug(uuid,"Body is ,s%", body_str);
                 var processed_data = parse_body(body);
                 processed_data["timestamp"] = params.timestamp;
                 processed_data["userRawdataId"] = params.objectId;
                 if(!m_cache.get(params.objectId)){
-                    var inner_error = " the error is due to the cache confliction, IGNORE!"
-                    logger.error(inner_error);
+                    var inner_error = "The error is due to the cache confliction, IGNORE!"
+                    logger.error(uuid,inner_error);
                     promise.reject(inner_error);
                     return;
                 }
@@ -86,18 +91,18 @@ var sound_post = function (url, params) {
                     processed_data["user"] = type.leanUser(m_cache.get(params.objectId)["user"].id);
                 }
                 catch(e){
-                    var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
-                    logger.error(inner_error);
+                    var inner_error = "Error is " + e + ", if the error is due to the cache confliction, IGNORE"
+                    logger.error(uuid,inner_error);
                     promise.reject(inner_error);
                     return;
                 }
-                logger.debug("processed data is \n" + JSON.stringify(processed_data));
-                logger.info("data proccessed");
+                logger.debug(uuid,"Processed data is \n" + JSON.stringify(processed_data));
+                logger.info(uuid,"Data proccessed");
                 ///write_in_db body wrapping
                 promise.resolve(processed_data);
             }
             else{
-                logger.error("this is the sound service error " + JSON.stringify(body));
+                logger.error("This is the sound service error " + JSON.stringify(body));
                 promise.reject(JSON.stringify(body));
             }
         }

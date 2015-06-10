@@ -1,7 +1,7 @@
 //require("newrelic"); todo add the new relic monitor
 var express = require("express");
 var middle = require("./middlewares");
-var location = require("./places/init");
+var location = require("./locations/init");
 var sound = require("./sounds/init");
 var motion = require("./motions/init");
 var logger = require("./utils/logger");
@@ -12,8 +12,9 @@ var bodyParser = require("body-parser");
 console.log(JSON.stringify(location));
 location.init();
 
-motion.init();
-sound.init();
+
+//motion.init();
+//sound.init();
 //
 //rollbar.init("ca7f0172c3d44f54a17c75367116bd2a");
 

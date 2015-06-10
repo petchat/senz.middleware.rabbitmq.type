@@ -8,8 +8,8 @@ var m_task = require("./do_task");
 var interval = require("./lib/interval");
 var task_interval = interval.task_interval.check_interval;
 var prev_interval = interval.prev_interval;
-var logger = require("./lib/logger");
-
+var log = require("../utils/logger").log;
+var logger = new log("[sounds]");
 
 ///*
 //A new motion rawdata arrival called 'new_motion_arrival'
@@ -28,7 +28,8 @@ exports.init = function(){
 
 
     sub.registerEvent(SoundCallback,queue_name,event);
-    logger.debug("task_interval " + task_interval);
+    logger.info("","now listening to the rabbitmq ...")
+    logger.debug("","Scheduler start ... \n Interval is " + task_interval);
     //todo scheduleCleanFromLeanCloud();
     setInterval(
         function () {
@@ -37,8 +38,8 @@ exports.init = function(){
                 var id = keys.pop();
                 var tries = m_cache.get(id).tries;
                 if(tries>0){
-                    logger.warn("the id " + id + "tried" + m_cache.get(id).tries+ "times");
-                    logger.warn("request pre-failed id service started, id >>" + id);
+                    logger.warn(id,"The id " + id + "tried" + m_cache.get(id).tries+ "times");
+                    logger.warn(id,"Request pre-failed id service starte ...");
                     m_task.start(id);
                 }
             }
@@ -85,18 +86,18 @@ var SoundCallback = function(msg) {
     if(m_cache.get(msg.objectId)){
         return ;
     }
-    logger.info("a new sound data arrived");
-    logger.info("data is " + JSON.stringify(msg));
+    logger.info(msg.objectId,"a new sound data arrived");
+    logger.info(msg.objectId,"Data is " + JSON.stringify(msg));
     var obj = {};
     obj["timestamp"] = msg.timestamp;
     obj["tries"] = 0;
     obj["user"] = {};
     //logger.warn(sb);
     m_cache.put(msg.objectId,obj);
-    logger.warn("request new id service started, id >>" + msg.objectId);
+    logger.warn(msg.objectId,"Request new id service started, id >>" + msg.objectId);
     m_task.start(msg.objectId);
 
-}
+};
 
 var scheduleCleanFromLeanCloud = function(){
 

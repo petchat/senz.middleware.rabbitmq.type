@@ -2,13 +2,12 @@
  * Created by zhanghengyang on 15/4/23.
  */
 
-var logger = require("./lib/logger");
+var log = require("../utils/logger").log;
+var logger = new log("[motions]");
 var config = require("./config.json");
 var m_cache = require("motion-cache");
 var req_lib = require("./lib/http_wrapper");
 var AV = require("avoscloud-sdk").AV;
-var uuid = require("uuid");
-////log 3
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
 var UserSensor = AV.Object.extend(config.source_db.target_class);
@@ -17,7 +16,7 @@ var Installation = AV.Object.extend("_Installation");
 
 var get_raw_data = function(id){
     //questions on whether to set a request timeout
-    logger.info("fetch sensor data started");
+    logger.info(id,"Fetch sensor data started");
 
     var promise = new AV.Promise();
 
@@ -29,12 +28,12 @@ var get_raw_data = function(id){
 
                 if (obj_list.length === 0){
                     var inner_error = "The id " + id + " " + "doesn't exist in the source db, please notify the ADMIN!";
-                    logger.error(inner_error);
-                    promise.reject(inner_error);
+                    logger.error(id, inner_error);
+                    promise.reject(id, inner_error);
                     return;
                 }
 
-                logger.debug("the object is " + JSON.stringify(obj_list[0]));
+                logger.debug(id, "the object is " + JSON.stringify(obj_list[0]));
                 var obj = obj_list[0];
                 var a = {};
                 var installationId = obj.get("installation").objectId;
@@ -46,7 +45,7 @@ var get_raw_data = function(id){
                         user_query.get(userId,{
                             success:function(user){
 
-                                logger.debug("user is " + JSON.stringify(user));
+                                logger.debug(id, "user is " + JSON.stringify(user));
                                 var raw_data = obj.get("value").events;
                                 var timestamp = obj.get("timestamp");
                                 a[obj.id] = {
@@ -63,21 +62,21 @@ var get_raw_data = function(id){
                                 }
                                 catch(e){
                                     var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
-                                    logger.error(inner_error);
+                                    logger.error(id, inner_error);
                                     promise.reject(inner_error);
                                     return;
                                 }
-                                logger.info("sensor data fetched successfully");
+                                logger.info(id, "sensor data fetched successfully");
                                 promise.resolve(a);
                             },
                             error:function(object,error){
-                                logger.error("user retrieve error " + JSON.stringify(error))
+                                logger.error(id, "user retrieve error " + JSON.stringify(error))
                                 promise.reject(error)
                             }
                         })
                     },
                     error:function(object,error){
-                        logger.error("installation retrieve error " + JSON.stringify(error))
+                        logger.error(id, "installation retrieve error " + JSON.stringify(error))
                         promise.reject(error)
                     }
                 });
@@ -86,7 +85,7 @@ var get_raw_data = function(id){
             },
             function (err) {
                 promise.reject(id);
-                logger.error("get the data from source db meeting error  " + err);
+                logger.error(id, "get the data from source db meeting error  " + err);
             }
         );
         return promise;
@@ -100,9 +99,9 @@ var get_raw_data = function(id){
 var get_request_body = function(obj){
     /// batch request body for poi service
 
-    logger.debug("object list is ",JSON.stringify(obj));
-    var body = {};
     var id = Object.keys(obj)[0];
+    logger.debug(id, "object list is ",JSON.stringify(obj));
+    var body = {};
     body["timestamp"] = obj[id].timestamp;
     body["objectId"] = id;// here save the object Id for latter operation
     body["rawData"] = obj[id].rawData;
@@ -113,12 +112,12 @@ var get_request_body = function(obj){
 };
 
 
-var get_motion_type = function(body){
+var get_motion_type = function(body,id){
 
     /// 3 max retries
     var serv_url = config.serv_url;
     //http batch request
-    return req_lib.motion_post(serv_url,body);
+    return req_lib.motion_post(serv_url, body);
     //var sound_post = function(url,params,success_cbk,max_timeout){
 
 
@@ -135,7 +134,7 @@ var write_data = function(body){
 
     app_key = config.target_db.APP_KEY;
     app_id = config.target_db.APP_ID;
-    return req_lib.lean_post(app_id,app_key,body);
+    return req_lib.lean_post(app_id, app_key, body);
 
 };
 
@@ -144,12 +143,12 @@ var delete_obj = function(values,id){
     if (values.tries >= 3) {
 
         m_cache.del(id);
-        logger.debug("exhausted id is ," + id);
+        logger.debug(id, "exhausted id is ," + id);
         return true;
 
     }
     else{
-        logger.debug("the id is not exhausted");
+        logger.debug(id, "the id is not exhausted");
         return false;
     }
 };
@@ -165,7 +164,7 @@ var check_exhausted = function(id){
     }
     catch(e){
         var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
-        logger.error(inner_error);
+        logger.error(id, inner_error);
         return true; // for if the id has been deleted by other process, it means the same as tries > 3 and being deleted in the context
     }
     //var r = JSON.stringify(m_cache.get(id));
@@ -184,22 +183,21 @@ function failed(request_id) {
     }
     catch(e){
         var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
-        logger.error(inner_error);
+        logger.error(request_id, inner_error);
     }
 }
 
 var start = function(request_id){
 
-    logger.info("task started");
-    logger.info("request id is " + request_id);
+    logger.info(request_id, "Task start ...");
     if (typeof request_id != typeof "str" ) {
-        logger.error("type of requestId is illegal");
+        logger.error(request_id, "type of requestId is illegal");
         return;
     }
     //
 
     if(check_exhausted(request_id)) {
-        logger.warn("retries too much, throw the id's request")
+        logger.warn(request_id, "retries too much, throw the id's request")
         return ;
     };
 
@@ -211,25 +209,25 @@ var start = function(request_id){
             var service_promise = get_motion_type(body);
             service_promise.then(
                 function (body) {
-                    logger.info("motion service requested successfully");
+                    logger.info(request_id, "motion service requested successfully");
                     return write_data(body);
                 },
                 function (error) {
-                    logger.error(error);
-                    logger.error("motion service requested into failure");
+                    logger.error(request_id, error);
+                    logger.error(request_id, "motion service requested into failure");
                     return AV.Promise.error(error);
 
                 }
             ).then(
                 function(result){
-                    logger.info("data have been written")
+                    logger.info(request_id, "data have been written")
                     succeeded(request_id);
-                    logger.info("one process end ");
+                    logger.info(request_id, "one process end ");
 
                 },
                 function(error){
-                    logger.error(error)
-                    logger.error("data writing failed ")
+                    logger.error(request_id, JSON.stringify(error))
+                    logger.error(request_id, "data writing failed ")
                     failed(request_id);
                 }
             )
@@ -237,7 +235,7 @@ var start = function(request_id){
         },
         function (error) {
             failed(request_id);
-            logger.error("objects retrieving failed, error is " + error);
+            logger.error(request_id, "objects retrieving failed, error is " + error);
         })
 
     };
