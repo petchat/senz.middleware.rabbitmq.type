@@ -86,7 +86,7 @@ console.log(a.objectId);
 //var path = require("path");
 //console.log(path.resolve("./"))
 //console.log(path.dirname(__filename))
-//json.readFile("./cloud/config.json",function(err,obj){
+//json.readFile("./service_router/config.json",function(err,obj){
 //
 //    console.log(JSON.stringify(err));
 //    console.log(JSON.stringify(obj))

@@ -1,7 +1,7 @@
 /**
  * Created by zhanghengyang on 15/5/4.
  */
-var logger = require("./cloud/utils/logger");
+var logger = require("./service_router/utils/logger");
 var forever = require("forever-monitor");
 
 var configuration = {
@@ -35,7 +35,7 @@ var configuration = {
     'watch': true,               // Value indicating if we should watch logs.
     'watchIgnoreDotFiles': true, // Whether to ignore file starting with a '.'
     'watchIgnorePatterns': null, // Ignore patterns to use when watching logs.
-    'watchDirectory': "./cloud/",      // Top-level directory to watch from.
+    'watchDirectory': "./service_router/",      // Top-level directory to watch from.
 
     //
     // All or nothing options passed along to `child_process.spawn`.
@@ -78,7 +78,7 @@ var configuration = {
     }
 };
 
-var child = new (forever.Monitor)("./cloud/main.js",configuration);
+var child = new (forever.Monitor)("./service_router/main.js",configuration);
 
 child.on('watch:restart', function(info) {
     logger.error('Restaring script because ' + info.file + ' changed');

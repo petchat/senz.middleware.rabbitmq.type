@@ -10,11 +10,11 @@ var rollbar = require("rollbar");
 var request = require("request");
 var bodyParser = require("body-parser");
 
-location.init();
+//location.init();
 
 
 //motion.init();
-//sound.init();
+sound.init();
 //
 //rollbar.init("ca7f0172c3d44f54a17c75367116bd2a");
 
