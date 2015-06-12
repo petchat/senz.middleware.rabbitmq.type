@@ -23,11 +23,11 @@ var log = function(log_tag) {
 
     return {
         "info": function (id, info) {
-            log.info(log_tag + " " + id + " " + info);
+            log.info(log_tag + " <" + id + "> " + info);
         },
 
         "debug": function (id, debug) {
-            log.debug(log_tag + " " + id + " " + debug);
+            log.debug(log_tag + " <" + id + "> " + debug);
         },
 
         ////exports.notice = function(notice){
@@ -37,19 +37,19 @@ var log = function(log_tag) {
 
         "warn": function (id, warn) {
             if (debug) {
-                log.warn(log_tag + " " + id + " " + warn);
+                log.warn(log_tag + " <" + id + "> " + warn);
             }
             else {
-                log.warning(log_tag + " " + id + " " + warn);
+                log.warning(log_tag + " <" + id + "> " + warn);
             }
         },
 
         "error": function (id, err) {
             if (debug) {
-                log.error(log_tag + " " + id + " " + err);
+                log.error(log_tag + " <" + id + "> " + err);
             }
             else {
-                log.err(log_tag + " " + id + " " + err);
+                log.err(log_tag + " <" + id + "> " + err);
             }
         }
     }
