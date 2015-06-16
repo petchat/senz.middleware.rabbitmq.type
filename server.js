@@ -1,7 +1,8 @@
 /**
  * Created by zhanghengyang on 15/5/4.
  */
-var logger = require("./service_router/utils/logger");
+var log= require("./service_router/utils/logger").log;
+var logger = new log("forever server");
 var forever = require("forever-monitor");
 
 var configuration = {
@@ -81,15 +82,15 @@ var configuration = {
 var child = new (forever.Monitor)("./service_router/main.js",configuration);
 
 child.on('watch:restart', function(info) {
-    logger.error('Restaring script because ' + info.file + ' changed');
+    logger.error("",'Restaring script because ' + info.file + ' changed');
 });
 
 child.on('restart', function() {
-    logger.warn('Forever restarting script for ' + child.times + ' time');
+    logger.warn("",'Forever restarting script for ' + child.times + ' time');
 });
 
 child.on('exit:code', function(code) {
-    logger.error('Forever detected script exited with code ' + code);
+    logger.error("",'Forever detected script exited with code ' + code);
 });
 
 child.start();

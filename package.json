@@ -21,7 +21,8 @@
         "should":"",
         "body-parser":"",
         "node-schedule":"",
-        "uuid":""
+        "uuid":"",
+        "bugsnag":""
     }
 
 }

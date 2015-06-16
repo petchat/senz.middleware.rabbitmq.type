@@ -1,36 +1,47 @@
 //require("newrelic"); todo add the new relic monitor
 var express = require("express");
+var app = express();
 var middle = require("./middlewares");
 var location = require("./locations/init");
 var sound = require("./sounds/init");
 var motion = require("./motions/init");
 var log = require("./utils/logger").log;
 var logger = new log("[main]");
-var rollbar = require("rollbar");
 var request = require("request");
 var bodyParser = require("body-parser");
+var bugsnag = require("bugsnag");
 
-//location.init();
+//bugsnag initialization
+logger.debug(JSON.stringify(process.env));
+if(process.env.APP_ENV === "prod"){
+    bugsnag_token = "2748e60ebaf7d9a97b2aeeb74dcaed00"
+}else{
+    bugsnag_token = "b2a3e05ca63da34b87cea60c8b7fe3f7"
+}
+bugsnag.register(bugsnag_token);
+logger.info("bugsnag initialized");
 
 
-//motion.init();
+location.init();
+motion.init();
 sound.init();
+
 //
-//rollbar.init("ca7f0172c3d44f54a17c75367116bd2a");
-
-
-var app = express();
 
 //<-- middlwares
-app.use(rollbar.errorHandler('ca7f0172c3d44f54a17c75367116bd2a'));
 //app.use(bodyParser.urlencoded({
 //    extended: true
 //}));
+app.use(bugsnag.requestHandler); //To ensure that asynchronous errors are routed to the error handler, add the requestHandler middleware to your app as the first middleware
+
 app.use(bodyParser.json());
+
+
 //middlewares --!>
 
 app.get("/",function(req,res){
 
+    a.sb = 1;
     res.send({"return_type":"json"});
     //res.send("index page");
 
@@ -91,6 +102,10 @@ app.get("/services/sound/start/",function(req,res){
 });
 
 });
+
+
+app.use(bugsnag.errorHandler); //make sure to add this after all other middleware, but before any "error" middleware:
+
 
 logger.info("","Service interchange api opened,");
 
