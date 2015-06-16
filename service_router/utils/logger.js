@@ -15,10 +15,19 @@ var log = function(log_tag) {
         );
     }
     else {
-        var logentries = require('node-logentries');
-        var log = logentries.logger({
-            token: 'ad2b1f4a-8c29-487a-ad8b-cae67c834c4b'
-        });
+
+            if(process.env.APP_ENV === "prod"){
+                var token = "93cfe5f4-52db-4912-a083-38db1ceb3689"
+            }
+            else{
+                var token = 'aacd7054-481e-410d-8651-65c95821d9aa'
+            }
+            var logentries = require('node-logentries');
+            var log = logentries.logger({
+                token: token
+            });
+
+
     }
 
     return {
