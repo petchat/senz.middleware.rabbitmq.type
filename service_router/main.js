@@ -110,7 +110,7 @@ app.use(bugsnag.errorHandler); //make sure to add this after all other middlewar
 logger.info("","Service interchange api opened,");
 
 //todo the listen port must be 3000
-var server = app.listen(3001, function () {
+var server = app.listen(3000, function () {
 
     var host = server.address().address
     var port = server.address().port
