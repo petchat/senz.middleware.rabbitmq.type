@@ -1,0 +1,18 @@
+image: daocloud/ci-golang:1.4
+
+services:
+
+
+env:
+    - APP_ENV = "prod"
+
+install:
+
+
+before_script:
+    - echo $APP_ENV
+    - echo "This is an before_script segment"
+    - echo "Here, we usually run scripts to prepare our test"
+
+script:
+    - echo "this is the nodejs demo script,for there is still not a stable nodejs image"

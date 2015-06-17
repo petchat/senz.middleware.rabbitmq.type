@@ -41,7 +41,6 @@ app.use(bodyParser.json());
 
 app.get("/",function(req,res){
 
-    a.sb = 1;
     res.send({"return_type":"json"});
     //res.send("index page");
 
