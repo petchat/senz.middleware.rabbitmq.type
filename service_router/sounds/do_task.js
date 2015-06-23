@@ -7,6 +7,7 @@ var logger = new log("[sounds]");
 var config = require("./config.json");
 var m_cache = require("sound-cache");
 var req_lib = require("./lib/http_wrapper");
+var url_generator = require("../utils/url_generator");
 var AV = require("avoscloud-sdk").AV;
 ////senz.log.tracer
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
@@ -116,7 +117,7 @@ var get_request_body = function(obj){
 var get_sound_type = function(body){
 
     /// 3 max retries
-    var serv_url = config.serv_url;
+    var serv_url = url_generator.sound_url;
     //http batch request
     return req_lib.sound_post(serv_url,body);
     //var sound_post = function(url,params,success_cbk,max_timeout){

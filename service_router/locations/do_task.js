@@ -5,6 +5,7 @@
 var log = require("../utils/logger").log;
 var logger = new log("[locations]");
 var config = require("./config.json");
+var url_generator = require("../utils/url_generator");
 var m_cache = require("location-cache");
 var req_lib = require("./lib/http_wrapper");
 var AV = require("avoscloud-sdk").AV;
@@ -122,7 +123,7 @@ var get_request_body = function(obj){
 var get_location_type = function(body,id){
 
     /// 3 max retries
-    var serv_url = config.serv_url;
+    var serv_url = url_generator.location_url
     //http batch request
     return req_lib.location_post(serv_url, body);
     //var sound_post = function(url,params,success_cbk,max_timeout){

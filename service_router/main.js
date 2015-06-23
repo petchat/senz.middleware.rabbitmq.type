@@ -10,17 +10,24 @@ var logger = new log("[main]");
 var request = require("request");
 var bodyParser = require("body-parser");
 var bugsnag = require("bugsnag");
+var url_generator = require("./utils/url_generator");
 
 //bugsnag initialization
 logger.debug(JSON.stringify(process.env));
 if(process.env.APP_ENV === "prod"){
-    bugsnag_token = "2748e60ebaf7d9a97b2aeeb74dcaed00"
+     bugsnag_token = "2748e60ebaf7d9a97b2aeeb74dcaed00"
+}else
+ if(process.env.APP_ENV === "test"){
+     bugsnag_token = "b2a3e05ca63da34b87cea60c8b7fe3f7"
 }else{
-    bugsnag_token = "b2a3e05ca63da34b87cea60c8b7fe3f7"
-}
-bugsnag.register(bugsnag_token);
-logger.info("bugsnag initialized");
+     bugsnag_token = "b2a3e05ca63da34b87cea60c8b7fe3f7"
 
+ }
+bugsnag.register(bugsnag_token);
+logger.info("","bugsnag initialized");
+
+url_generator.check_urls();
+logger.info("","url generated");
 
 location.init();
 motion.init();
