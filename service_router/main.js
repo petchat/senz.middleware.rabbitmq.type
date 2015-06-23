@@ -21,7 +21,6 @@ if(process.env.APP_ENV === "prod"){
      bugsnag_token = "b2a3e05ca63da34b87cea60c8b7fe3f7"
 }else{
      bugsnag_token = "b2a3e05ca63da34b87cea60c8b7fe3f7"
-
  }
 bugsnag.register(bugsnag_token);
 logger.info("","bugsnag initialized");
