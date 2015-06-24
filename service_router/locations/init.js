@@ -46,7 +46,6 @@ var locationCallback = function(msg)
     if(m_cache.get(msg.objectId)){
         return ;
     }
-    console.log("fuck")
     logger.info(msg.objectId, "a new location data arrived");
     //logger.info("data is " + msg);
     var obj = {};

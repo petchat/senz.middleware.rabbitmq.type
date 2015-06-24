@@ -25,7 +25,8 @@ if(process.env.APP_ENV === "prod"){
 bugsnag.register(bugsnag_token);
 logger.info("","bugsnag initialized");
 
-url_generator.check_urls();
+url_generator.check_urls();//check the right urls
+
 logger.info("","url generated");
 
 location.init();
