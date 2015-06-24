@@ -25,6 +25,7 @@ var get_raw_data = function(id){
     var query_promise = function(id,promise) {
 
         var query = new AV.Query(UserMic);
+        query.include("attachment");
         query.equalTo("objectId", id);
         query.find().then(
             function (obj_list) {
@@ -49,7 +50,7 @@ var get_raw_data = function(id){
                             success:function(user){
 
                                 logger.debug(id, "User is " + JSON.stringify(user));
-                                var audio_url = obj.get("file").url();
+                                var audio_url = obj.get("attachment").url();
                                 var timestamp = obj.get("timestamp");
                                 a[obj.id] = {
                                     "soundUrl": audio_url,

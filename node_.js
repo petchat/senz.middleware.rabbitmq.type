@@ -15,10 +15,22 @@ var NodeCache = require("node-cache");
 //
 
 var AV = require("avoscloud-sdk").AV;
-var promise = new AV.Promise();
+AV.initialize("9ra69chz8rbbl77mlplnl4l2pxyaclm612khhytztl8b1f9o","1zohz2ihxp9dhqamhfpeaer8nh1ewqd9uephe9ztvkka544b")
+var LOG = AV.Object.extend("Log");
+var query = new AV.Query(LOG)
+query.include("attachment");
+query.equalTo("objectId","558a870ee4b02dd0d665719e")
+query.first(
+    function(object){
+        console.log(JSON.stringify(object))
+        console.log(object.get("attachment").url())
+    }
+);
 
-a = {"objectId":1}
-console.log(a.objectId);
+//var promise = new AV.Promise();
+//
+//a = {"objectId":1}
+//console.log(a.objectId);
 //var mycache = new NodeCache();
 //
 //var a = function(tag){
