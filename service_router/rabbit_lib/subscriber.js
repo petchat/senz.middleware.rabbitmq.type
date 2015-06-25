@@ -34,10 +34,11 @@ function handleMessage(callback,type){
     logger.info("",'* Waiting for Msg from publisher.');
 }
 
-exports.registerEvent = function(callback, consumer_name, event){
+exports.registerEvent = function(callback, consumer_name, raw_event){
+    var event = raw_event + env
     var config = configuration.topology;
-    config['queues'][config['queues'].length] = { name: consumer_name, subscribe: true};
-    config['bindings'][config['bindings'].length] = { exchange: event, target: consumer_name };//,keys: '' };
+    config['queues'][config['queues'].length] = { name: consumer_name + env, subscribe: true};
+    config['bindings'][config['bindings'].length] = { exchange: event , target: consumer_name + env  };//,keys: '' };
     if(event == "new_motion_arrival" + env){var routing_key = "motion";}
     if(event == "new_sound_arrival" + env){var routing_key = "sound";}
     if(event == "new_location_arrival" + env){var routing_key = "location";}
