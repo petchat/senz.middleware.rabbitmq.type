@@ -124,6 +124,7 @@ var get_location_type = function(body,id){
 
     /// 3 max retries
     var serv_url = url_generator.location_url
+    console.log(serv_url);
     //http batch request
     return req_lib.location_post(serv_url, body);
     //var sound_post = function(url,params,success_cbk,max_timeout){

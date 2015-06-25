@@ -121,6 +121,9 @@ var location_post = function (url, params) {
 
         },
         function(err,res,body){
+
+                console.log(body);
+                console.log(JSON.stringify(res));
             if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
                 logger.error(uuid, "Error is " + JSON.stringify(err));
                 logger.error(uuid,"Response code is " + res.statusCode);

@@ -119,6 +119,7 @@ var get_sound_type = function(body){
 
     /// 3 max retries
     var serv_url = url_generator.sound_url;
+    console.log("sound url " + serv_url);
     //http batch request
     return req_lib.sound_post(serv_url,body);
     //var sound_post = function(url,params,success_cbk,max_timeout){

@@ -117,6 +117,7 @@ var get_motion_type = function(body,id){
 
     /// 3 max retries
     var serv_url = url_generator.motion_url;
+    console.log("motion url: " + serv_url)
     //http batch request
     return req_lib.motion_post(serv_url, body);
     //var sound_post = function(url,params,success_cbk,max_timeout){

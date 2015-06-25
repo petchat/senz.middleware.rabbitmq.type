@@ -10,7 +10,7 @@ var env = null;
 if(process.env.APP_ENV === "prod"){
     env = "_prod"
 
-}else if(process.env.APP_ENV === "test"){
+}else{
 
     env = "_test"
 }
@@ -35,7 +35,7 @@ function handleMessage(callback,type){
 }
 
 exports.registerEvent = function(callback, consumer_name, raw_event){
-    var event = raw_event + env
+    var event = raw_event + env;
     var config = configuration.topology;
     config['queues'][config['queues'].length] = { name: consumer_name + env, subscribe: true};
     config['bindings'][config['bindings'].length] = { exchange: event , target: consumer_name + env  };//,keys: '' };

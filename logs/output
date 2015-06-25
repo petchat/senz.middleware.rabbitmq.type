@@ -1,42 +1,14 @@
-Bugsnag:  Error: listen EADDRINUSE
-    at exports._errnoException (util.js:746:11)
-    at Server._listen2 (net.js:1129:14)
-    at listen (net.js:1155:10)
-    at Server.listen (net.js:1240:5)
-    at Function.app.listen (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/node_modules/express/lib/application.js:590:24)
-    at Object.<anonymous> (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/service_router/main.js:118:18)
-    at Module._compile (module.js:460:26)
-    at Object.Module._extensions..js (module.js:478:10)
-    at Module.load (module.js:355:32)
-    at Function.Module._load (module.js:310:12)
-    at Function.Module.runMain (module.js:501:10)
-    at startup (node.js:129:16)
-    at node.js:814:3
-Bugsnag:  Error: listen EADDRINUSE
-    at exports._errnoException (util.js:746:11)
-    at Server._listen2 (net.js:1129:14)
-    at listen (net.js:1155:10)
-    at Server.listen (net.js:1240:5)
-    at Function.app.listen (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/node_modules/express/lib/application.js:590:24)
-    at Object.<anonymous> (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/service_router/main.js:118:18)
-    at Module._compile (module.js:460:26)
-    at Object.Module._extensions..js (module.js:478:10)
-    at Module.load (module.js:355:32)
-    at Function.Module._load (module.js:310:12)
-    at Function.Module.runMain (module.js:501:10)
-    at startup (node.js:129:16)
-    at node.js:814:3
-Bugsnag:  Error: listen EADDRINUSE
-    at exports._errnoException (util.js:746:11)
-    at Server._listen2 (net.js:1129:14)
-    at listen (net.js:1155:10)
-    at Server.listen (net.js:1240:5)
-    at Function.app.listen (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/node_modules/express/lib/application.js:590:24)
-    at Object.<anonymous> (/Users/zhanghengyang/WebstormProjects/senz.middleware.rabbitmq.type/service_router/main.js:118:18)
-    at Module._compile (module.js:460:26)
-    at Object.Module._extensions..js (module.js:478:10)
-    at Module.load (module.js:355:32)
-    at Function.Module._load (module.js:310:12)
-    at Function.Module.runMain (module.js:501:10)
-    at startup (node.js:129:16)
-    at node.js:814:3
+fuck here test
+http://api.trysenz.com/test/pois/location_probability/senz/locationprob/
+motion url: http://api.trysenz.com/test/utils/motion_detector/motion_pred_ss_gmm_data/
+sound url http://api.trysenz.com/test/utils/sound_detector/sound_pred_mfcc_gmm_url/
+System error: <type 'exceptions.ZeroDivisionError'> || integer division or modulo by zero
+{"statusCode":500,"body":"System error: <type 'exceptions.ZeroDivisionError'> || integer division or modulo by zero","headers":{"date":"Thu, 25 Jun 2015 08:36:43 GMT","content-type":"text/plain","content-length":"89","connection":"close","server":"nginx/1.6.1","x-frame-options":"SAMEORIGIN"},"request":{"uri":{"protocol":"http:","slashes":true,"auth":null,"host":"api.trysenz.com","port":80,"hostname":"api.trysenz.com","hash":null,"search":null,"query":null,"pathname":"/test/pois/location_probability/senz/locationprob/","path":"/test/pois/location_probability/senz/locationprob/","href":"http://api.trysenz.com/test/pois/location_probability/senz/locationprob/"},"method":"POST","headers":{"X-request-Id":"558bbd98e4b0bf8365d0db6a","accept":"application/json","content-type":"application/json","content-length":159}}}
+http://api.trysenz.com/test/pois/location_probability/senz/locationprob/
+sound url http://api.trysenz.com/test/utils/sound_detector/sound_pred_mfcc_gmm_url/
+System error: <type 'exceptions.ZeroDivisionError'> || integer division or modulo by zero
+{"statusCode":500,"body":"System error: <type 'exceptions.ZeroDivisionError'> || integer division or modulo by zero","headers":{"date":"Thu, 25 Jun 2015 08:36:51 GMT","content-type":"text/plain","content-length":"89","connection":"close","server":"nginx/1.6.1","x-frame-options":"SAMEORIGIN"},"request":{"uri":{"protocol":"http:","slashes":true,"auth":null,"host":"api.trysenz.com","port":80,"hostname":"api.trysenz.com","hash":null,"search":null,"query":null,"pathname":"/test/pois/location_probability/senz/locationprob/","path":"/test/pois/location_probability/senz/locationprob/","href":"http://api.trysenz.com/test/pois/location_probability/senz/locationprob/"},"method":"POST","headers":{"X-request-Id":"558bbd98e4b0bf8365d0db6a","accept":"application/json","content-type":"application/json","content-length":159}}}
+http://api.trysenz.com/test/pois/location_probability/senz/locationprob/
+sound url http://api.trysenz.com/test/utils/sound_detector/sound_pred_mfcc_gmm_url/
+System error: <type 'exceptions.ZeroDivisionError'> || integer division or modulo by zero
+{"statusCode":500,"body":"System error: <type 'exceptions.ZeroDivisionError'> || integer division or modulo by zero","headers":{"date":"Thu, 25 Jun 2015 08:37:02 GMT","content-type":"text/plain","content-length":"89","connection":"close","server":"nginx/1.6.1","x-frame-options":"SAMEORIGIN"},"request":{"uri":{"protocol":"http:","slashes":true,"auth":null,"host":"api.trysenz.com","port":80,"hostname":"api.trysenz.com","hash":null,"search":null,"query":null,"pathname":"/test/pois/location_probability/senz/locationprob/","path":"/test/pois/location_probability/senz/locationprob/","href":"http://api.trysenz.com/test/pois/location_probability/senz/locationprob/"},"method":"POST","headers":{"X-request-Id":"558bbd98e4b0bf8365d0db6a","accept":"application/json","content-type":"application/json","content-length":159}}}
