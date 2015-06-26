@@ -76,7 +76,7 @@ var sound_post = function (url, params) {
                 logger.error(uuid,"This is the req error,error is " + JSON.stringify(err))
                 promise.reject("request error");
             }
-            else if(body.responseOk){
+            else if(body.response_ok){
                 var body_str = JSON.stringify(body);
                 logger.debug(uuid,"Body is ,s%", body_str);
                 var processed_data = parse_body(body);
