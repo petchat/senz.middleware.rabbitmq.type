@@ -28,8 +28,8 @@ logger.info("","bugsnag initialized");
 logger.info("","url generated");
 
 location.init();
-motion.init();
-sound.init();
+//motion.init();
+//sound.init();
 
 //
 

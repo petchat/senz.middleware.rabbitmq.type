@@ -73,15 +73,16 @@ var load_data = function(body) {
             });
             prob_lv1_object[type1] = sum;
         });
-
         params["isTrainingSample"] = config.is_sample;
         params["userRawdataId"] = userRawdataId;
         params["timestamp"] = timestamp
         params["processStatus"] = "untreated";
         params["poiProbLv1"] = prob_lv1_object;
         params["poiProbLv2"] = prob_lv2_object;
-        if(!m_cache.get(obj.objectId)){
-            logger.error(uuid,"The id " + id + "has been deleted!");
+        console.log(JSON.stringify(params));
+
+    if(!m_cache.get(obj.objectId)){
+            logger.error(uuid,"The id " + uuid + "has been deleted!");
             return;
         }
         //async error catch using domain, although it may cause memory leaks.
@@ -121,9 +122,8 @@ var location_post = function (url, params) {
 
         },
         function(err,res,body){
-
-                console.log(body);
-                console.log(JSON.stringify(res));
+                logger.debug(uuid,body)
+                logger.debug(uuid,JSON.stringify(res));
             if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
                 logger.error(uuid, "Error is " + JSON.stringify(err));
                 logger.error(uuid,"Response code is " + res.statusCode);
@@ -136,6 +136,7 @@ var location_post = function (url, params) {
 
                 if(!processed_data){
                     promise.reject("ERROR!,please check the log")
+                    return ;
                 }
 
                 logger.info(uuid, "data proccessed");

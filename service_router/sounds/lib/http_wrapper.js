@@ -49,7 +49,7 @@ var parse_body = function(body) {
     var params = {};
     params["processStatus"] = "untreated";
     params["isTrainingSample"] = sample_config.is_sample;
-    params["soundProb"] = body.ctxProba;
+    params["soundProb"] = body.ctx_proba;
 
     return params;
 
@@ -73,6 +73,8 @@ var sound_post = function (url, params) {
         },
         function(err,res,body){
             if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
+
+                logger.error(uuid,res.statusCode)
                 logger.error(uuid,"This is the req error,error is " + JSON.stringify(err))
                 promise.reject("request error");
             }

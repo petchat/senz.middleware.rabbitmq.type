@@ -50,7 +50,13 @@ var get_raw_data = function(id){
                             success:function(user){
 
                                 logger.debug(id, "User is " + JSON.stringify(user));
-                                var audio_url = obj.get("attachment").url();
+                                var audio_url = null;
+                                if(obj.get("attachment") !== undefined) {
+                                    audio_url = obj.get("attachment").url();
+                                }else{
+                                    audio_url = obj.get("file").url()
+                                }
+
                                 var timestamp = obj.get("timestamp");
                                 a[obj.id] = {
                                     "soundUrl": audio_url,

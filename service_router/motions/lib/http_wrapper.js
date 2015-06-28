@@ -75,6 +75,7 @@ var motion_post = function (url, params) {
         function(err,res,body){
             if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
                 logger.error(uuid, JSON.stringify(err));
+                logger.error(uuid,res.statusCode)
                 promise.reject("motion service request error");
             }
             else if(body.response_ok){
