@@ -86,7 +86,7 @@ var get_raw_data = function(id){
             },
             function (err) {
                 promise.reject(id);
-                logger.error(id, "get the data from source db meeting error  " + err);
+                logger.error(id, "get the data from source db meeting error  " + JSON.stringify(err));
             }
         );
         return promise;

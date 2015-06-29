@@ -9,6 +9,7 @@ var config = require("../config.json");
 var sample_config = require("../../config.json");
 var type = require("./lean_type.js");
 var AV = require("avoscloud-sdk").AV;
+var _ = require("underscore");
 ////log 3
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
@@ -49,8 +50,12 @@ var parse_body = function(body) {
     var params = {};
     params["processStatus"] = "untreated";
     params["isTrainingSample"] = sample_config.is_sample;
-    params["soundProb"] = body.ctx_proba;
-
+    if(_.has(body,"ctx_probability")){
+        params["soundProb"] = body.ctx_probability;
+    }
+    else{
+        return null;
+    }
     return params;
 
 }
@@ -82,6 +87,11 @@ var sound_post = function (url, params) {
                 var body_str = JSON.stringify(body);
                 logger.debug(uuid,"Body is ,s%", body_str);
                 var processed_data = parse_body(body);
+                if(!processed_data){
+                    promise.reject("Key error, please check the func PARSE_BODY");
+                    return;
+                }
+
                 processed_data["timestamp"] = params.timestamp;
                 processed_data["userRawdataId"] = params.objectId;
                 if(!m_cache.get(params.objectId)){

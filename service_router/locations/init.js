@@ -53,6 +53,7 @@ var locationCallback = function(msg)
     obj["tries"] = 0;
     obj["user"] = {};
     m_cache.put(msg.objectId,obj);
+
     //logger.error("debug here");
     //logger.warn("request new id service started, id >>" + id);
     m_task.start(msg.objectId);

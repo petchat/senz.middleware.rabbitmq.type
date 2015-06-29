@@ -11,6 +11,7 @@ var sample_config = require("../../config.json");
 var type = require("./lean_type.js");
 var AV = require("avoscloud-sdk").AV;
 var uuid = require("uuid");
+var _ = require("underscore");
 
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
@@ -75,7 +76,9 @@ var motion_post = function (url, params) {
         function(err,res,body){
             if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
                 logger.error(uuid, JSON.stringify(err));
-                logger.error(uuid,res.statusCode)
+                if(_.has(res,"statusCode")){
+                    logger.error(uuid,res.statusCode)
+                }
                 promise.reject("motion service request error");
             }
             else if(body.response_ok){

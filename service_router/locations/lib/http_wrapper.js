@@ -5,9 +5,8 @@
 var log = require("../../utils/logger").log;
 var logger = new log("[locations]");
 var req = require("request");
-var m_cache = require("motion-cache");
+var m_cache = require("location-cache");
 var config = require("../config.json");
-var sample_config = require("../../config.json");
 var type = require("./lean_type.js");
 var AV = require("avoscloud-sdk").AV;
 var _ = require("underscore");
@@ -52,37 +51,38 @@ var load_data = function(body) {
     var obj = body.results[0];
     var uuid = obj.objectId;
     //console.log("response results" + typeof json_body);
-        var poi_probability = obj.poi_probability;
-        if(typeof poi_probability !== typeof {}){
-            logger.error(uuid,"Error is " + "key error and the error object is " + obj);
-            return;
-        }
-        var timestamp = obj.timestamp;
-        var userRawdataId = obj.objectId;
-        var poiProbLv1, poiProbLv2;
-        var prob_lv1_object = {};
-        var prob_lv2_object = {};
-        var level_one = Object.keys(poi_probability);
+    var poi_probability = obj.poi_probability;
+    if(typeof poi_probability !== typeof {}){
+        logger.error(uuid,"Error is " + "key error and the error object is " + obj);
+        return;
+    }
+    var timestamp = obj.timestamp;
+    var userRawdataId = obj.objectId;
+    var poiProbLv1, poiProbLv2;
+    var prob_lv1_object = {};
+    var prob_lv2_object = {};
+    var level_one = Object.keys(poi_probability);
 
-        level_one.forEach(function(type1){
-            var sum = null;
-            var type1_obj = poi_probability[type1];
-            prob_lv2_object = _.extend(prob_lv2_object,type1_obj);
-            Object.keys(type1_obj).forEach(function(type2){
-                sum += type1_obj[type2];
-            });
-            prob_lv1_object[type1] = sum;
+    level_one.forEach(function(type1){
+        var sum = null;
+        var type1_obj = poi_probability[type1];
+        prob_lv2_object = _.extend(prob_lv2_object,type1_obj);
+        Object.keys(type1_obj).forEach(function(type2){
+            sum += type1_obj[type2];
         });
-        params["isTrainingSample"] = config.is_sample;
-        params["userRawdataId"] = userRawdataId;
-        params["timestamp"] = timestamp
-        params["processStatus"] = "untreated";
-        params["poiProbLv1"] = prob_lv1_object;
-        params["poiProbLv2"] = prob_lv2_object;
-        console.log(JSON.stringify(params));
-
+        prob_lv1_object[type1] = sum;
+    });
+    params["isTrainingSample"] = config.is_sample;
+    params["userRawdataId"] = userRawdataId;
+    params["timestamp"] = timestamp
+    params["processStatus"] = "untreated";
+    params["poiProbLv1"] = prob_lv1_object;
+    params["poiProbLv2"] = prob_lv2_object;
+    logger.debug(uuid,"params are \n" + JSON.stringify(params));
+    console.log("\n\n\n\n\n")
+    console.log(m_cache.keys());
     if(!m_cache.get(obj.objectId)){
-            logger.error(uuid,"The id " + uuid + "has been deleted!");
+            logger.error(uuid,"The id " + uuid + " has been deleted!");
             return;
         }
         //async error catch using domain, although it may cause memory leaks.
@@ -96,7 +96,6 @@ var load_data = function(body) {
             return ;
         }
 
-        logger.debug(uuid,"params are \n" + JSON.stringify(params));
 
     return params;
 };

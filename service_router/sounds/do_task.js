@@ -228,9 +228,9 @@ var start = function(request_id){
                 }
             ).then(
                 function(result){
-                    logger.info("Data have been written")
+                    logger.info(request_id,"Data have been written")
                     succeeded(request_id);
-                    logger.info("One process end ");
+                    logger.info(request_id,"One process end ");
 
                 },
                 function(error){

@@ -178,6 +178,12 @@ var check_exhausted = function(id){
     }
     //var r = JSON.stringify(m_cache.get(id));
     //logger.error(r);
+
+    console.log("\n\n\n\n")
+    console.log(m_cache.keys())
+    console.log("\n\n\n\n")
+
+
     return r;
 };
 
@@ -204,6 +210,9 @@ var start = function(request_id){
         return;
     }
     //
+    console.log("\n\n\n\n")
+    console.log(m_cache.keys())
+    console.log("\n\n\n\n")
 
     if(check_exhausted(request_id)) {
         logger.warn(request_id, "Retries too much, throw the id's request")
