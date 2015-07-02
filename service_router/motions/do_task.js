@@ -37,12 +37,12 @@ var get_raw_data = function(id){
                 logger.debug(id, "the object is " + JSON.stringify(obj_list[0]));
                 var obj = obj_list[0];
                 var a = {};
-                var installationId = obj.get("installation").objectId;
+                var installationId = obj.get("installation").id;
                 var install_query = new AV.Query(Installation);
                 install_query.get(installationId,{
                     success:function(installation){
                         var user_query = new AV.Query(User);
-                        var userId = installation.get("user").objectId;
+                        var userId = installation.get("user").id;
                         user_query.get(userId,{
                             success:function(user){
 

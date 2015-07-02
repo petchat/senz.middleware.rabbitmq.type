@@ -31,7 +31,13 @@ var lean_post = function (APP_ID, APP_KEY, params) {
 
             if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
                 logger.error(uuid,"Request error log is,%s", err);
-                promise.reject(uuid,"Error is " + err + " " + "response code is " + res.statusCode)
+                if(_.has(res,"statusCode")){
+                    logger.debug(uuid,res.statusCode)
+                    promise.reject("Error is " + err + " " + "response code is " + res.statusCode);
+                }else{
+                    logger.error(uuid,"Response with no statusCode")
+                    promise.reject("Error is " + err );
+                }
             }
             else {
                 body_str = JSON.stringify(body_str);
@@ -78,8 +84,13 @@ var sound_post = function (url, params) {
         },
         function(err,res,body){
             if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
+                logger.debug(uuid,JSON.stringify(res));
+                if(_.has(res,"statusCode")){
+                    logger.debug(uuid,res.statusCode)
+                }else{
+                    logger.error(uuid,"Response with no statusCode")
+                }
 
-                logger.error(uuid,res.statusCode)
                 logger.error(uuid,"This is the req error,error is " + JSON.stringify(err))
                 promise.reject("request error");
             }

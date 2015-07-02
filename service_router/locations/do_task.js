@@ -37,12 +37,15 @@ var get_raw_data = function(id){
                 logger.debug(id, "The object is " + JSON.stringify(obj_list[0]));
                 var obj = obj_list[0];
                 var a = {};
-                var installationId = obj.get("installation").objectId;
+                var installationId = obj.get("installation").id;
+
+
                 var install_query = new AV.Query(Installation);
                 install_query.get(installationId,{
                     success:function(installation){
                         var user_query = new AV.Query(User);
-                        var userId = installation.get("user").objectId;
+                        var userId = installation.get("user").id;
+
                         user_query.get(userId,{
                             success:function(user){
 
@@ -179,10 +182,6 @@ var check_exhausted = function(id){
     //var r = JSON.stringify(m_cache.get(id));
     //logger.error(r);
 
-    console.log("\n\n\n\n")
-    console.log(m_cache.keys())
-    console.log("\n\n\n\n")
-
 
     return r;
 };
@@ -210,9 +209,7 @@ var start = function(request_id){
         return;
     }
     //
-    console.log("\n\n\n\n")
-    console.log(m_cache.keys())
-    console.log("\n\n\n\n")
+
 
     if(check_exhausted(request_id)) {
         logger.warn(request_id, "Retries too much, throw the id's request")

@@ -33,7 +33,14 @@ var lean_post = function (APP_ID, APP_KEY, params) {
         function(err,res,body){
             if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
                 logger.error(uuid,"Request error log is" + err);
-                promise.reject("Error is " + err + " " + "response code is " + res.statusCode);
+                if(_.has(res,"statusCode")){
+                    logger.debug(uuid,res.statusCode)
+                    promise.reject("Error is " + err + " " + "response code is " + res.statusCode);
+                }else{
+                    logger.error(uuid,"Response with no statusCode")
+                    promise.reject("Error is " + err );
+                }
+
             }
             else {
                 var body_str = JSON.stringify(body)
@@ -77,8 +84,11 @@ var motion_post = function (url, params) {
             if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
                 logger.error(uuid, JSON.stringify(err));
                 if(_.has(res,"statusCode")){
-                    logger.error(uuid,res.statusCode)
+                    logger.debug(uuid,res.statusCode)
+                }else{
+                    logger.error(uuid,"Response with no statusCode")
                 }
+
                 promise.reject("motion service request error");
             }
             else if(body.response_ok){

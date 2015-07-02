@@ -28,8 +28,13 @@ var lean_post = function (APP_ID, APP_KEY, params) {
         },
         function(err,res,body){
             if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
-                logger.error(uuid,"Request error log is" + err);
-                promise.reject("Error is " + err + "," + "response code is " + res.statusCode);
+                if(_.has(res,"statusCode")){
+                    logger.debug(uuid,res.statusCode)
+                    promise.reject("Error is " + err + " " + "response code is " + res.statusCode);
+                }else{
+                    logger.error(uuid,"Response with no statusCode")
+                    promise.reject("Error is " + err );
+                }
             }
             else {
                 var body_str = JSON.stringify(body)
@@ -52,8 +57,8 @@ var load_data = function(body) {
     var uuid = obj.objectId;
     //console.log("response results" + typeof json_body);
     var poi_probability = obj.poi_probability;
-    if(typeof poi_probability !== typeof {}){
-        logger.error(uuid,"Error is " + "key error and the error object is " + obj);
+    if(typeof poi_probability !== typeof {} || !_.has(obj,"poi_probability")){
+        logger.error(uuid,"Error is " + "key error and the error object is " + JSON.stringify(obj));
         return;
     }
     var timestamp = obj.timestamp;
@@ -66,12 +71,11 @@ var load_data = function(body) {
     level_one.forEach(function(type1){
         var sum = null;
         var type1_obj = poi_probability[type1];
+        prob_lv1_object[type1] = type1_obj["sum_probability"];
         prob_lv2_object = _.extend(prob_lv2_object,type1_obj);
-        Object.keys(type1_obj).forEach(function(type2){
-            sum += type1_obj[type2];
-        });
-        prob_lv1_object[type1] = sum;
     });
+    delete prob_lv2_object["sum_probability"]
+
     params["isTrainingSample"] = config.is_sample;
     params["userRawdataId"] = userRawdataId;
     params["timestamp"] = timestamp
@@ -79,8 +83,7 @@ var load_data = function(body) {
     params["poiProbLv1"] = prob_lv1_object;
     params["poiProbLv2"] = prob_lv2_object;
     logger.debug(uuid,"params are \n" + JSON.stringify(params));
-    console.log("\n\n\n\n\n")
-    console.log(m_cache.keys());
+
     if(!m_cache.get(obj.objectId)){
             logger.error(uuid,"The id " + uuid + " has been deleted!");
             return;
@@ -121,11 +124,16 @@ var location_post = function (url, params) {
 
         },
         function(err,res,body){
-                logger.debug(uuid,body)
+
                 logger.debug(uuid,JSON.stringify(res));
             if(err != null ||  (res.statusCode != 200 && res.statusCode !=201) ){
                 logger.error(uuid, "Error is " + JSON.stringify(err));
-                logger.error(uuid,"Response code is " + res.statusCode);
+                if(_.has(res,"statusCode")){
+                    logger.debug(uuid,res.statusCode)
+                }else{
+                    logger.error(uuid,"Response with no statusCode")
+                }
+
                 promise.reject("Location service request error");
             }
             else{
