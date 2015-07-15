@@ -49,32 +49,32 @@ var lean_post = function (APP_ID, APP_KEY, params) {
 
 
 
-var load_data = function(body) {
+var load_data = function(body, objectId, timestamp) {
 
 
     var params = {};
-    var obj = body.results[0];
-    var uuid = obj.objectId;
-    //console.log("response results" + typeof json_body);
-    var poi_probability = obj.poi_probability;
-    if(typeof poi_probability !== typeof {} || !_.has(obj,"poi_probability")){
-        logger.error(uuid,"Error is " + "key error and the error object is " + JSON.stringify(obj));
+    if(!_.has(body.results, "poi_probability")){
+        logger.error(uuid,"Error is " + "key error and the error object is " + JSON.stringify(body.results));
         return;
     }
-    var timestamp = obj.timestamp;
-    var userRawdataId = obj.objectId;
+    var poi_probability = body.results.poi_probability[0];
+    var uuid = objectId;
+    //console.log("response results" + typeof json_body);
+    if(typeof poi_probability !== typeof {} ){
+        logger.error(uuid,"Error is " + "Type error and the error object is " + JSON.stringify(body.results));
+        return;
+    }
+    var userRawdataId = objectId;
     var poiProbLv1, poiProbLv2;
     var prob_lv1_object = {};
     var prob_lv2_object = {};
     var level_one = Object.keys(poi_probability);
 
     level_one.forEach(function(type1){
-        var sum = null;
         var type1_obj = poi_probability[type1];
-        prob_lv1_object[type1] = type1_obj["sum_probability"];
-        prob_lv2_object = _.extend(prob_lv2_object,type1_obj);
+        prob_lv1_object[type1] = type1_obj.level1_prob;
+        prob_lv2_object = _.extend(prob_lv2_object,type1_obj.level2_prob);
     });
-    delete prob_lv2_object["sum_probability"]
 
     params["isTrainingSample"] = config.is_sample;
     params["userRawdataId"] = userRawdataId;
@@ -84,7 +84,7 @@ var load_data = function(body) {
     params["poiProbLv2"] = prob_lv2_object;
     logger.debug(uuid,"params are \n" + JSON.stringify(params));
 
-    if(!m_cache.get(obj.objectId)){
+    if(!m_cache.get(objectId)){
             logger.error(uuid,"The id " + uuid + " has been deleted!");
             return;
         }
@@ -92,7 +92,7 @@ var load_data = function(body) {
         //http://www.alloyteam.com/2013/12/node-js-series-exception-caught/
 
         try{
-            params["user"] = type.leanUser(m_cache.get(obj.objectId)["user"].id);
+            params["user"] = type.leanUser(m_cache.get(objectId)["user"].id);
         }
         catch (e){
             logger.error(uuid,"error is " + e + ", if the error is due to the cache confliction, IGNORE");
@@ -139,7 +139,7 @@ var location_post = function (url, params) {
             else{
                 var body_str = JSON.stringify(body);
                 logger.debug(uuid, "Body is  " + body_str);
-                var processed_data = load_data(body);
+                var processed_data = load_data(body, uuid, params.user_trace[0].timestamp );
 
                 if(!processed_data){
                     promise.reject("ERROR!,please check the log")
