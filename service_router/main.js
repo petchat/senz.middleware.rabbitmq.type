@@ -5,6 +5,7 @@ var middle = require("./middlewares");
 var location = require("./locations/init");
 var sound = require("./sounds/init");
 var motion = require("./motions/init");
+var data_trans = require("./data_trans/init");
 var log = require("./utils/logger").log;
 var logger = new log("[main]");
 var request = require("request");
@@ -30,6 +31,7 @@ logger.info("","url generated");
 location.init();
 motion.init();
 sound.init();
+data_trans.init();
 
 //
 

@@ -44,6 +44,8 @@ exports.init = function(){
 var sensorCallback = function(msg)
 {
     if(m_cache.get(msg.objectId)){
+
+        logger.warn(msg.objectId,"This id is retrieved from the cache, it should not be present here");
         return ;
     }
     logger.info(msg.objectId, "a new motion data arrived");

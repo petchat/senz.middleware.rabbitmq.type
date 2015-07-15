@@ -145,6 +145,7 @@ var location_post = function (url, params) {
                     promise.reject("ERROR!,please check the log")
                     return ;
                 }
+                processed_data["location"] = params.user_trace[0].location
 
                 logger.info(uuid, "data proccessed");
                 ///write_in_db body wrapping

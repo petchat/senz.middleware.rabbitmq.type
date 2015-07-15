@@ -117,6 +117,10 @@ var get_request_body = function(obj){
     locations.push(new_obj);
 
     var body = {"user_trace":locations};
+    body.dev_key = "senz"
+    body.userId = obj[id].user.id
+    console.log(JSON.stringify(body))
+
     return body
 
 

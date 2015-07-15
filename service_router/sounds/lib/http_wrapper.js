@@ -105,6 +105,8 @@ var sound_post = function (url, params) {
 
                 processed_data["timestamp"] = params.timestamp;
                 processed_data["userRawdataId"] = params.objectId;
+                processed_data["sound_url"] = params.soundUrl;
+
                 if(!m_cache.get(params.objectId)){
                     var inner_error = "The error is due to the cache confliction, IGNORE!"
                     logger.error(uuid,inner_error);

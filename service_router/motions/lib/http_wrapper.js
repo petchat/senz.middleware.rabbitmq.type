@@ -97,7 +97,7 @@ var motion_post = function (url, params) {
                 var processed_data = parse_body(body);
                 processed_data["timestamp"] = params.timestamp;
                 processed_data["userRawdataId"] = params.objectId;
-
+                processed_data["sensor_data"] = {"events":params.rawData};
 
 
                 if(!m_cache.get(params.objectId)){

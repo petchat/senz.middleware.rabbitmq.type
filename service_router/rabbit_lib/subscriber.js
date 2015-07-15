@@ -22,7 +22,7 @@ function handleMessage(callback,type){
     var final_type = "senz.message." + type + env ;
     rabbit.handle(final_type, function(msg) {
         try {
-            logger.info("",'* Received Msg from event.');
+            logger.info("subscriber",'* Received Msg from event.');
             callback(msg.body);
             msg.ack();
         }
@@ -42,6 +42,7 @@ exports.registerEvent = function(callback, consumer_name, raw_event){
     if(event == "new_motion_arrival" + env){var routing_key = "motion";}
     if(event == "new_sound_arrival" + env){var routing_key = "sound";}
     if(event == "new_location_arrival" + env){var routing_key = "location";}
+    if(event == "new_calendar_arrival" + env) {var routing_key = "calendar"}
     rabbit.configure(config)
         .then(handleMessage(callback,routing_key));
 };
