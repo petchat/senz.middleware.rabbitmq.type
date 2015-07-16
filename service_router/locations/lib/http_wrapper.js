@@ -75,7 +75,7 @@ var load_data = function(body, objectId, timestamp) {
         prob_lv1_object[type1] = type1_obj.level1_prob;
         prob_lv2_object = _.extend(prob_lv2_object,type1_obj.level2_prob);
     });
-
+    params["pois"] = body.results.pois[0];
     params["isTrainingSample"] = config.is_sample;
     params["userRawdataId"] = userRawdataId;
     params["timestamp"] = timestamp
