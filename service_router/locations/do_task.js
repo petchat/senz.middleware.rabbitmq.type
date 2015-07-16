@@ -10,7 +10,7 @@ var m_cache = require("location-cache");
 var req_lib = require("./lib/http_wrapper");
 var AV = require("avoscloud-sdk").AV;
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
-
+var util = require("util");
 var UserLocation = AV.Object.extend(config.source_db.target_class);
 var User = AV.Object.extend("_User");
 var Installation = AV.Object.extend("_Installation");
@@ -119,7 +119,8 @@ var get_request_body = function(obj){
     var body = {"user_trace":locations};
     body.dev_key = "senz"
     body.userId = obj[id].user.id
-    console.log(JSON.stringify(body))
+    logger.debug(id, JSON.stringify(body))
+    console.log(util.inspect(body))
 
     return body
 

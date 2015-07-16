@@ -29,9 +29,9 @@ logger.info("","bugsnag initialized");
 logger.info("","url generated");
 
 location.init();
-motion.init();
-sound.init();
-data_trans.init();
+//motion.init();
+//sound.init();
+//data_trans.init();
 
 //
 
