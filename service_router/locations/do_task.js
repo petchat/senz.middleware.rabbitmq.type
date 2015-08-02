@@ -14,6 +14,7 @@ var util = require("util");
 var UserLocation = AV.Object.extend(config.source_db.target_class);
 var User = AV.Object.extend("_User");
 var Installation = AV.Object.extend("_Installation");
+var MAX_TRIES = require("../config.json").max_tries;
 
 var get_raw_data = function(id){
     //questions on whether to set a request timeout
@@ -157,7 +158,7 @@ var write_data = function(body){
 
 var delete_obj = function(values,id){
 
-    if (values.tries >= 3) {
+    if (values.tries >= MAX_TRIES) {
 
         m_cache.del(id);
         logger.debug(id, "exhausted id is ," + id);
@@ -165,7 +166,7 @@ var delete_obj = function(values,id){
 
     }
     else{
-        logger.debug(id, "the id is not exhausted");
+        logger.debug(id, "the id has been tries " + values.tries + " times");
         return false;
     }
 };

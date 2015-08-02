@@ -6,12 +6,14 @@ var location = require("./locations/init");
 var sound = require("./sounds/init");
 var motion = require("./motions/init");
 var data_trans = require("./data_trans/init");
+var home_office_status = require("./home_office_status/init");
+var service_post = require("./service_post/init");
+
 var log = require("./utils/logger").log;
 var logger = new log("[main]");
 var request = require("request");
 var bodyParser = require("body-parser");
 var bugsnag = require("bugsnag");
-var url_generator = require("./utils/url_generator");
 
 //bugsnag initialization
 logger.debug(JSON.stringify(process.env));
@@ -29,9 +31,11 @@ logger.info("","bugsnag initialized");
 logger.info("","url generated");
 
 location.init();
-//motion.init();
-//sound.init();
-//data_trans.init();
+motion.init();
+sound.init();
+data_trans.init();
+service_post.init()
+//home_office_status.init()
 
 //
 

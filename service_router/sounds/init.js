@@ -5,9 +5,7 @@
 var sub = require('../rabbit_lib/subscriber');
 var m_cache = require("sound-cache");
 var m_task = require("./do_task");
-var interval = require("./lib/interval");
-var task_interval = interval.task_interval.check_interval;
-var prev_interval = interval.prev_interval;
+var task_interval = require("../config.json").interval
 var log = require("../utils/logger").log;
 var logger = new log("[sounds]");
 

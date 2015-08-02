@@ -9,6 +9,8 @@ var m_cache = require("sound-cache");
 var req_lib = require("./lib/http_wrapper");
 var url_generator = require("../utils/url_generator");
 var AV = require("avoscloud-sdk").AV;
+var MAX_TRIES = require("../config.json").max_tries;
+
 ////senz.log.tracer
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
@@ -149,7 +151,7 @@ var write_data = function(body){
 
 var delete_obj = function(values,id){
 
-    if (values.tries >= 3) {
+    if (values.tries >= MAX_TRIES) {
 
         m_cache.del(id);
         logger.debug(id, "Exhausted id is ," + id);
@@ -157,6 +159,7 @@ var delete_obj = function(values,id){
     }
     else{
 
+        logger.debug(id, "the id has been tries " + values.tries + " times");
         return false;
     }
 };

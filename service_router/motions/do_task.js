@@ -14,6 +14,9 @@ AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 var UserSensor = AV.Object.extend(config.source_db.target_class);
 var User = AV.Object.extend("_User");
 var Installation = AV.Object.extend("_Installation");
+var MAX_TRIES = require("../config.json").max_tries;
+
+
 
 var get_raw_data = function(id){
     //questions on whether to set a request timeout
@@ -49,6 +52,9 @@ var get_raw_data = function(id){
                                 logger.debug(id, "user is " + JSON.stringify(user));
                                 var raw_data = obj.get("value").events;
                                 var timestamp = obj.get("timestamp");
+                                console.log("timestamp type is ")
+                                console.log(typeof timestamp)
+
                                 a[obj.id] = {
                                     "rawData": raw_data,
                                     "user": user,
@@ -101,7 +107,7 @@ var get_request_body = function(obj){
     /// batch request body for poi service
 
     var id = Object.keys(obj)[0];
-    logger.debug(id, "object list is ",JSON.stringify(obj));
+    logger.debug(id, "object is " + JSON.stringify(obj) );
     var body = {};
     body["timestamp"] = obj[id].timestamp;
     body["objectId"] = id;// here save the object Id for latter operation
@@ -142,7 +148,7 @@ var write_data = function(body){
 
 var delete_obj = function(values,id){
 
-    if (values.tries >= 3) {
+    if (values.tries >= MAX_TRIES) {
 
         m_cache.del(id);
         logger.debug(id, "exhausted id is ," + id);
@@ -150,7 +156,7 @@ var delete_obj = function(values,id){
 
     }
     else{
-        logger.debug(id, "the id is not exhausted");
+        logger.debug(id, "the id has been tries " + values.tries + " times");
         return false;
     }
 };

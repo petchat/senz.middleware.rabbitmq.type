@@ -43,6 +43,7 @@ exports.registerEvent = function(callback, consumer_name, raw_event){
     if(event == "new_sound_arrival" + env){var routing_key = "sound";}
     if(event == "new_location_arrival" + env){var routing_key = "location";}
     if(event == "new_calendar_arrival" + env) {var routing_key = "calendar"}
+    if(event == "new_applist_arrival" + env ) {var routing_key = "applist"}
     rabbit.configure(config)
         .then(handleMessage(callback,routing_key));
 };
