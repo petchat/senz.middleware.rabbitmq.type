@@ -32,7 +32,7 @@ logger.info("","url generated");
 
 location.init();
 motion.init();
-sound.init();
+//sound.init();
 data_trans.init();
 service_post.init()
 //home_office_status.init()

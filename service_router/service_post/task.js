@@ -21,9 +21,11 @@ var get_user_id = function(obj){
     logger.info(obj.objectId,"Fetch applist data started");
 
     var promise = new AV.Promise();
-
     var installation_query = new AV.Query(Installation);
-    var installationId = obj.installation.objectId
+    console.log(obj);
+    var installationId = obj.installation.objectId;
+    console.log(1)
+
     console.log(installationId)
     installation_query.equalTo("objectId", installationId);
     installation_query.first({

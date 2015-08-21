@@ -58,7 +58,8 @@ var get_raw_data = function(id){
                                 a[obj.id] = {
                                     "location": location,
                                     "user": user,
-                                    "timestamp": timestamp
+                                    "timestamp": timestamp,
+                                    "radius": radius
                                 };
 
                                 if (!m_cache.get(obj.id)){

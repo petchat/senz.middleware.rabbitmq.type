@@ -7,25 +7,37 @@ var NodeCache = require("node-cache");
 //
 
 
+var a = function(){
+    return this
+}
+
+var l_a = new a();
+var l_b = new a();
+l_a.test = 1
+l_b.test = 2
+console.log(l_a.test)
+console.log(l_b.test)
+
+
 
 //console.log(uuid.v4());
 //
 //var spawn = require('child_process').spawn,
 //    grep  = spawn('grep', ['ssh']);
 //
-
-var AV = require("avoscloud-sdk").AV;
-AV.initialize("9ra69chz8rbbl77mlplnl4l2pxyaclm612khhytztl8b1f9o","1zohz2ihxp9dhqamhfpeaer8nh1ewqd9uephe9ztvkka544b")
-var LOG = AV.Object.extend("Log");
-var query = new AV.Query(LOG)
-query.include("attachment");
-query.equalTo("objectId","558a870ee4b02dd0d665719e")
-query.first(
-    function(object){
-        console.log(JSON.stringify(object))
-        console.log(object.get("attachment").url())
-    }
-);
+//
+//var AV = require("avoscloud-sdk").AV;
+//AV.initialize("9ra69chz8rbbl77mlplnl4l2pxyaclm612khhytztl8b1f9o","1zohz2ihxp9dhqamhfpeaer8nh1ewqd9uephe9ztvkka544b")
+//var LOG = AV.Object.extend("Log");
+//var query = new AV.Query(LOG)
+//query.include("attachment");
+//query.equalTo("objectId","558a870ee4b02dd0d665719e")
+//query.first(
+//    function(object){
+//        console.log(JSON.stringify(object))
+//        console.log(object.get("attachment").url())
+//    }
+//);
 
 //var promise = new AV.Promise();
 //

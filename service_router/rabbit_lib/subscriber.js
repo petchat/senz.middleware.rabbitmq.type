@@ -27,6 +27,7 @@ function handleMessage(callback,type){
             msg.ack();
         }
         catch( err ) {
+            console.log("rabbitmq caught error is " + JSON.stringify(err) );
             msg.nack();
         }
     });

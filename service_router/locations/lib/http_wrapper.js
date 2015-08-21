@@ -147,6 +147,12 @@ var location_post = function (url, params) {
                 }
                 processed_data["location"] = params.user_trace[0].location
 
+                processed_data["radius"] = params.user_trace[0].radius
+                console.log("fuck \n")
+
+                console.log(JSON.stringify(processed_data));
+                console.log("fuck \n");
+
                 logger.info(uuid, "data proccessed");
                 ///write_in_db body wrapping
                 promise.resolve(processed_data);

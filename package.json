@@ -22,7 +22,8 @@
         "body-parser":"",
         "node-schedule":"",
         "uuid":"",
-        "bugsnag":""
+        "bugsnag":"",
+        "sleep":""
     }
 
 }
