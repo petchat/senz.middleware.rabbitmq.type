@@ -40,11 +40,13 @@ exports.registerEvent = function(callback, consumer_name, raw_event){
     var config = configuration.topology;
     config['queues'][config['queues'].length] = { name: consumer_name + env, subscribe: true};
     config['bindings'][config['bindings'].length] = { exchange: event , target: consumer_name + env  };//,keys: '' };
-    if(event == "new_motion_arrival" + env){var routing_key = "motion";}
-    if(event == "new_sound_arrival" + env){var routing_key = "sound";}
-    if(event == "new_location_arrival" + env){var routing_key = "location";}
-    if(event == "new_calendar_arrival" + env) {var routing_key = "calendar"}
-    if(event == "new_applist_arrival" + env ) {var routing_key = "applist"}
+    var routing_key = null
+    if(event == "new_motion_arrival" + env){ routing_key = "motion";}
+    if(event == "new_sound_arrival" + env){ routing_key = "sound";}
+    if(event == "new_location_arrival" + env){ routing_key = "location";}
+    if(event == "new_calendar_arrival" + env) { routing_key = "calendar"}
+    if(event == "new_applist_arrival" + env ) { routing_key = "applist"}
+    if(event == "new_predicted_motion_arrival" + env) { routing_key = "predicted_motion"}
     rabbit.configure(config)
         .then(handleMessage(callback,routing_key));
 };

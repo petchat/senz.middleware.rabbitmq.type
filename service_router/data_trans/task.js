@@ -52,9 +52,15 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     var uuid = params.userRawdataId;
     logger.info(uuid, "Leancloud post started");
     var promise = new AV.Promise();
+    if (params.type == "calendar"){
+        url =  "https://leancloud.cn/1.1/classes/"+config.target_db.target_class
+
+    }else if(params.type = "predicted_motion"){
+        url =  "https://leancloud.cn/1.1/classes/"+ config.target_db_motion.target_class
+    }
     req.post(
         {
-            url: "https://leancloud.cn/1.1/classes/"+config.target_db.target_class,
+            url: url,
             headers:{
                 "X-AVOSCloud-Application-Id":APP_ID,
                 "X-AVOSCloud-Application-Key":APP_KEY,
@@ -95,20 +101,37 @@ var write_data = function(body){
 };
 
 
-var start = function(calendar){
+var start = function(data_object){
 
-    var request_id = calendar.objectId
+    var request_id = data_object.objectId
     logger.info(request_id, "Task start ...");
 
-    var promise = get_user_id(calendar);
+    var promise = get_user_id(data_object);
 
     promise.then(
         function (userId) {
             var body = {};
             body.user = toLeanUser(userId);
-            body.userRawdataId = calendar.objectId;
-            body.calendarInfo = calendar.value;
-            body.timestamp = calendar.timestamp;
+            body.userRawdataId = data_object.objectId;
+            body.timestamp = data_object.timestamp;
+            body.type = data_object.type
+
+            if(data_object.type == "predictedMotion"){
+
+                var motion_stat_dict = {"0":"sitting", "1":"driving", "2":"riding", "3":"walking","4":"running"}
+                var prob_object = {}
+                body.rawInfo = data_object.value
+                var result_list = data_object.value.detectedResults
+
+                result_list.forEach(function(obj){
+                    prob_object[motion_stat_dict[obj.motionType]] = obj.similarity
+                })
+                body.motionProb = prob_object
+
+            }else if(data_object.type == "calendar"){
+                body.calendarInfo = data_object.value;
+            }
+
 
             return write_data(body);
         },

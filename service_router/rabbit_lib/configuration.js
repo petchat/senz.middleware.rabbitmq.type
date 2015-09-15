@@ -8,6 +8,7 @@ var topology = {
         { name: 'new_location_arrival_test', type: 'fanout' },
         { name: 'new_calendar_arrival_test', type: 'fanout' },
         { name: 'new_applist_arrival_test', type: 'fanout' },
+        { name: 'new_predicted_motion_arrival_test', type: 'fanout' },
 
 
         { name: 'new_motion_arrival_prod', type: 'fanout' },
@@ -15,6 +16,7 @@ var topology = {
         { name: 'new_location_arrival_prod', type: 'fanout' },
         { name: 'new_calendar_arrival_prod', type: 'fanout' },
         { name: 'new_applist_arrival_prod', type: 'fanout' },
+        { name: 'new_predicted_motion_arrival_prod', type: 'fanout' },
 
 
     ],
