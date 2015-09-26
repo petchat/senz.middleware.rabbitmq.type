@@ -3,25 +3,25 @@
 
 
     if(process.env.APP_ENV === "prod"){
-        sound_url = "http://api.trysenz.com" +
+        sound_url = "https://api.trysenz.com" +
         "/utils/sound_detector/"
 
-        motion_url = "http://api.trysenz.com" +
+        motion_url = "https://api.trysenz.com" +
         "/utils/motion_detector/"
 
-        location_url = "http://api.trysenz.com" +
+        location_url = "https://api.trysenz.com" +
         "/pois/location_probability/"
 
-        static_info_url = "http://api.trysenz.com/apps/user_categorizer/log"
+        static_info_url = "https://api.trysenz.com/apps/user_categorizer/log"
 
 
         console.log("fuck here" + " prod")
     }
     else{
 
-        sound_url = "http://api.trysenz.com" + "/test/utils/sound_detector/"
-        motion_url = "http://api.trysenz.com" + "/test/utils/motion_detector/"
-        location_url = "http://api.trysenz.com" + "/test/pois/location_probability/"
+        sound_url = "https://api.trysenz.com" + "/test/utils/sound_detector/"
+        motion_url = "https://api.trysenz.com" + "/test/utils/motion_detector/"
+        location_url = "https://api.trysenz.com" + "/test/pois/location_probability/"
 
         static_info_url = ""
 
