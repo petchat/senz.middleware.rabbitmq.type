@@ -75,6 +75,10 @@ var load_data = function(body, objectId, timestamp) {
         prob_lv1_object[type1] = type1_obj.level1_prob;
         prob_lv2_object = _.extend(prob_lv2_object,type1_obj.level2_prob);
     });
+
+    var address = body.results.pois[0].address
+
+
     params["pois"] = body.results.pois[0];
     params["isTrainingSample"] = config.is_sample;
     params["userRawdataId"] = userRawdataId;
@@ -82,6 +86,8 @@ var load_data = function(body, objectId, timestamp) {
     params["processStatus"] = "untreated";
     params["poiProbLv1"] = prob_lv1_object;
     params["poiProbLv2"] = prob_lv2_object;
+    _.extend(params, address)
+    
     logger.debug(uuid,"params are \n" + JSON.stringify(params));
 
     if(!m_cache.get(objectId)){
