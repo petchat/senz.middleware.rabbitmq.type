@@ -41,8 +41,12 @@ exports.init = function(){
 
 };
 
+var count = 0;
+MAX_count = 1;
+
 var locationCallback = function(msg)
 {
+    count += 1 ;
     if(m_cache.get(msg.objectId)){
         return ;
     }
@@ -56,7 +60,19 @@ var locationCallback = function(msg)
 
     //logger.error("debug here");
     //logger.warn("request new id service started, id >>" + id);
-    m_task.start(msg.objectId);
+    var delay_job = function(){
+        m_task.start(msg.objectId);
+        console.log("第"+ count + "个开始搞了")
+
+    }
+
+    if(count > MAX_count){
+        m_task.start(msg.objectId);
+    }
+    else{
+        setTimeout(delay_job, Math.round(Math.random() * 100))
+    }
+
 
 
 }

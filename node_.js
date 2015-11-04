@@ -20,6 +20,15 @@ console.log(l_b.test)
 
 
 
+
+//values.keys().forEach(key){
+//    if(values[key] > temp_max){
+//        temp_max = values[key]
+//    }
+//}
+
+
+
 //console.log(uuid.v4());
 //
 //var spawn = require('child_process').spawn,

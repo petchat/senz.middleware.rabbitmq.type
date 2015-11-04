@@ -166,6 +166,11 @@ var location_post = function (url, params) {
 
         }
     );
+    req.post(
+        {},
+        function(err, res, body){
+
+        })
     return promise;
 };
 

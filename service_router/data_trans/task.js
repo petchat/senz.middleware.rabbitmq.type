@@ -18,7 +18,7 @@ var Installation = AV.Object.extend("_Installation");
 
 var get_user_id = function(obj){
     //questions on whether to set a request timeout
-    logger.info(obj.objectId,"Fetch calendar data started");
+    logger.info(obj.objectId,"Fetch  data started");
 
     var promise = new AV.Promise();
 
@@ -55,9 +55,10 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     if (params.type == "calendar"){
         url =  "https://leancloud.cn/1.1/classes/"+config.target_db.target_class
 
-    }else if(params.type = "predicted_motion"){
+    }else if(params.type = "predicted_motion"||"ios_motion"){
         url =  "https://leancloud.cn/1.1/classes/"+ config.target_db_motion.target_class
     }
+
     req.post(
         {
             url: url,
@@ -129,8 +130,60 @@ var start = function(data_object){
                 body.motionProb = prob_object
 
             }else if(data_object.type == "calendar"){
+
                 body.calendarInfo = data_object.value;
+            }else if(data_object.type == "sensor"){
+                console.log("fuck your")
+                var sensor_array = data_object.value.events;
+                var activity_array = _.filter(sensor_array,
+                    function(sample){
+                        return sample.sensorName == "activity"
+                    }
+                )
+
+                if(activity_array.length == 0){
+                    body.motionProb= {"unknown":1}
+
+                }else{
+
+                    var max_prob_activity = _.max(activity_array, function(status){
+                        var keys = Object.keys(status)
+                        console.log(status)
+
+                        var values = status.values
+                        console.log(values)
+                        var temp_max = -1
+                        var temp_type = ""
+                        Object.keys(values).forEach(function(type){
+                            console.log("fuck 444")
+                            if(values[type] >= temp_max){
+                                temp_max = values[type]
+                                temp_type = type
+                            }
+                        })
+                        console.log(temp_max)
+                        return temp_max
+                    })
+
+                    var values = max_prob_activity.values
+
+                    var temp_max = -1
+                    var temp_type = ""
+                    Object.keys(values).forEach(function(type){
+                        if(values[type] >= temp_max){
+                            temp_max = values[type]
+                            temp_type = type
+                        }
+                    })
+                    var motion_stat_dict = {"0":"sitting", "1":"driving", "2":"riding", "3":"walking","4":"running"}
+                    var ios_type_dict = {"unknown":"unknow","stationary":"sitting","automotive":"driving","cycling":"riding","walking":"walking","running":"running"}
+
+                    body.motionProb = {}
+                    body.motionProb[[ios_type_dict[temp_type]]] = 1
+
+                }
             }
+            console.log("fuck your 2")
 
 
             return write_data(body);

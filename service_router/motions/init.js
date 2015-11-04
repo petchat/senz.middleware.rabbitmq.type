@@ -41,6 +41,9 @@ exports.init = function(){
 
 };
 
+count = 0
+MAX_count = 1
+
 var sensorCallback = function(msg)
 {
     if(m_cache.get(msg.objectId)){
@@ -57,8 +60,19 @@ var sensorCallback = function(msg)
     m_cache.put(msg.objectId,obj);
     //logger.error("debug here");
     //logger.warn("request new id service started, id >>" + id);
-    m_task.start(msg.objectId);
+    var delay_job = function(){
+        console.log("第"+ count + "个开始搞了")
+        m_task.start(msg.objectId);
 
+    }
+
+    if(count > MAX_count){
+        m_task.start(msg.objectId);
+
+    }
+    else{
+        setTimeout(delay_job, Math.round(Math.random() * 100))
+    }
 
 }
 
