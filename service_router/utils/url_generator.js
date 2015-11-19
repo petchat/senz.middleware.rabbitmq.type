@@ -12,7 +12,7 @@
         location_url = "https://api.trysenz.com" +
         "/pois/location_probability/"
 
-        static_info_url = "https://api.trysenz.com/apps/user_categorizer/log"
+        static_info_url = "https://api.trysenz.com/apps/user_categorizer/predict_platform"
 
 
         console.log("fuck here" + " prod")

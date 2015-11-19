@@ -57,6 +57,7 @@ var load_data = function(body, objectId, timestamp) {
         logger.error(uuid,"Error is " + "key error and the error object is " + JSON.stringify(body.results));
         return;
     }
+    var near_home_office = body.home_office_label
     var poi_probability = body.results.poi_probability[0];
     var uuid = objectId;
     //console.log("response results" + typeof json_body);
@@ -86,6 +87,7 @@ var load_data = function(body, objectId, timestamp) {
     params["processStatus"] = "untreated";
     params["poiProbLv1"] = prob_lv1_object;
     params["poiProbLv2"] = prob_lv2_object;
+    params["near_home_office"] = near_home_office;
     _.extend(params, address)
     
     logger.debug(uuid,"params are \n" + JSON.stringify(params));

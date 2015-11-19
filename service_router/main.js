@@ -6,7 +6,6 @@ var location = require("./locations/init");
 var sound = require("./sounds/init");
 var motion = require("./motions/init");
 var data_trans = require("./data_trans/init");
-var home_office_status = require("./home_office_status/init");
 var service_post = require("./service_post/init");
 
 var log = require("./utils/logger").log;

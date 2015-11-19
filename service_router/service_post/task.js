@@ -4,7 +4,7 @@
 /**
  * Created by zhanghengyang on 15/4/23.
  */
-
+var lean_type = require("./lean_type.js");
 var log = require("../utils/logger").log;
 var logger = new log("[applist]");
 var config = require("./config.json");
@@ -31,9 +31,10 @@ var get_user_id = function(obj){
     installation_query.first({
         success:function(installation){
             console.log(JSON.stringify(installation));
+            var deviceType = installation.get("deviceType")
             var userId = installation.get("user").id;
 
-            promise.resolve(userId)
+            promise.resolve({userId:userId,deviceType:deviceType})
 
         },
         error:function(object, error){
@@ -46,6 +47,44 @@ var get_user_id = function(obj){
 
 };
 
+var lean_post = function (params, APP_ID, APP_KEY) {
+
+    var uuid = params.userRawdataId;
+    APP_ID = APP_ID || config.target_db.APP_ID
+    APP_KEY = APP_KEY || config.target_db.APP_KEY
+    logger.info(uuid, "Leancloud post started");
+    var promise = new AV.Promise();
+    req.post(
+        {
+            url: "https://leancloud.cn/1.1/classes/"+config.target_db.target_class,
+            headers:{
+                "X-AVOSCloud-Application-Id":APP_ID,
+                "X-AVOSCloud-Application-Key":APP_KEY,
+                "X-request-Id":uuid,
+                "Content-Type":"application/json"
+            },
+            json: params
+        },
+        function(err,res,body){
+            if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
+                if(_.has(res,"statusCode")){
+                    logger.debug(uuid,res.statusCode)
+                    promise.reject("Error is " + err + " " + "response code is " + res.statusCode);
+                }else{
+                    logger.error(uuid,"Response with no statusCode")
+                    promise.reject("Error is " + err );
+                }
+            }
+            else {
+                var body_str = JSON.stringify(body)
+                logger.debug(uuid,"Body is " + body_str);
+                promise.resolve("Data save successfully")
+            }
+        }
+    );
+    return promise;
+
+};
 
 
 
@@ -64,7 +103,7 @@ var service_post = function (params, url, auth_key) {
             json: params
         },
         function(err,res,body){
-            if(err != null || (res.statusCode != 200 && res.statusCode !=201 || body.code !== 0) ) {
+            if(err != null || (res.statusCode != 200 && res.statusCode !=201 || body.code == 1) ) {
                 if(_.has(res,"statusCode")){
                     console.log(res)
                     logger.debug(uuid,res.statusCode)
@@ -79,7 +118,7 @@ var service_post = function (params, url, auth_key) {
             else {
                 var body_str = JSON.stringify(body)
                 logger.debug(uuid,"Body is " + body_str);
-                promise.resolve("Data request successfully")
+                promise.resolve(body)
             }
         }
     );
@@ -106,14 +145,19 @@ var start = function(applist){
     var promise = get_user_id(applist);
 
     promise.then(
-        function (userId) {
-            var body = {};
-            body.userId = userId ;
+        function (dic) {
+
+            body = {};
+            if(dic.deviceType == "android"){
+                body.platform = "Android";
+            }else if(dic.deviceType == "ios"){
+                body.platform = "iOS"
+            }
+            body.userId = dic.userId ;
             body.userRawdataId = applist.objectId;
             body.applist = applist.value.packages;
             body.timestamp = applist.timestamp;
             logger.debug(request_id, JSON.stringify(body));
-
             return request_static_info(body);
         },
         function (error) {
@@ -124,15 +168,30 @@ var start = function(applist){
         }
     ).then(
         function(result){
-            logger.info(request_id, "Static info service requested successfully")
-            logger.info(request_id, "One process end ");
+            logger.info(request_id, "Static info service requested successfully");
+            var save_data = {}
+            save_data.applist = applist.value.packages
+            save_data.user = lean_type.leanUser(body.userId)
+            save_data.staticInfo = result
+            save_data.timestamp = applist.timestamp
+            save_data.userRawdataId = applist.objectId;
+
+            return lean_post(save_data)
 
         },
         function(error){
             logger.error(request_id, JSON.stringify(error))
             logger.error(request_id, "Static info service requested in fail")
         }
-            )
+    ).then(
+        function(result){
+            logger.info(request_id, result);
+            logger.info(request_id, "One process end ");
+        },
+        function(error){
+            logger.error(request_id, error);
+        }
+    )
 
 };
 
