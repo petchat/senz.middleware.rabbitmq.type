@@ -18,6 +18,86 @@ var UserMic = AV.Object.extend(config.source_db.target_class);
 var User = AV.Object.extend("_User");
 var Installation = AV.Object.extend("_Installation");
 
+var get_log_obj_by_id = function(id){
+    var query = new AV.Query(UserMic);
+    query.include("attachment");
+    query.equalTo("objectId", id);
+    query.find().then(
+        function(obj_list){
+            if(obj_list.length === 0){
+                var inner_error = "The id " + id + " " + "doesn't exist in the source db, please notify the ADMIN!";
+                logger.error(id, inner_error);
+                promise.reject(inner_error);
+            }else{
+                promise.resolve(obj_list[0]);
+            }
+        },
+        function(err){
+            promise.reject(id);
+            logger.error(id, "get the data from source db meeting error  " + err);
+        }
+    );
+
+    return promise;
+};
+
+var get_raw_data_o = function(obj){
+    if(typeof obj === typeof 'str'){
+        var promise = get_log_obj_by_id(obj)
+    }else if(typeof obj === typeof {}){
+        promise = new AV.Promise.as(obj);
+    }
+
+    promise.then(
+        function(obj){
+            var a = {};
+            var installationId = obj.get("installation").id;
+            var install_query = new AV.Query(Installation);
+            install_query.get(installationId, {
+                success: function (installation) {
+                    var user_query = new AV.Query(User);
+                    var userId = installation.get("user").id;
+                    user_query.get(userId, {
+                        success: function(user){
+                            a[obj.id] = {
+                                "user": user,
+                                "timestamp": obj.get("timestamp")
+                            };
+                            if (!m_cache.get(obj.id)){
+                                promise.reject("Requested id " + obj.id + "has been deleted");
+                                return;
+                            }
+                            try{
+                                m_cache.get(obj.id)["user"] = user;
+                            }
+                            catch (e){
+                                var inner_error = "Error is " + e + ", if the error is due to the cache confliction, IGNORE"
+                                logger.error(id, inner_error);
+                                promise.reject(inner_error);
+                                return;
+                            }
+                            logger.info(id, "Sound data fetched successfully");
+                            promise.resolve(a);
+                        },
+                        error: function(object, error){
+                            logger.error(id, "User retrieve error " + JSON.stringify(error))
+                            promise.reject(error)
+                        }
+                    })
+                },
+                error: function(object, error){
+                    logger.error(id, "Installation retrieve error " + JSON.stringify(error))
+                    promise.reject(error)
+                }
+            });
+        },
+        function(err){
+            promise.reject(id);
+            logger.error(id, "get the data from source db meeting error  " + err);
+        });
+    return promise;
+};
+
 var get_raw_data = function(id){
 
     //questions on whether to set a request timeout
@@ -200,21 +280,26 @@ function failed(request_id) {
     }
 }
 
-var start = function(request_id){
-
-    logger.info(request_id,"Task start ...");
-    logger.info(request_id,"id > " + request_id );
-    if (typeof request_id != typeof "str" ) {
-        logger.error(request_id,"type of requestId is illegal");
-        return;
+var start = function(request){
+    if(typeof request === typeof 'str'){
+        var request_id = request;
+    }else if(typeof request === typeof {}){
+        request_id = request.id;
     }
+
+    //logger.info(request_id,"Task start ...");
+    //logger.info(request_id,"id > " + request_id );
+    //if (typeof request_id != typeof "str" ) {
+    //    logger.error(request_id,"type of requestId is illegal");
+    //    return;
+    //}
 
     if(check_exhausted(request_id)) {
         logger.warn(request_id,"retries too much, throw the id's request");
         return ;
-    };
+    }
 
-    var promise = get_raw_data(request_id);
+    var promise = get_raw_data_o(request_id);
 
     promise.then(
         function (obj) {
