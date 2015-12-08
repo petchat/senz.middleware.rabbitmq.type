@@ -1,12 +1,9 @@
 /**
  * Created by zhanghengyang on 15/7/14.
  */
-/**
- * Created by zhanghengyang on 15/4/23.
- */
 
 var log = require("../utils/logger").log;
-var logger = new log("[calendar]");
+var logger = new log("[data trans]");
 var config = require("./config.json");
 var  _ = require("underscore");
 var AV = require("avoscloud-sdk").AV;
@@ -55,7 +52,11 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     if (params.type == "calendar"){
         url =  "https://leancloud.cn/1.1/classes/"+config.target_db.target_class
 
-    }else if(params.type = "predicted_motion"||"ios_motion"){
+    }else if(params.type == "sensor") {
+        params.type = "predicted_motion"
+        url =  "https://leancloud.cn/1.1/classes/"+ config.target_db_motion.target_class
+
+    }else if(params.type == "predictedMotion"){
         url =  "https://leancloud.cn/1.1/classes/"+ config.target_db_motion.target_class
     }
 
@@ -118,16 +119,28 @@ var start = function(data_object){
             body.type = data_object.type
 
             if(data_object.type == "predictedMotion"){
+                var android_motion_to_standard_motion = {
+                    "ride": "riding",
+                    "sit": "sitting",
+                    "run": "running",
+                    "walk": "walking",
+                    "drive": "driving"
+                }
 
-                var motion_stat_dict = {"0":"sitting", "1":"driving", "2":"riding", "3":"walking","4":"running"}
                 var prob_object = {}
                 body.rawInfo = data_object.value
-                var result_list = data_object.value.detectedResults
+                var motionProb = data_object.value.detectedResults.motion
+                var isWatchPhone = data_object.value.detectedResults.isWatchPhone
+                var new_motionProb = {}
+                Object.keys(motionProb).forEach(function(android_key){
+                    new_motionProb[android_motion_to_standard_motion[android_key]] = motionProb[android_key]
+                });
 
-                result_list.forEach(function(obj){
-                    prob_object[motion_stat_dict[obj.motionType]] = obj.similarity
-                })
-                body.motionProb = prob_object
+                //result_list.forEach(function(obj){
+                //    prob_object[motion_stat_dict[obj.motionType]] = obj.similarity
+                //})
+                body.motionProb = new_motionProb
+                body.isWatchPhone = isWatchPhone
 
             }else if(data_object.type == "calendar"){
 
@@ -155,7 +168,7 @@ var start = function(data_object){
                         var temp_max = -1
                         var temp_type = ""
                         Object.keys(values).forEach(function(type){
-                            console.log("fuck 444")
+                            //console.log("fuck 444")
                             if(values[type] >= temp_max){
                                 temp_max = values[type]
                                 temp_type = type
@@ -183,7 +196,7 @@ var start = function(data_object){
 
                 }
             }
-            console.log("fuck your 2")
+            //console.log("fuck your 2")
 
 
             return write_data(body);

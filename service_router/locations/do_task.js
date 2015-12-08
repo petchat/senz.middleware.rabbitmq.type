@@ -73,11 +73,12 @@ var get_raw_data_o = function(req){
     return get_log_obj(req).then(
         function(log){
             var LogId = log.objectId;
+            //console.log(log.objectId);
             if(m_cache.get(LogId)) succeeded(LogId);
 
             var installation = log.installation
                 || log.get("installation");
-            var installationId = installation.id;
+            var installationId = installation.objectId || installation.id;
             var location = log.location || log.get("location");
             var timestamp = log.timestamp || log.get("timestamp");
             var radius = log.locationRadius || log.get("locationRadius");
