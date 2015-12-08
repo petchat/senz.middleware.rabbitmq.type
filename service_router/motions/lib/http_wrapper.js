@@ -5,7 +5,7 @@
 var log = require("../../utils/logger").log;
 var logger = new log("[motions]");
 var req = require("request");
-var m_cache = require("motion-cache");
+var m_cache = require("memory-cache");
 var config = require("../config.json");
 var sample_config = require("../../config.json");
 var type = require("./lean_type.js");

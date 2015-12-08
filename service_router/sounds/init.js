@@ -3,7 +3,7 @@
  */
 
 var sub = require('../rabbit_lib/subscriber');
-var m_cache = require("sound-cache");
+var m_cache = require("memory-cache");
 var m_task = require("./do_task");
 var task_interval = require("../config.json").interval
 var log = require("../utils/logger").log;

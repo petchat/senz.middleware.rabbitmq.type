@@ -3,7 +3,7 @@
  */
 
 var sub = require('../rabbit_lib/subscriber');
-var m_cache = require("motion-cache");
+var m_cache = require("memory-cache");
 var m_task = require("./do_task");
 var interval = require("./lib/interval");
 var task_interval = require("../config.json").interval

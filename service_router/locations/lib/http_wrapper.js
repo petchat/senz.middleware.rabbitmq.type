@@ -5,7 +5,7 @@
 var log = require("../../utils/logger").log;
 var logger = new log("[locations]");
 var req = require("request");
-var m_cache = require("location-cache");
+var m_cache = require("memory-cache");
 var config = require("../config.json");
 var type = require("./lean_type.js");
 var AV = require("avoscloud-sdk").AV;

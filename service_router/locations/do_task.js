@@ -6,7 +6,7 @@ var log = require("../utils/logger").log;
 var logger = new log("[locations]");
 var config = require("./config.json");
 var url_generator = require("../utils/url_generator");
-var m_cache = require("location-cache");
+var m_cache = require("memory-cache");
 var req_lib = require("./lib/http_wrapper");
 var AV = require("avoscloud-sdk").AV;
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);

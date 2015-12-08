@@ -5,7 +5,7 @@
 var log = require("../utils/logger").log;
 var logger = new log("[motions]");
 var config = require("./config.json");
-var m_cache = require("motion-cache");
+var m_cache = require("memory-cache");
 var req_lib = require("./lib/http_wrapper");
 var url_generator = require("../utils/url_generator");
 var AV = require("avoscloud-sdk").AV;
@@ -89,6 +89,7 @@ var get_raw_data_o = function(req){
                         var a = {
                             "user": user,
                             "timestamp": timestamp,
+                            "objectId": LogId,
                             "rawData": raw_data
                         };
                         return AV.Promise.as(a);
