@@ -2,5 +2,5 @@
   "debug":true,
  "is_sample":0,
   "max_tries":100,
-  "interval": 4000
+  "interval": 10000
 }

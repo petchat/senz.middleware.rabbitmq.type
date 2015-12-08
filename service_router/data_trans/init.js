@@ -19,8 +19,8 @@ var event = "new_calendar_arrival";
 var queue_name = "calendar_queue";
 var pre_motion_event = "new_predicted_motion_arrival";
 var pre_motion_queue = "predicted_motion_queue";
-var ios_motion_event = "new_ios_motion_arrival"
-var ios_motion_queue = "ios_motion_queue"
+var ios_motion_event = "new_ios_motion_arrival";
+var ios_motion_queue = "ios_motion_queue";
 
 exports.init = function(){
 

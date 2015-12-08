@@ -3,23 +3,17 @@ var configuration = require('./configuration.js');
 var log = require("../utils/logger").log;
 var logger = new log("[rabbitMQ]");
 
-
-
-
 var env = null;
 if(process.env.APP_ENV === "prod"){
     env = "_prod"
-
 }else{
-
     env = "_test"
 }
-
-
 
 function handleMessage(callback,type){
     //setting up the handler for the subscriber
     var final_type = "senz.message." + type + env ;
+    console.log(final_type);
     rabbit.handle(final_type, function(msg) {
         try {
             logger.info("subscriber",'* Received Msg from event.');
@@ -40,15 +34,17 @@ exports.registerEvent = function(callback, consumer_name, raw_event){
     var config = configuration.topology;
     config['queues'][config['queues'].length] = { name: consumer_name + env, subscribe: true};
     config['bindings'][config['bindings'].length] = { exchange: event , target: consumer_name + env  };//,keys: '' };
-    var routing_key = null
+    var routing_key = null;
 
     if(event == "new_motion_arrival" + env){ routing_key = "motion";}
+    if(event == "new_motion_arrival_o" + env){ routing_key = "motion_o";}
     if(event == "new_sound_arrival" + env){ routing_key = "sound";}
     if(event == "new_location_arrival" + env){ routing_key = "location";}
+    if(event == "new_location_arrival_o" + env){ routing_key = "location_o";}
     if(event == "new_calendar_arrival" + env) { routing_key = "calendar"}
     if(event == "new_applist_arrival" + env ) { routing_key = "applist"}
     if(event == "new_predicted_motion_arrival" + env) { routing_key = "predicted_motion"}
-    if(event == "new_ios_motion_arrival"+ env)  {var routing_key = "ios_motion"}
+    if(event == "new_ios_motion_arrival"+ env)  {routing_key = "ios_motion"}
 
     rabbit.configure(config)
         .then(handleMessage(callback,routing_key));
