@@ -18,9 +18,6 @@ var client = redis.createClient();
 var get_log_obj = function(req){
     if(typeof req === typeof {}) return AV.Promise.as(JSON.parse(JSON.stringify(req)));
 
-    //var c = m_cache.get(req);
-    //if(c) return AV.Promise.as(c);
-
     var query = new AV.Query(UserLocation);
     query.equalTo("objectId", req);
     return query.find().then(
@@ -72,7 +69,7 @@ var get_raw_data_o = function(req){
             if(!log) return AV.Promise.error("invalid log id");
 
             var LogId = log.objectId || log.id;
-            if(m_cache.get(LogId)) succeeded(LogId);
+            succeeded(LogId);
             console.log(log);
             var installation = log.installation;
             if(!installation) return AV.Promise.error("invalid installation");
@@ -125,9 +122,6 @@ var get_location_type = function(body){
     return req_lib.location_post(serv_url, body);
 };
 
-var succeeded = function(suc_id){
-    m_cache.del(suc_id);
-};
 
 var write_data = function(body){
     var app_key = config.target_db.APP_KEY;
@@ -135,17 +129,27 @@ var write_data = function(body){
     return req_lib.lean_post(app_id, app_key, body);
 };
 
+var succeeded = function(suc_id){
+    client.srem('location', suc_id);
+    client.select(1);
+    client.del(suc_id);
+    client.select(0);
+};
+
 var failed = function(request) {
-    if(typeof request === typeof 'str'){
-        m_cache.put(request, request);
+    if(typeof request == typeof {}){
+        client.sadd('location', request.objectId);
+        client.select(1);
+        client.set(request.objectId, JSON.stringify(request));
+        client.select(0);
     }
-    if(typeof request === typeof {}){
-        m_cache.put(request.objectId, request);
+    if(typeof request == typeof 'str'){
+        client.sadd('location', request.objectId);
     }
 };
 
-var start = function(request_id){
-    return get_raw_data_o(request_id)
+var start = function(log_obj){
+    return get_raw_data_o(log_obj)
         .then(
         function(raw_data){
             var user = raw_data.user;
@@ -153,7 +157,7 @@ var start = function(request_id){
             return get_location_type(body).then(
                 function(location_type){
                     location_type['user'] = user;
-                    logger.info(request_id, "Location service requested successfully");
+                    logger.info(log_obj, "Location service requested successfully");
                     return write_data(location_type);
                 },
                 function(err){
@@ -166,8 +170,8 @@ var start = function(request_id){
             console.log(success);
         },
         function(error){
-            logger.error(request_id, JSON.stringify(error));
-            failed(request_id);
+            logger.error(log_obj, JSON.stringify(error));
+            failed(log_obj);
         }
     )
 };
