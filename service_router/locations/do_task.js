@@ -10,11 +10,8 @@ var m_cache = require("memory-cache");
 var req_lib = require("./lib/http_wrapper");
 var AV = require("avoscloud-sdk").AV;
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
-var util = require("util");
 var UserLocation = AV.Object.extend(config.source_db.target_class);
-var User = AV.Object.extend("_User");
 var Installation = AV.Object.extend("_Installation");
-var MAX_TRIES = require("../config.json").max_tries;
 var redis = require('promise-redis')();
 var client = redis.createClient();
 
@@ -50,7 +47,6 @@ var get_user_obj = function(installationId){
                     return AV.Promise.error(err);
                 }).then(
                 function(installation){
-                    console.log(installation);
                     var userId = installation.get("user").id;
                     var user = {
                         "__type": "Pointer",
