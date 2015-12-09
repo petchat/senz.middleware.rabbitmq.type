@@ -5,7 +5,7 @@
 var log = require("../../utils/logger").log;
 var logger = new log("[motions]");
 var req = require("request");
-var m_cache = require("motion-cache");
+var m_cache = require("memory-cache");
 var config = require("../config.json");
 var sample_config = require("../../config.json");
 var type = require("./lean_type.js");
@@ -16,7 +16,6 @@ var _ = require("underscore");
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 
 var lean_post = function (APP_ID, APP_KEY, params) {
-
     var uuid = params.userRawdataId;
     logger.info(uuid, "Lean post started");
     var promise = new AV.Promise();
@@ -40,7 +39,6 @@ var lean_post = function (APP_ID, APP_KEY, params) {
                     logger.error(uuid,"Response with no statusCode")
                     promise.reject("Error is " + err );
                 }
-
             }
             else {
                 var body_str = JSON.stringify(body)
@@ -55,7 +53,6 @@ var lean_post = function (APP_ID, APP_KEY, params) {
 
 
 var parse_body = function(body) {
-
     var params = {};
     params["processStatus"] = "untreated";
     params["motionProb"] = body.pred[0]; // todo check if given a list..
@@ -67,13 +64,11 @@ var parse_body = function(body) {
 
 
 var motion_post = function (url, params) {
-
     var uuid = params.objectId;
     var promise = new AV.Promise();
     req.post(
         {
             url: url,
-            //url:"http://httpbin.org/post",
             headers:{
                 "X-request-Id":uuid
             },
@@ -99,29 +94,11 @@ var motion_post = function (url, params) {
                 processed_data["userRawdataId"] = params.objectId;
                 processed_data["sensor_data"] = {"events":params.rawData};
 
-
-                if(!m_cache.get(params.objectId)){
-                    var inner_error = " the error is due to the cache confliction, IGNORE!"
-                    logger.error(uuid, inner_error);
-                    promise.reject(inner_error);
-                    return;
-                }
-                try{
-                    processed_data["user"] = type.leanUser(m_cache.get(params.objectId)["user"].id);
-                }
-                catch(e){
-                    var inner_error = "error is " + e + ", if the error is due to the cache confliction, IGNORE"
-                    logger.error(uuid, inner_error);
-                    promise.reject(inner_error);
-                    return;
-                }
-
                 logger.info(uuid, "data proccessed");
-                ///write_in_db body wrapping
                 promise.resolve(processed_data);
             }
             else{
-                logger.error(uuid,"Body is " + JSON.stringify(body))
+                logger.error(uuid,"Body is " + JSON.stringify(body));
                 promise.reject(JSON.stringify(body));
             }
         }

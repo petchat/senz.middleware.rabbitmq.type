@@ -15,7 +15,7 @@ var bodyParser = require("body-parser");
 var bugsnag = require("bugsnag");
 
 //bugsnag initialization
-logger.debug(JSON.stringify(process.env));
+//logger.debug(JSON.stringify(process.env));
 if(process.env.APP_ENV === "prod"){
      bugsnag_token = "2748e60ebaf7d9a97b2aeeb74dcaed00"
 }else
@@ -33,7 +33,7 @@ location.init();
 motion.init();
 //sound.init();
 data_trans.init();
-service_post.init()
+//service_post.init()
 //home_office_status.init()
 
 //

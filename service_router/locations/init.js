@@ -3,7 +3,7 @@
  */
 
 var sub = require('../rabbit_lib/subscriber');
-var m_cache = require("location-cache");
+var m_cache = require("memory-cache");
 var m_task = require("./do_task");
 var interval = require("./lib/interval");
 var task_interval = require("../config.json").interval
@@ -17,84 +17,34 @@ var AV = require("avoscloud-sdk").AV;
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 var Fail = AV.Object.extend("Failed");
 
-
-///*
-//A new motion rawdata arrival called 'new_motion_arrival'
-//A new sound rawdata arrival called 'new_sound_arrival'.
-//    A new location rawdata arrival called 'new_location_arrival'.
-
-
-
 var event = "new_location_arrival";
-var queue_name = "placesOfInterests";
+var queue_name = "placesOfInterests_o";
 
 
 exports.init = function(){
-
-    //
+    console.log(process.env);
     sub.registerEvent(locationCallback,queue_name,event);
-    logger.info("","now listening to the rabbitmq ...")
-    logger.info("","Scheduler start ...");
-    logger.debug("","Interval is " + task_interval);
+    logger.info("","now listening to the rabbitmq ...");
+    logger.debug("","Scheduler start ... \n Interval is " + task_interval);
     //todo scheduleCleanFromLeanCloud();
-    scheduleCleanFromMemoryCache();
-
+    //scheduleCleanFromMemoryCache();
 };
-
-var count = 0;
-MAX_count = 1;
 
 var locationCallback = function(msg)
 {
-    count += 1 ;
-    if(m_cache.get(msg.objectId)){
-        return ;
-    }
-    logger.info(msg.objectId, "a new location data arrived");
-    //logger.info("data is " + msg);
-    var obj = {};
-    obj["timestamp"] = msg.timestamp;
-    obj["tries"] = 0;
-    obj["user"] = {};
-    m_cache.put(msg.objectId,obj);
-
-    //logger.error("debug here");
-    //logger.warn("request new id service started, id >>" + id);
-    var delay_job = function(){
-        m_task.start(msg.objectId);
-        console.log("第"+ count + "个开始搞了")
-
-    }
-
-    if(count > MAX_count){
-        m_task.start(msg.objectId);
-    }
-    else{
-        setTimeout(delay_job, Math.round(Math.random() * 100))
-    }
-
-
-
-}
+    var log_obj = msg.object || msg.objectId;
+    m_task.start(log_obj);
+};
 
 var scheduleCleanFromMemoryCache = function(){
-
-
     setInterval(
         function () {
-            if(m_cache.size()>0){
+            if(m_cache.size()>0) {
                 var keys = m_cache.keys();
                 var id = keys.pop();
-                var tries = m_cache.get(id).tries;
-                if(tries>0){
-                    logger.warn(id,"the id " + id + "tried" + m_cache.get(id).tries+ " times");
-                    logger.warn(id,"request pre-failed id service started, id >>" + id);
-                    m_task.start(id);
-                }
+                m_task.start(m_cache.get(id));
             }
-
-        },task_interval);
-
+        }, task_interval);
 };
 
 var scheduleCleanFromLeanCloud = function(){
