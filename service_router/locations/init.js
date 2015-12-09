@@ -11,6 +11,8 @@ var minute = interval.minute;
 var hour = interval.hour;
 var log = require("../utils/logger").log;
 var logger = new log("[locations]");
+var redis = require('promise-redis')();
+var client = redis.createClient();
 
 var config = require("./config.json");
 var AV = require("avoscloud-sdk").AV;
@@ -27,13 +29,37 @@ exports.init = function(){
     logger.info("","now listening to the rabbitmq ...");
     logger.debug("","Scheduler start ... \n Interval is " + task_interval);
     //todo scheduleCleanFromLeanCloud();
-    //scheduleCleanFromMemoryCache();
+    scheduleCleanFromRedis();
 };
 
 var locationCallback = function(msg)
 {
     var log_obj = msg.object || msg.objectId;
     m_task.start(log_obj);
+};
+
+
+var scheduleCleanFromRedis = function(){
+    var scheduleFailed = function(){
+        client.smembers('location')
+            .then(function(l_list){
+                var promises = [];
+                l_list.forEach(function(LogId){
+                    promises.push(client.get(LogId) || LogId);
+                });
+                return Promise.all(promises);
+            })
+            .then(
+                function(errList){
+                    errList.forEach(function(item){
+                        logger.debug('scheduleFailed', item);
+                        if(item) m_task.start(JSON.parse(item));
+                    });
+                });
+    };
+    setInterval(function(){
+        scheduleFailed();
+    }, 60*1000)
 };
 
 var scheduleCleanFromMemoryCache = function(){

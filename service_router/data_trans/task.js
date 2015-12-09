@@ -21,11 +21,11 @@ var get_user_id = function(obj){
 
     var installation_query = new AV.Query(Installation);
     var installationId = obj.installation.objectId
-    console.log(installationId)
+    //console.log(installationId)
     installation_query.equalTo("objectId", installationId);
     installation_query.first({
         success:function(installation){
-            console.log(JSON.stringify(installation));
+            //console.log(JSON.stringify(installation));
             var userId = installation.get("user").id;
 
             promise.resolve(userId)
@@ -146,7 +146,7 @@ var start = function(data_object){
 
                 body.calendarInfo = data_object.value;
             }else if(data_object.type == "sensor"){
-                console.log("fuck your")
+                //console.log("fuck your")
                 var sensor_array = data_object.value.events;
                 var activity_array = _.filter(sensor_array,
                     function(sample){

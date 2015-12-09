@@ -6,7 +6,6 @@ var log = require("../utils/logger").log;
 var logger = new log("[locations]");
 var config = require("./config.json");
 var url_generator = require("../utils/url_generator");
-var m_cache = require("memory-cache");
 var req_lib = require("./lib/http_wrapper");
 var AV = require("avoscloud-sdk").AV;
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
@@ -70,7 +69,7 @@ var get_raw_data_o = function(req){
 
             var LogId = log.objectId || log.id;
             succeeded(LogId);
-            console.log(log);
+            //console.log(log);
             var installation = log.installation;
             if(!installation) return AV.Promise.error("invalid installation");
 
@@ -131,20 +130,16 @@ var write_data = function(body){
 
 var succeeded = function(suc_id){
     client.srem('location', suc_id);
-    client.select(1);
     client.del(suc_id);
-    client.select(0);
 };
 
 var failed = function(request) {
     if(typeof request == typeof {}){
         client.sadd('location', request.objectId);
-        client.select(1);
         client.set(request.objectId, JSON.stringify(request));
-        client.select(0);
     }
     if(typeof request == typeof 'str'){
-        client.sadd('location', request.objectId);
+        client.sadd('location', request);
     }
 };
 

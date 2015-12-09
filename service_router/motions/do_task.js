@@ -76,7 +76,7 @@ var get_raw_data_o = function(req){
 
             var LogId = log.objectId || log.id;
             if(m_cache.get(LogId)) succeeded(LogId);
-            console.log(log);
+            //console.log(log);
             var installation = log.installation;
             if(!installation) return AV.Promise.error("invalid installation");
 
