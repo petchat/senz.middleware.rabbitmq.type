@@ -17,8 +17,8 @@ var AV = require("avoscloud-sdk").AV;
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 var Fail = AV.Object.extend("Failed");
 
-var event = "new_motion_arrival_o";
-var queue_name = "motionsOfArrival";
+var event = "new_motion_arrival";
+var queue_name = "motionsOfArrival_o";
 
 
 exports.init = function(){
@@ -26,7 +26,7 @@ exports.init = function(){
     logger.info("","now listening to the rabbitmq ...");
     logger.debug("","Scheduler start ... \n Interval is " + task_interval);
     //todo scheduleCleanFromLeanCloud();
-    scheduleCleanFromMemoryCache();
+    //scheduleCleanFromMemoryCache();
 };
 
 var sensorCallback = function(msg)

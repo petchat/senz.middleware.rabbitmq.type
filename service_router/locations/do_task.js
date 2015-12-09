@@ -16,16 +16,17 @@ var redis = require('promise-redis')();
 var client = redis.createClient();
 
 var get_log_obj = function(req){
-    if(typeof req === typeof {}) return AV.Promise.as(req);
+    if(typeof req === typeof {}) return AV.Promise.as(JSON.parse(JSON.stringify(req)));
 
-    var c = m_cache.get(req);
-    if(c) return AV.Promise.as(c);
+    //var c = m_cache.get(req);
+    //if(c) return AV.Promise.as(c);
 
     var query = new AV.Query(UserLocation);
     query.equalTo("objectId", req);
     return query.find().then(
         function (obj_list) {
-            return AV.Promise.as(obj_list[0]);
+            var log = JSON.parse(JSON.stringify(obj_list[0]));
+            return AV.Promise.as(log);
         },
         function(err){
             return AV.Promise.error(err);
@@ -68,17 +69,19 @@ var get_user_obj = function(installationId){
 var get_raw_data_o = function(req){
     return get_log_obj(req).then(
         function(log){
-            var LogId = log.objectId;
-            //console.log(log.objectId);
+            if(!log) return AV.Promise.error("invalid log id");
+
+            var LogId = log.objectId || log.id;
             if(m_cache.get(LogId)) succeeded(LogId);
+            console.log(log);
+            var installation = log.installation;
+            if(!installation) return AV.Promise.error("invalid installation");
 
-            var installation = log.installation
-                || log.get("installation");
             var installationId = installation.objectId || installation.id;
-            var location = log.location || log.get("location");
-            var timestamp = log.timestamp || log.get("timestamp");
-            var radius = log.locationRadius || log.get("locationRadius");
 
+            var location = log.location;
+            var timestamp = log.timestamp;
+            var radius = log.locationRadius;
             return get_user_obj(installationId)
                 .then(
                     function(user){
@@ -142,7 +145,8 @@ var failed = function(request) {
 };
 
 var start = function(request_id){
-    return get_raw_data_o(request_id).then(
+    return get_raw_data_o(request_id)
+        .then(
         function(raw_data){
             var user = raw_data.user;
             var body = get_request_body(raw_data);

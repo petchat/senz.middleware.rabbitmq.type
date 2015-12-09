@@ -73,7 +73,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
         function(err,res,body){
             if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
                 if(_.has(res,"statusCode")){
-                    console.log(res)
+                    //console.log(res)
                     logger.debug(uuid,res.statusCode)
                     promise.reject("Error is " + err + " " + "response code is " + res.statusCode);
                 }else{
@@ -161,10 +161,10 @@ var start = function(data_object){
 
                     var max_prob_activity = _.max(activity_array, function(status){
                         var keys = Object.keys(status)
-                        console.log(status)
+                        //console.log(status)
 
                         var values = status.values
-                        console.log(values)
+                        //console.log(values)
                         var temp_max = -1
                         var temp_type = ""
                         Object.keys(values).forEach(function(type){
@@ -174,7 +174,7 @@ var start = function(data_object){
                                 temp_type = type
                             }
                         })
-                        console.log(temp_max)
+                        //console.log(temp_max)
                         return temp_max
                     })
 

@@ -17,21 +17,22 @@ var AV = require("avoscloud-sdk").AV;
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 var Fail = AV.Object.extend("Failed");
 
-var event = "new_location_arrival_o";
-var queue_name = "placesOfInterests";
+var event = "new_location_arrival";
+var queue_name = "placesOfInterests_o";
 
 
 exports.init = function(){
+    console.log(process.env);
     sub.registerEvent(locationCallback,queue_name,event);
     logger.info("","now listening to the rabbitmq ...");
     logger.debug("","Scheduler start ... \n Interval is " + task_interval);
     //todo scheduleCleanFromLeanCloud();
-    scheduleCleanFromMemoryCache();
+    //scheduleCleanFromMemoryCache();
 };
 
 var locationCallback = function(msg)
 {
-    var log_obj = msg.object;
+    var log_obj = msg.object || msg.objectId;
     m_task.start(log_obj);
 };
 

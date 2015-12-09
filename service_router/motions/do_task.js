@@ -18,18 +18,18 @@ var MAX_TRIES = require("../config.json").max_tries;
 var redis = require('promise-redis')();
 var client = redis.createClient();
 
-
 var get_log_obj = function(req){
-    if(typeof req === typeof {}) return AV.Promise.as(req);
+    if(typeof req === typeof {}) return AV.Promise.as(JSON.parse(JSON.stringify(req)));
 
-    var c = m_cache.get(req);
-    if(c) return AV.Promise.as(c);
+    //var c = m_cache.get(req);
+    //if(c) return AV.Promise.as(c);
 
     var query = new AV.Query(UserSensor);
     query.equalTo("objectId", req);
     return query.find().then(
         function (obj_list) {
-            return AV.Promise.as(obj_list[0]);
+            var log = JSON.parse(JSON.stringify(obj_list[0]));
+            return AV.Promise.as(log);
         },
         function(err){
             return AV.Promise.error(err);
@@ -39,7 +39,7 @@ var get_log_obj = function(req){
 var get_user_obj = function(installationId){
     return client.get(installationId).then(
         function(obj){
-            if(obj) return AV.Promise.as(JSON.parse(obj));
+            if(obj) return AV.Promise.as(obj);
 
             var installation_query = new AV.Query(Installation);
             installation_query.equalTo("objectId", installationId);
@@ -72,16 +72,17 @@ var get_user_obj = function(installationId){
 var get_raw_data_o = function(req){
     return get_log_obj(req).then(
         function(log){
+            if(!log) return AV.Promise.error("invalid log id");
+
             var LogId = log.objectId || log.id;
             if(m_cache.get(LogId)) succeeded(LogId);
+            console.log(log);
+            var installation = log.installation;
+            if(!installation) return AV.Promise.error("invalid installation");
 
-            var installation = log.installation
-                || log.get("installation");
             var installationId = installation.objectId || installation.id;
-            var enent_value = log.value || log.get("value");
-            var raw_data = enent_value.events;
-            var timestamp = log.timestamp || log.get("timestamp");
-
+            var raw_data = log.value.events;
+            var timestamp = log.timestamp;
 
             return get_user_obj(installationId)
                 .then(

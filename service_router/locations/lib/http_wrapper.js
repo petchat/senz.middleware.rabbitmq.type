@@ -92,6 +92,7 @@ var load_data = function(body, objectId, timestamp) {
 
 
 var location_post = function (url, params) {
+    console.log(JSON.stringify(params));
     var uuid = params.user_trace[0].objectId;
     var promise = new AV.Promise();
     req.post(
