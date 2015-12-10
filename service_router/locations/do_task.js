@@ -136,11 +136,12 @@ var succeeded = function(suc_id){
 var failed = function(request) {
     if(typeof request == typeof {}){
         client.sadd('location', request.objectId);
+        if(request.tries){
+            request.tries += 1;
+        }else{
+            request.tries = 1;
+        }
         client.set(request.objectId, JSON.stringify(request));
-    }
-    if(typeof request == typeof 'str'){
-        client.sadd('location', request);
-        client.set(request, request);
     }
 };
 

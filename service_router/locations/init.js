@@ -46,11 +46,6 @@ var scheduleCleanFromRedis = function(){
                 var promises = [];
                 l_list.forEach(function(LogId){
                     promises.push(client.get(LogId) || LogId);
-
-                    setTimeout(function(){
-                        client.srem('location', LogId);
-                        client.del(LogId);
-                    }, 5*60*1000);
                 });
                 return Promise.all(promises);
             })
@@ -58,8 +53,16 @@ var scheduleCleanFromRedis = function(){
                 function(errList){
                     errList.forEach(function(item){
                         logger.debug('scheduleFailed', item);
-                        if(item) m_task.start(JSON.parse(item));
 
+                        if(item && item.length > 100){
+                            var obj = JSON.parse(item);
+                            if(obj.tries < 100){
+                                m_task.start(obj);
+                            }else{
+                                client.srem('location', obj.objectId);
+                                client.del(obj.objectId);
+                            }
+                        }
                     });
                 });
     };
