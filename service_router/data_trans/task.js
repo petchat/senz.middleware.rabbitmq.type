@@ -10,6 +10,8 @@ var AV = require("avoscloud-sdk").AV;
 var toLeanUser = require("./lean_type").leanUser
 AV.initialize(config.source_db.APP_ID, config.source_db.APP_KEY);
 var req = require("request");
+var redis = require('promise-redis')();
+var client = redis.createClient();
 
 var Installation = AV.Object.extend("_Installation");
 
@@ -20,7 +22,7 @@ var get_user_id = function(obj){
     var promise = new AV.Promise();
 
     var installation_query = new AV.Query(Installation);
-    var installationId = obj.installation.objectId
+    var installationId = obj.installation.objectId;
     //console.log(installationId)
     installation_query.equalTo("objectId", installationId);
     installation_query.first({
@@ -41,8 +43,40 @@ var get_user_id = function(obj){
 
 };
 
+var get_user_obj = function(obj){
+    var installationId = obj.installation.objectId;
 
+    return client.get(installationId).then(
+        function(u_obj){
+            if(u_obj) return AV.Promise.as(JSON.parse(u_obj));
 
+            var installation_query = new AV.Query(Installation);
+            installation_query.equalTo("objectId", installationId);
+            return installation_query.find().then(
+                function(installation_list){
+                    return AV.Promise.as(installation_list[0]);
+                },
+                function(err){
+                    return AV.Promise.error(err);
+                }).then(
+                function(installation){
+                    var userId = installation.get("user").id;
+                    var user = {
+                        "__type": "Pointer",
+                        "className": "_User",
+                        "objectId": userId
+                    };
+                    client.set(installationId, JSON.stringify(user));
+                    return AV.Promise.as(user);
+                },
+                function(err){
+                    return AV.Promise.error(err);
+                });
+        },
+        function(err){
+            return AV.Promise.error(err);
+        });
+};
 
 var lean_post = function (APP_ID, APP_KEY, params) {
 
@@ -53,7 +87,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
         url =  "https://leancloud.cn/1.1/classes/"+config.target_db.target_class
 
     }else if(params.type == "sensor") {
-        params.type = "predicted_motion"
+        params.type = "predicted_motion";
         url =  "https://leancloud.cn/1.1/classes/"+ config.target_db_motion.target_class
 
     }else if(params.type == "predictedMotion"){
@@ -92,8 +126,6 @@ var lean_post = function (APP_ID, APP_KEY, params) {
 
 };
 
-
-
 var write_data = function(body){
 
     app_key = config.target_db.APP_KEY;
@@ -102,21 +134,17 @@ var write_data = function(body){
 
 };
 
-
 var start = function(data_object){
-
-    var request_id = data_object.objectId
+    var request_id = data_object.objectId;
     logger.info(request_id, "Task start ...");
 
-    var promise = get_user_id(data_object);
-
-    promise.then(
-        function (userId) {
+    get_user_obj(data_object).then(
+        function (user) {
             var body = {};
-            body.user = toLeanUser(userId);
+            body.user = user;
             body.userRawdataId = data_object.objectId;
             body.timestamp = data_object.timestamp;
-            body.type = data_object.type
+            body.type = data_object.type;
 
             if(data_object.type == "predictedMotion"){
                 var android_motion_to_standard_motion = {
@@ -125,13 +153,13 @@ var start = function(data_object){
                     "run": "running",
                     "walk": "walking",
                     "drive": "driving"
-                }
+                };
 
-                var prob_object = {}
-                body.rawInfo = data_object.value
-                var motionProb = data_object.value.detectedResults.motion
-                var isWatchPhone = data_object.value.detectedResults.isWatchPhone
-                var new_motionProb = {}
+                //var prob_object = {}
+                body.rawInfo = data_object.value;
+                var motionProb = data_object.value.detectedResults.motion;
+                var isWatchPhone = data_object.value.detectedResults.isWatchPhone;
+                var new_motionProb = {};
                 Object.keys(motionProb).forEach(function(android_key){
                     new_motionProb[android_motion_to_standard_motion[android_key]] = motionProb[android_key]
                 });
@@ -139,7 +167,7 @@ var start = function(data_object){
                 //result_list.forEach(function(obj){
                 //    prob_object[motion_stat_dict[obj.motionType]] = obj.similarity
                 //})
-                body.motionProb = new_motionProb
+                body.motionProb = new_motionProb;
                 body.isWatchPhone = isWatchPhone
 
             }else if(data_object.type == "calendar"){
@@ -152,7 +180,7 @@ var start = function(data_object){
                     function(sample){
                         return sample.sensorName == "activity"
                     }
-                )
+                );
 
                 if(activity_array.length == 0){
                     body.motionProb= {"unknown":1}
