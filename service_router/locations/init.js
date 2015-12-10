@@ -46,6 +46,11 @@ var scheduleCleanFromRedis = function(){
                 var promises = [];
                 l_list.forEach(function(LogId){
                     promises.push(client.get(LogId) || LogId);
+
+                    setTimeout(function(){
+                        client.srem('location', LogId);
+                        client.del(LogId);
+                    }, 5*60*1000);
                 });
                 return Promise.all(promises);
             })
@@ -54,6 +59,7 @@ var scheduleCleanFromRedis = function(){
                     errList.forEach(function(item){
                         logger.debug('scheduleFailed', item);
                         if(item) m_task.start(JSON.parse(item));
+
                     });
                 });
     };
