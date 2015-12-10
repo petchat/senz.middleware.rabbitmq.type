@@ -37,10 +37,8 @@ exports.registerEvent = function(callback, consumer_name, raw_event){
     var routing_key = null;
 
     if(event == "new_motion_arrival" + env){ routing_key = "motion";}
-    if(event == "new_motion_arrival_o" + env){ routing_key = "motion_o";}
     if(event == "new_sound_arrival" + env){ routing_key = "sound";}
     if(event == "new_location_arrival" + env){ routing_key = "location";}
-    if(event == "new_location_arrival_o" + env){ routing_key = "location_o";}
     if(event == "new_calendar_arrival" + env) { routing_key = "calendar"}
     if(event == "new_applist_arrival" + env ) { routing_key = "applist"}
     if(event == "new_predicted_motion_arrival" + env) { routing_key = "predicted_motion"}

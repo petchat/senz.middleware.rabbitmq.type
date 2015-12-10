@@ -20,7 +20,7 @@ AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 var Fail = AV.Object.extend("Failed");
 
 var event = "new_location_arrival";
-var queue_name = "placesOfInterests_o";
+var queue_name = "placesOfInterests";
 
 
 exports.init = function(){

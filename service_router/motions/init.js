@@ -18,7 +18,7 @@ AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 var Fail = AV.Object.extend("Failed");
 
 var event = "new_motion_arrival";
-var queue_name = "motionsOfArrival_o";
+var queue_name = "motionsOfArrival";
 
 
 exports.init = function(){
