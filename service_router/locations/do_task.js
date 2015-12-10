@@ -140,6 +140,7 @@ var failed = function(request) {
     }
     if(typeof request == typeof 'str'){
         client.sadd('location', request);
+        client.set(request, request);
     }
 };
 
