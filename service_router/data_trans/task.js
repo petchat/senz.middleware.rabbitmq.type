@@ -7,41 +7,13 @@ var logger = new log("[data trans]");
 var config = require("./config.json");
 var  _ = require("underscore");
 var AV = require("avoscloud-sdk").AV;
-var toLeanUser = require("./lean_type").leanUser
+var toLeanUser = require("./lean_type").leanUser;
 AV.initialize(config.source_db.APP_ID, config.source_db.APP_KEY);
 var req = require("request");
 var redis = require('promise-redis')();
 var client = redis.createClient();
-
 var Installation = AV.Object.extend("_Installation");
 
-var get_user_id = function(obj){
-    //questions on whether to set a request timeout
-    logger.info(obj.objectId,"Fetch  data started");
-
-    var promise = new AV.Promise();
-
-    var installation_query = new AV.Query(Installation);
-    var installationId = obj.installation.objectId;
-    //console.log(installationId)
-    installation_query.equalTo("objectId", installationId);
-    installation_query.first({
-        success:function(installation){
-            //console.log(JSON.stringify(installation));
-            var userId = installation.get("user").id;
-
-            promise.resolve(userId)
-
-        },
-        error:function(object, error){
-            logger.error(obj.objectId, JSON.stringify(error));
-            promise.reject(error);
-        }
-    } )
-
-    return promise
-
-};
 
 var get_user_obj = function(obj){
     var installationId = obj.installation.objectId;
@@ -61,11 +33,7 @@ var get_user_obj = function(obj){
                 }).then(
                 function(installation){
                     var userId = installation.get("user").id;
-                    var user = {
-                        "__type": "Pointer",
-                        "className": "_User",
-                        "objectId": userId
-                    };
+                    var user = toLeanUser(userId);
                     client.set(installationId, JSON.stringify(user));
                     return AV.Promise.as(user);
                 },
@@ -108,15 +76,15 @@ var lean_post = function (APP_ID, APP_KEY, params) {
             if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
                 if(_.has(res,"statusCode")){
                     //console.log(res)
-                    logger.debug(uuid,res.statusCode)
+                    logger.debug(uuid,res.statusCode);
                     promise.reject("Error is " + err + " " + "response code is " + res.statusCode);
                 }else{
-                    logger.error(uuid,"Response with no statusCode")
+                    logger.error(uuid,"Response with no statusCode");
                     promise.reject("Error is " + err );
                 }
             }
             else {
-                var body_str = JSON.stringify(body)
+                var body_str = JSON.stringify(body);
                 logger.debug(uuid,"Body is " + body_str);
                 promise.resolve("Data save successfully")
             }
@@ -127,11 +95,9 @@ var lean_post = function (APP_ID, APP_KEY, params) {
 };
 
 var write_data = function(body){
-
-    app_key = config.target_db.APP_KEY;
-    app_id = config.target_db.APP_ID;
+    var app_key = config.target_db.APP_KEY;
+    var app_id = config.target_db.APP_ID;
     return lean_post(app_id, app_key, body);
-
 };
 
 var start = function(data_object){
@@ -188,38 +154,38 @@ var start = function(data_object){
                 }else{
 
                     var max_prob_activity = _.max(activity_array, function(status){
-                        var keys = Object.keys(status)
+                        //var keys = Object.keys(status);
                         //console.log(status)
 
-                        var values = status.values
+                        var values = status.values;
                         //console.log(values)
-                        var temp_max = -1
-                        var temp_type = ""
+                        var temp_max = -1;
+                        var temp_type = "";
                         Object.keys(values).forEach(function(type){
                             //console.log("fuck 444")
                             if(values[type] >= temp_max){
-                                temp_max = values[type]
+                                temp_max = values[type];
                                 temp_type = type
                             }
-                        })
+                        });
                         //console.log(temp_max)
                         return temp_max
-                    })
+                    });
 
-                    var values = max_prob_activity.values
+                    var values = max_prob_activity.values;
 
-                    var temp_max = -1
-                    var temp_type = ""
+                    var temp_max = -1;
+                    var temp_type = "";
                     Object.keys(values).forEach(function(type){
                         if(values[type] >= temp_max){
-                            temp_max = values[type]
+                            temp_max = values[type];
                             temp_type = type
                         }
-                    })
-                    var motion_stat_dict = {"0":"sitting", "1":"driving", "2":"riding", "3":"walking","4":"running"}
-                    var ios_type_dict = {"unknown":"unknow","stationary":"sitting","automotive":"driving","cycling":"riding","walking":"walking","running":"running"}
+                    });
+                    //var motion_stat_dict = {"0":"sitting", "1":"driving", "2":"riding", "3":"walking","4":"running"}
+                    var ios_type_dict = {"unknown":"unknow","stationary":"sitting","automotive":"driving","cycling":"riding","walking":"walking","running":"running"};
 
-                    body.motionProb = {}
+                    body.motionProb = {};
                     body.motionProb[[ios_type_dict[temp_type]]] = 1
 
                 }
@@ -237,12 +203,12 @@ var start = function(data_object){
         }
     ).then(
         function(result){
-            logger.info(request_id, "Data have been written")
-            logger.info(request_id, "One process end ");
+            logger.info(request_id, "Data have been written");
+            logger.info(request_id, JSON.stringify(result));
 
         },
         function(error){
-            logger.error(request_id, JSON.stringify(error))
+            logger.error(request_id, JSON.stringify(error));
             logger.error(request_id, "Data written in  fail ")
         }
             )
