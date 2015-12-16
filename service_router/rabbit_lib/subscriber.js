@@ -9,7 +9,6 @@ if(process.env.APP_ENV === "prod"){
 }else{
     env = "_test"
 }
-env = "_prod";
 
 function handleMessage(callback,type){
     //setting up the handler for the subscriber
