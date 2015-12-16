@@ -1,6 +1,7 @@
 .idea
 logs/*
 node_modules/*
+.DS_Store/
 # Created by https://www.gitignore.io
 
 ### Intellij ###
