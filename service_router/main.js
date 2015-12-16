@@ -14,6 +14,7 @@ var request = require("request");
 var bodyParser = require("body-parser");
 var bugsnag = require("bugsnag");
 
+process.env.APP_ENV = "prod";
 //bugsnag initialization
 //logger.debug(JSON.stringify(process.env));
 if(process.env.APP_ENV === "prod"){
