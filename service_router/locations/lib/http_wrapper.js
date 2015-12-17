@@ -26,12 +26,12 @@ var lean_post = function (APP_ID, APP_KEY, params) {
         },
         function(err,res,body){
             if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
+                logger.error(uuid, JSON.stringify(err));
                 if(_.has(res,"statusCode")){
                     logger.debug(uuid,res.statusCode);
                     promise.reject("Error is " + err + " " + "response code is " + res.statusCode);
                 }else{
-                    logger.error(uuid, JSON.stringify(body));
-                    promise.reject("Error is " + JSON.stringify(err) );
+                    promise.reject("Error is " + JSON.stringify(body) );
                 }
             }else {
                 promise.resolve("Data save successfully")
