@@ -11,7 +11,6 @@ var AV = require("avoscloud-sdk").AV;
 var _ = require("underscore");
 
 var lean_post = function (APP_ID, APP_KEY, params) {
-    params['source'] = 'test';
     var uuid = params.userRawdataId;
     logger.info(uuid, "Leancloud post started");
     var promise = new AV.Promise();
