@@ -11,6 +11,8 @@ var AV = require("avoscloud-sdk").AV;
 var _ = require("underscore");
 
 var lean_post = function (APP_ID, APP_KEY, params) {
+
+    console.log(JSON.stringify(params));
     var uuid = params.userRawdataId;
     logger.info(uuid, "Leancloud post started");
     var promise = new AV.Promise();
@@ -50,7 +52,7 @@ var load_data = function(body, objectId, timestamp) {
         logger.error(objectId,"Error is " + "key error and the error object is " + JSON.stringify(body.results));
         return;
     }
-    var near_home_office = body.results.home_office_label;
+    var near_home_office = body.results.home_office_label[0];
     var poi_probability = body.results.poi_probability[0];
     var speed = body.results.speed[0];
     var weather = body.results.weather;
@@ -91,7 +93,6 @@ var load_data = function(body, objectId, timestamp) {
 
 
 var location_post = function (url, params) {
-    console.log(JSON.stringify(params));
     var uuid = params.user_trace[0].objectId;
     var promise = new AV.Promise();
     req.post(
