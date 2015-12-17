@@ -5,7 +5,6 @@
 var log = require("../../utils/logger").log;
 var logger = new log("[locations]");
 var req = require("request");
-var m_cache = require("memory-cache");
 var config = require("../config.json");
 var type = require("./lean_type.js");
 var AV = require("avoscloud-sdk").AV;
@@ -32,8 +31,8 @@ var lean_post = function (APP_ID, APP_KEY, params) {
                     logger.debug(uuid,res.statusCode);
                     promise.reject("Error is " + err + " " + "response code is " + res.statusCode);
                 }else{
-                    logger.error(uuid,"Response with no statusCode");
-                    promise.reject("Error is " + err );
+                    logger.error(uuid, JSON.stringify(body));
+                    promise.reject("Error is " + JSON.stringify(err) );
                 }
             }else {
                 promise.resolve("Data save successfully")
@@ -52,8 +51,10 @@ var load_data = function(body, objectId, timestamp) {
         logger.error(objectId,"Error is " + "key error and the error object is " + JSON.stringify(body.results));
         return;
     }
-    var near_home_office = body.home_office_label;
+    var near_home_office = body.results.home_office_label;
     var poi_probability = body.results.poi_probability[0];
+    var speed = body.results.speed[0];
+    var weather = body.results.weather[0];
 
     if(typeof poi_probability !== typeof {} ){
         logger.error(objectId,"Error is " + "Type error and the error object is " + JSON.stringify(body.results));
@@ -82,13 +83,12 @@ var load_data = function(body, objectId, timestamp) {
     params["poiProbLv1"] = prob_lv1_object;
     params["poiProbLv2"] = prob_lv2_object;
     params["near_home_office"] = near_home_office;
+    params["speed"] = speed;
+    params["weather"] = weather;
     _.extend(params, address);
 
     return params;
 };
-
-
-
 
 
 var location_post = function (url, params) {

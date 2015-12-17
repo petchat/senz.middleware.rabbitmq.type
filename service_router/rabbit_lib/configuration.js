@@ -1,6 +1,6 @@
 var topology = {
     connection: {
-        user: 'senz', pass: 'xiaosenz', server: '182.92.4.173', port: 5672, vhost: 'senz'
+        user: 'senz', pass: 'xiaosenz', server: '119.254.111.40', port: 5672, vhost: 'senz'
     },
     exchanges:[
         { name: 'new_motion_arrival_test', type: 'fanout' },
