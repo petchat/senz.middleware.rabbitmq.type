@@ -53,7 +53,7 @@ var load_data = function(body, objectId, timestamp) {
     var near_home_office = body.results.home_office_label;
     var poi_probability = body.results.poi_probability[0];
     var speed = body.results.speed[0];
-    var weather = body.results.weather[0];
+    var weather = body.results.weather;
 
     if(typeof poi_probability !== typeof {} ){
         logger.error(objectId,"Error is " + "Type error and the error object is " + JSON.stringify(body.results));
