@@ -9,7 +9,8 @@
         motion_url = "https://api.trysenz.com" +
         "/utils/motion_detector/";
 
-        location_url = "http://api.trysenz.com/v2/parserhub/location/info/";
+        //location_url = "http://api.trysenz.com/v2/parserhub/location/info/";
+        location_url = "http://123.57.5.45:9999/location/info/";
 
         static_info_url = "https://api.trysenz.com/apps/user_categorizer/predict_platform";
 
@@ -20,7 +21,7 @@
 
         sound_url = "https://api.trysenz.com" + "/test/utils/sound_detector/";
         motion_url = "https://api.trysenz.com" + "/test/utils/motion_detector/";
-        location_url = "http://api.trysenz.com/v2/parserhub/location/info/";
+        location_url = "http://123.57.5.45:9999/location/info/";
 
         static_info_url = "";
 
