@@ -36,36 +36,35 @@ var locationCallback = function(msg){
     m_task.start(log_obj);
 };
 
-var scheduleCleanFromRedis = function(){
-    var scheduleFailed = function(){
-        client.smembers('location')
-            .then(function(l_list){
-                var promises = [];
-                l_list.forEach(function(LogId){
-                    promises.push(client.get(LogId) || LogId);
-                });
-                return Promise.all(promises);
+var scheduleFailed = function(){
+    clinet.srandmember('location')
+        .then(
+            function(logId){
+                return client.get(logId);
             })
-            .then(
-                function(errList){
-                    errList.forEach(function(item){
-                        logger.debug('scheduleFailed', item);
+        .then(
+            function(item){
+                if(item && item.length > 100){
+                    var obj = JSON.parse(item);
+                    if(obj.tries < 50){
+                        m_task.start(obj);
+                    }else{
+                        client.srem('location', obj.objectId);
+                        client.del(obj.objectId);
+                    }
+                }
+            })
+        .catch(
+            function(e){
+                console.log(e);
+                return Promise.error(e);
+            })
+};
 
-                        if(item && item.length > 100){
-                            var obj = JSON.parse(item);
-                            if(obj.tries < 100){
-                                m_task.start(obj);
-                            }else{
-                                client.srem('location', obj.objectId);
-                                client.del(obj.objectId);
-                            }
-                        }
-                    });
-                });
-    };
+var scheduleCleanFromRedis = function(){
     setInterval(function(){
         scheduleFailed();
-    }, 60*1000)
+    }, 1000)
 };
 
 //var scheduleCleanFromMemoryCache = function(){
