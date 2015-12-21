@@ -37,7 +37,7 @@ var locationCallback = function(msg){
 };
 
 var scheduleFailed = function(){
-    clinet.srandmember('location')
+    client.srandmember('location')
         .then(
             function(logId){
                 return client.get(logId);
