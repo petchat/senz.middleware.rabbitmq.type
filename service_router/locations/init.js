@@ -46,7 +46,7 @@ var scheduleFailed = function(){
             function(item){
                 if(item && item.length > 100){
                     var obj = JSON.parse(item);
-                    if(obj.tries < 50){
+                    if(obj.tries < 10){
                         m_task.start(obj);
                     }else{
                         client.srem('location', obj.objectId);
