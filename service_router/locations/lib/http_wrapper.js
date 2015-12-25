@@ -55,7 +55,7 @@ var load_data = function(body, objectId, timestamp) {
     var near_home_office = body.results.home_office_label[0];
     var poi_probability = body.results.poi_probability[0];
     var speed = body.results.speed[0];
-    var weather = body.results.weather;
+    var weather = body.results.weather[0].data;
 
     if(typeof poi_probability !== typeof {} ){
         logger.error(objectId,"Error is " + "Type error and the error object is " + JSON.stringify(body.results));
@@ -73,10 +73,10 @@ var load_data = function(body, objectId, timestamp) {
         prob_lv2_object = _.extend(prob_lv2_object,type1_obj.level2_prob);
     });
 
-    var address = body.results.pois[0].address;
+    //var address = body.results.pois[0].address;
 
 
-    params["pois"] = body.results.pois[0];
+    params["pois"] = {pois: body.results.pois[0]};
     params["isTrainingSample"] = config.is_sample;
     params["userRawdataId"] = userRawdataId;
     params["timestamp"] = timestamp;
@@ -86,7 +86,7 @@ var load_data = function(body, objectId, timestamp) {
     params["near_home_office"] = near_home_office;
     params["speed"] = speed;
     params["weather"] = weather;
-    _.extend(params, address);
+    //_.extend(params, address);
 
     return params;
 };
