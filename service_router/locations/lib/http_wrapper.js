@@ -11,8 +11,6 @@ var AV = require("avoscloud-sdk").AV;
 var _ = require("underscore");
 
 var lean_post = function (APP_ID, APP_KEY, params) {
-    console.log('######################');
-    console.log(JSON.stringify(params));
     var uuid = params.userRawdataId;
     logger.info(uuid, "Leancloud post started");
     var promise = new AV.Promise();
@@ -73,9 +71,6 @@ var load_data = function(body, objectId, timestamp) {
         prob_lv2_object = _.extend(prob_lv2_object,type1_obj.level2_prob);
     });
 
-    //var address = body.results.pois[0].address;
-
-
     params["pois"] = {pois: body.results.pois[0]};
     params["isTrainingSample"] = config.is_sample;
     params["userRawdataId"] = userRawdataId;
@@ -86,8 +81,6 @@ var load_data = function(body, objectId, timestamp) {
     params["near_home_office"] = near_home_office;
     params["speed"] = speed;
     params["weather"] = weather;
-    //_.extend(params, address);
-
     return params;
 };
 
