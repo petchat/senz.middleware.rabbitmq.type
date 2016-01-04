@@ -50,10 +50,16 @@ var load_data = function(body, objectId, timestamp) {
         logger.error(objectId,"Error is " + "key error and the error object is " + JSON.stringify(body.results));
         return;
     }
-    var near_home_office = body.results.home_office_label[0];
+    var near_home_office = body.results.pois[0].home_office_label;
     var poi_probability = body.results.poi_probability[0];
-    var speed = body.results.speed[0];
-    var weather = body.results.weather[0].data;
+    var speed = body.results.pois[0].speed;
+    var weather = body.results.pois[0].weather[0];
+    var city = body.results.pois[0].address.city;
+    var district = body.results.pois[0].address.district;
+    var nation = body.results.pois[0].address.nation;
+    var province = body.results.pois[0].address.province;
+    var street = body.results.pois[0].address.street;
+    var street_number = body.results.pois[0].address.street_number;
 
     if(typeof poi_probability !== typeof {} ){
         logger.error(objectId,"Error is " + "Type error and the error object is " + JSON.stringify(body.results));
@@ -71,7 +77,7 @@ var load_data = function(body, objectId, timestamp) {
         prob_lv2_object = _.extend(prob_lv2_object,type1_obj.level2_prob);
     });
 
-    params["pois"] = {pois: body.results.pois[0]};
+    params["pois"] = {pois: body.results.pois[0].pois};
     params["isTrainingSample"] = config.is_sample;
     params["userRawdataId"] = userRawdataId;
     params["timestamp"] = timestamp;
@@ -80,6 +86,12 @@ var load_data = function(body, objectId, timestamp) {
     params["poiProbLv2"] = prob_lv2_object;
     params["near_home_office"] = near_home_office;
     params["speed"] = speed;
+    params["city"] = city;
+    params["district"] = district;
+    params["nation"] = nation;
+    params["province"] = province;
+    params["street_number"] = street_number;
+    params["street"] = street;
     params["weather"] = weather;
     return params;
 };
