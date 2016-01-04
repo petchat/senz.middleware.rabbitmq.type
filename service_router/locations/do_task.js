@@ -134,6 +134,7 @@ var succeeded = function(suc_id){
 };
 
 var failed = function(request) {
+    logger.debug("REDIS: ", "add to redis!");
     if(typeof request == typeof {}){
         client.sadd('location', request.objectId);
         if(request.tries){
