@@ -150,7 +150,6 @@ var start = function(log_obj){
         .then(
         function(raw_data){
             var user = raw_data.user;
-            console.log(user);
             var body = get_request_body(raw_data);
             return get_location_type(body).then(
                 function(location_type){
