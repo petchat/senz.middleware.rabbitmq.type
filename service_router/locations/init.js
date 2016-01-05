@@ -46,11 +46,14 @@ var scheduleFailed = function(){
             function(item){
                 if(item && item.length > 100){
                     var obj = JSON.parse(item);
-                    if(obj.tries < 30){
+                    if(obj.tries < 20){
                         m_task.start(obj);
                     }else{
-                        client.srem('location', obj.objectId);
-                        client.del(obj.objectId);
+                        return backupToDb1(obj.objectId, obj).then(
+                            function(){
+                                client.srem('location', obj.objectId);
+                                client.del(obj.objectId);
+                            })
                     }
                 }
             })
@@ -59,6 +62,27 @@ var scheduleFailed = function(){
                 console.log(e);
                 return Promise.error(e);
             })
+};
+
+var backupToDb1 = function(id, obj){
+    return client.select(1)
+        .then(
+            function(){
+                return client.sadd('location', id);
+            })
+        .then(
+            function(){
+                return client.set(id, JSON.stringify(obj));
+            })
+        .then(
+            function(){
+                return client.select(0);
+            })
+        .catch(
+            function(e){
+                logger.error("second failed", JSON.stringify(e));
+                return Promise.error(e);
+            });
 };
 
 var scheduleCleanFromRedis = function(){
