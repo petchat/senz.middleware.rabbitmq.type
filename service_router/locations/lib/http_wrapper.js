@@ -16,7 +16,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     console.log(JSON.stringify(params));
     req.post(
         {
-            url: "http://localhost:3000/api/UserLocations",
+            url: "http://api.trysenz.com/mongodb/api/UserLocations",
             headers:{
                 "Content-Type": "application/json"
             },

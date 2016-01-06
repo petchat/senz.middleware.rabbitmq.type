@@ -15,7 +15,8 @@ var redis = require('promise-redis')();
 var client = redis.createClient();
 
 var get_log_obj = function(req){
-    if(typeof req === typeof {}) return AV.Promise.as(JSON.parse(JSON.stringify(req)));
+    logger.debug("test2", JSON.stringify(req));
+    if(typeof req === typeof {}) return AV.Promise.as(req);
 
     var query = new AV.Query(UserLocation);
     query.equalTo("objectId", req);
@@ -30,36 +31,33 @@ var get_log_obj = function(req){
 };
 
 var get_user_obj = function(installationId){
-    return client.get(installationId).then(
-        function(obj){
-            if(obj) return AV.Promise.as(JSON.parse(obj));
+    return client.select(2).then(
+        function(){
+            return client.get(installationId);
+        })
+    .then(
+        function(cache_user){
+            if(cache_user) return AV.Promise.as(cache_user);
 
             var installation_query = new AV.Query(Installation);
             installation_query.equalTo("objectId", installationId);
             return installation_query.find().then(
                 function(installation_list){
                     return AV.Promise.as(installation_list[0]);
-                },
-                function(err){
-                    return AV.Promise.error(err);
                 }).then(
                 function(installation){
                     var userId = installation.get("user").id;
-                    var user = {
-                        "__type": "Pointer",
-                        "className": "_User",
-                        "objectId": userId
-                    };
-                    client.set(installationId, JSON.stringify(user));
-                    return AV.Promise.as(user);
-                },
+                    client.set(installationId, userId);
+                    return AV.Promise.as(userId);
+                }).catch(
                 function(err){
                     return AV.Promise.error(err);
                 });
-        },
-        function(err){
-            return AV.Promise.error(err);
-        });
+        })
+        .catch(
+            function(e){
+                return AV.Promise.error(e);
+            });
 };
 
 var get_raw_data_o = function(req){
@@ -69,21 +67,20 @@ var get_raw_data_o = function(req){
 
             var LogId = log.objectId || log.id;
             succeeded(LogId);
-            //console.log(log);
             var installation = log.installation;
             if(!installation) return AV.Promise.error("invalid installation");
 
             var installationId = installation.objectId || installation.id;
-
             var location = log.location;
             var timestamp = log.timestamp;
             var radius = log.locationRadius;
+            logger.debug("test3", installationId);
             return get_user_obj(installationId)
                 .then(
-                    function(user){
+                    function(userId){
                         var a = {
                             "location": location,
-                            "user": user,
+                            "userId": userId,
                             "objectId": LogId,
                             "timestamp": timestamp,
                             "radius": radius
@@ -111,7 +108,7 @@ var get_request_body = function(obj){
 
     var body = {"user_trace":locations};
     body.dev_key = "senz";
-    body.userId = obj.user.objectId;
+    body.userId = obj.userId;
 
     return body
 };
@@ -121,7 +118,6 @@ var get_location_type = function(body){
     return req_lib.location_post(serv_url, body);
 };
 
-
 var write_data = function(body){
     var app_key = config.target_db.APP_KEY;
     var app_id = config.target_db.APP_ID;
@@ -129,33 +125,53 @@ var write_data = function(body){
 };
 
 var succeeded = function(suc_id){
-    client.srem('location', suc_id);
-    client.del(suc_id);
+    return client.select(0)
+        .then(
+            function(){
+                return AV.Promise.all(
+                    client.srem('location', suc_id),
+                    client.del(suc_id))
+            })
+        .catch(
+            function(e){
+                return AV.Promise.error(e);
+            })
 };
 
 var failed = function(request) {
     logger.debug("REDIS: ", "add to redis!");
     if(typeof request == typeof {}){
-        client.sadd('location', request.objectId);
-        if(request.tries){
-            request.tries += 1;
-        }else{
-            request.tries = 1;
-        }
-        client.set(request.objectId, JSON.stringify(request));
+        return client.select(0)
+            .then(
+                function(){
+                    if(request.tries){
+                        request.tries += 1;
+                    }else{
+                        request.tries = 1;
+                    }
+                    return AV.Promise.all(
+                        client.sadd('location', request.objectId),
+                        client.set(request.objectId, JSON.stringify(request)))
+                })
+            .catch(
+                function(e){
+                    return AV.Promise.as(e);
+                })
     }
 };
 
 var start = function(log_obj){
-    return get_raw_data_o(log_obj)
-        .then(
+    return get_raw_data_o(log_obj).then(
         function(raw_data){
-            var user = raw_data.user;
+            logger.debug("test4", JSON.stringify(raw_data));
+            var userId = raw_data.userId;
             var body = get_request_body(raw_data);
+            logger.debug("test5", JSON.stringify(body));
             return get_location_type(body).then(
                 function(location_type){
-                    location_type['user_id'] = user.objectId;
-                    logger.info(log_obj, "Location service requested successfully");
+                    location_type['user_id'] = userId;
+                    logger.info("Location Start Success", "Location service requested successfully");
+                    logger.debug("test6", JSON.stringify(location_type));
                     return write_data(location_type);
                 },
                 function(err){
@@ -163,12 +179,9 @@ var start = function(log_obj){
                 }
             )
         }
-    ).then(
-        function(success){
-            console.log(success);
-        },
-        function(error){
-            logger.error(log_obj, JSON.stringify(error));
+    ).catch(
+        function(){
+            logger.error("location", JSON.stringify(log_obj));
             failed(log_obj);
         }
     )
