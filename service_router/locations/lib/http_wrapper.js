@@ -50,6 +50,7 @@ var load_data = function(body, objectId, timestamp) {
         logger.error(objectId,"Error is " + "key error and the error object is " + JSON.stringify(body.results));
         return;
     }
+    var version = body.version;
     var near_home_office = body.results.pois[0].home_office_label;
     var poi_probability = body.results.poi_probability[0];
     var speed = body.results.pois[0].speed;
@@ -93,6 +94,7 @@ var load_data = function(body, objectId, timestamp) {
     params["street_number"] = street_number;
     params["street"] = street;
     params["weather"] = weather;
+    params['version'] = version;
     return params;
 };
 
