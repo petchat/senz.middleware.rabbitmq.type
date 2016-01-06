@@ -166,7 +166,6 @@ var start = function(log_obj){
             return get_location_type(body).then(
                 function(location_type){
                     location_type['user_id'] = userId;
-                    logger.info("Location Start Success", "Location service requested successfully");
                     return write_data(location_type);
                 },
                 function(err){

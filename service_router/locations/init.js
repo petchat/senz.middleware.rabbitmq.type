@@ -3,12 +3,8 @@
  */
 
 var sub = require('../rabbit_lib/subscriber');
-//var m_cache = require("memory-cache");
 var m_task = require("./do_task");
-//var interval = require("./lib/interval");
 var task_interval = require("../config.json").interval;
-//var minute = interval.minute;
-//var hour = interval.hour;
 var log = require("../utils/logger").log;
 var logger = new log("[locations]");
 var redis = require('promise-redis')();
@@ -17,7 +13,6 @@ var client = redis.createClient();
 var config = require("./config.json");
 var AV = require("avoscloud-sdk").AV;
 AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
-//var Fail = AV.Object.extend("Failed");
 
 var event = "new_location_arrival";
 var queue_name = "placesOfInterests";

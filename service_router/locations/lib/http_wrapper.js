@@ -31,7 +31,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
                     promise.reject("Error is " + JSON.stringify(body) );
                 }
             }else {
-                promise.resolve("Data save successfully")
+                promise.resolve("UserLocation Save requested successfully")
             }
         }
     );
