@@ -13,7 +13,6 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     var uuid = params.userRawdataId;
     logger.info(uuid, "Leancloud post started");
     var promise = new AV.Promise();
-    console.log(JSON.stringify(params));
     req.post(
         {
             url: "http://api.trysenz.com/mongodb/api/UserLocations",
@@ -128,7 +127,7 @@ var location_post = function (url, params) {
                 }
                 processed_data["location"] = {lat: params.user_trace[0].location.latitude, lng: params.user_trace[0].location.longitude};
                 processed_data["radius"] = params.user_trace[0].radius;
-                logger.info(uuid, "data proccessed");
+                logger.info(uuid, "POST Location Info Service Success!");
                 ///write_in_db body wrapping
                 promise.resolve(processed_data);
             }
