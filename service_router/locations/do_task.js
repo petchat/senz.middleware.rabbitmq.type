@@ -154,7 +154,7 @@ var start = function(log_obj){
             var body = get_request_body(raw_data);
             return get_location_type(body).then(
                 function(location_type){
-                    location_type['user'] = user;
+                    location_type['user_id'] = user.objectId;
                     logger.info(log_obj, "Location service requested successfully");
                     return write_data(location_type);
                 },

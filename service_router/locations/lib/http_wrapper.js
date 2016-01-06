@@ -14,10 +14,12 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     var uuid = params.userRawdataId;
     logger.info(uuid, "Leancloud post started");
     var promise = new AV.Promise();
+    console.log(JSON.stringify(params));
     req.post(
         {
-            url: "https://leancloud.cn/1.1/classes/"+config.target_db.target_class,
+            url: "http://api.trysenz.com/mongodb/api/UserLocations",
             headers:{
+                "Content-Type": "application/json",
                 "X-AVOSCloud-Application-Id":APP_ID,
                 "X-AVOSCloud-Application-Key":APP_KEY,
                 "X-request-Id":uuid
@@ -129,7 +131,7 @@ var location_post = function (url, params) {
                     promise.reject("ERROR!,please check the log");
                     return ;
                 }
-                processed_data["location"] = params.user_trace[0].location;
+                processed_data["location"] = {lat: params.user_trace[0].location.latitude, lng: params.user_trace[0].location.longitude};
                 processed_data["radius"] = params.user_trace[0].radius;
                 logger.info(uuid, "data proccessed");
                 ///write_in_db body wrapping
