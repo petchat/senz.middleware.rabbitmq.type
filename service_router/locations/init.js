@@ -50,7 +50,7 @@ var scheduleFailed = function(){
             function(item){
                 if(item && item.length > 100){
                     var obj = JSON.parse(item);
-                    if(obj.tries < 2000 && obj.location.latitude > 0 && obj.location.longitude>0){
+                    if(obj.tries < 20 && obj.location.latitude > 0 && obj.location.longitude>0){
                         logger.debug("test1", JSON.stringify(obj));
                         m_task.start(obj);
                     }else{
