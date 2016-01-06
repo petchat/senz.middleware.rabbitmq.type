@@ -6,7 +6,6 @@ var log = require("../../utils/logger").log;
 var logger = new log("[locations]");
 var req = require("request");
 var config = require("../config.json");
-var type = require("./lean_type.js");
 var AV = require("avoscloud-sdk").AV;
 var _ = require("underscore");
 
@@ -17,12 +16,9 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     console.log(JSON.stringify(params));
     req.post(
         {
-            url: "http://api.trysenz.com/mongodb/api/UserLocations",
+            url: "http://localhost:3000/api/UserLocations",
             headers:{
-                "Content-Type": "application/json",
-                "X-AVOSCloud-Application-Id":APP_ID,
-                "X-AVOSCloud-Application-Key":APP_KEY,
-                "X-request-Id":uuid
+                "Content-Type": "application/json"
             },
             json: params
         },
@@ -81,7 +77,6 @@ var load_data = function(body, objectId, timestamp) {
     });
 
     params["pois"] = {pois: body.results.pois[0].pois};
-    params["isTrainingSample"] = config.is_sample;
     params["userRawdataId"] = userRawdataId;
     params["timestamp"] = timestamp;
     params["processStatus"] = "untreated";
