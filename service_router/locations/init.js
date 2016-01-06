@@ -50,10 +50,9 @@ var scheduleFailed = function(){
                         logger.debug("test1", JSON.stringify(obj));
                         m_task.start(obj);
                     }else{
-                        return backupToDb1(obj.objectId, obj).then(
+                        return AV.Promise.all(client.srem('location', obj.objectId), client.del(obj.objectId)).then(
                             function(){
-                                client.srem('location', obj.objectId);
-                                client.del(obj.objectId);
+                                return backupToDb1(obj.objectId, obj);
                             })
                     }
                 }
