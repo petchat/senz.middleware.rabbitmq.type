@@ -15,7 +15,6 @@ var redis = require('promise-redis')();
 var client = redis.createClient();
 
 var get_log_obj = function(req){
-    logger.debug("test2", JSON.stringify(req));
     if(typeof req === typeof {}) return AV.Promise.as(req);
 
     var query = new AV.Query(UserLocation);
@@ -74,7 +73,6 @@ var get_raw_data_o = function(req){
             var location = log.location;
             var timestamp = log.timestamp;
             var radius = log.locationRadius;
-            logger.debug("test3", installationId);
             return get_user_obj(installationId)
                 .then(
                     function(userId){
@@ -163,10 +161,8 @@ var failed = function(request) {
 var start = function(log_obj){
     return get_raw_data_o(log_obj).then(
         function(raw_data){
-            logger.debug("test4", JSON.stringify(raw_data));
             var userId = raw_data.userId;
             var body = get_request_body(raw_data);
-            logger.debug("test5", JSON.stringify(body));
             return get_location_type(body).then(
                 function(location_type){
                     location_type['user_id'] = userId;
