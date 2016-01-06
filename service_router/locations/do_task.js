@@ -173,6 +173,7 @@ var start = function(log_obj){
         .then(
             function(msg){
                 logger.debug("success", msg);
+                succeeded(log_obj);
             },
             function(){
                 logger.error("location", JSON.stringify(log_obj));
