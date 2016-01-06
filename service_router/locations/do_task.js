@@ -159,26 +159,25 @@ var failed = function(request) {
 };
 
 var start = function(log_obj){
-    return get_raw_data_o(log_obj).then(
-        function(raw_data){
-            var userId = raw_data.userId;
-            var body = get_request_body(raw_data);
-            return get_location_type(body).then(
-                function(location_type){
-                    location_type['user_id'] = userId;
-                    return write_data(location_type);
-                },
-                function(err){
-                    return AV.Promise.error(err);
-                }
-            )
-        }
-    ).catch(
-        function(){
-            logger.error("location", JSON.stringify(log_obj));
-            failed(log_obj);
-        }
-    )
+    return get_raw_data_o(log_obj)
+        .then(
+            function(raw_data){
+                var userId = raw_data.userId;
+                var body = get_request_body(raw_data);
+                return get_location_type(body).then(
+                    function(location_type){
+                        location_type['user_id'] = userId;
+                        return write_data(location_type);
+                    });
+        })
+        .then(
+            function(msg){
+                logger.debug("success", msg);
+            },
+            function(){
+                logger.error("location", JSON.stringify(log_obj));
+                failed(log_obj);
+            })
 };
 
 
