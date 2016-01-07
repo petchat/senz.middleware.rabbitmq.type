@@ -37,36 +37,44 @@ var get_log_obj = function(req){
 };
 
 var get_user_obj = function(installationId){
-    return client.get(installationId).then(
-        function(obj){
-            if(obj) return AV.Promise.as(obj);
+    return client.select(2).then(
+        function(){
+            return client.get(installationId);
+        })
+    .then(
+        function(cache_user){
+            if(cache_user) return AV.Promise.as({
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": cache_user
+            });
 
             var installation_query = new AV.Query(Installation);
             installation_query.equalTo("objectId", installationId);
             return installation_query.find().then(
                 function(installation_list){
                     return AV.Promise.as(installation_list[0]);
-                },
-                function(err){
-                    return AV.Promise.error(err);
-                }).then(
-                function(installation){
-                    var userId = installation.get("user").id;
-                    var user = {
-                        "__type": "Pointer",
-                        "className": "_User",
-                        "objectId": userId
-                    };
-                    client.set(installationId, JSON.stringify(user));
-                    return AV.Promise.as(user);
-                },
-                function(err){
-                    return AV.Promise.error(err);
-                });
-        },
-        function(err){
-            return AV.Promise.error(err);
-        });
+                })
+                .then(
+                    function(installation){
+                        var userId = installation.get("user").id;
+                        var user = {
+                            "__type": "Pointer",
+                            "className": "_User",
+                            "objectId": userId
+                        };
+                        client.set(installationId, userId);
+                        return AV.Promise.as(user);
+                    })
+                .catch(
+                    function(err){
+                        return AV.Promise.error(err);
+                    });
+        })
+        .catch(
+            function(err){
+                return AV.Promise.error(err);
+            });
 };
 
 var get_raw_data_o = function(req){
