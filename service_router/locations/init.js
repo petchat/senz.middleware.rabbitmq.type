@@ -37,7 +37,6 @@ var scheduleFailed = function(){
             })
         .then(
             function(logId){
-                logger.info("scheduleFailed_db0", logId);
                 return client.get(logId);
             })
         .then(
@@ -57,7 +56,7 @@ var scheduleFailed = function(){
             })
         .catch(
             function(e){
-                console.log(e);
+                logger.error("From Redis db0", JSON.stringify(e));
                 return Promise.error(e);
             })
 };
@@ -70,13 +69,13 @@ var scheduleFailed2 = function(){
             })
         .then(
             function(logId){
-                logger.info("scheduleFailed_db1", logId);
                 return client.get(logId);
             })
         .then(
             function(item){
                 var obj = JSON.parse(item);
                 if(obj.tries >= 200 || obj.location.latitude <= 0 || obj.location.longitude <= 0){
+                    logger.debug("From Redis db1", JSON.stringify(obj));
                     return AV.Promise.all(client.srem('location', obj.objectId), client.del(obj.objectId));
                 }else{
                     m_task.start(obj);
