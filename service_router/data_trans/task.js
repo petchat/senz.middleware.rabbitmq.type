@@ -60,20 +60,21 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     logger.info(uuid, "Leancloud post started");
     var promise = new AV.Promise();
     if (params.type == "calendar"){
-        url =  "https://leancloud.cn/1.1/classes/"+config.target_db.target_class
+        url =  "http://api.trysenz.com/mongodb/api/UserCalendar"
 
     }else if(params.type == "sensor") {
         params.type = "predicted_motion";
-        url =  "https://leancloud.cn/1.1/classes/"+ config.target_db_motion.target_class
+        url =  "http://api.trysenz.com/mongodb/api/UserMotion"
 
     }else if(params.type == "predictedMotion"){
-        url =  "https://leancloud.cn/1.1/classes/"+ config.target_db_motion.target_class
+        url =  "http://api.trysenz.com/mongodb/api/UserMotion"
     }
 
     req.post(
         {
             url: url,
             headers:{
+                "Content-Type": "application/json",
                 "X-AVOSCloud-Application-Id":APP_ID,
                 "X-AVOSCloud-Application-Key":APP_KEY,
                 "X-request-Id":uuid
