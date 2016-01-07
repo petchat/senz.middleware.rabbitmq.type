@@ -117,7 +117,6 @@ var start = function(data_object){
         function (user) {
             var body = {};
             body.user_id = user.objectId;
-            body.user = user;
             body.userRawdataId = data_object.objectId;
             body.timestamp = data_object.timestamp;
             body.type = data_object.type;
