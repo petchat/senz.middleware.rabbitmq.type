@@ -21,8 +21,6 @@ var queue_name = "placesOfInterests";
 exports.init = function(){
     sub.registerEvent(locationCallback,queue_name,event);
     logger.info("","now listening to the rabbitmq ...");
-    logger.debug("","Scheduler start ... \n Interval is " + task_interval);
-    //todo scheduleCleanFromLeanCloud();
     scheduleCleanFromRedis();
 };
 
@@ -47,7 +45,7 @@ var scheduleFailed = function(){
                 if(item && item.length > 100){
                     var obj = JSON.parse(item);
                     if(obj.tries < 10 && obj.location.latitude > 0 && obj.location.longitude>0){
-                        logger.debug("test1", JSON.stringify(obj));
+                        logger.debug("From Redis 0", JSON.stringify(obj));
                         m_task.start(obj);
                     }else{
                         return AV.Promise.all(client.srem('location', obj.objectId), client.del(obj.objectId)).then(
@@ -61,6 +59,33 @@ var scheduleFailed = function(){
             function(e){
                 console.log(e);
                 return Promise.error(e);
+            })
+};
+
+var scheduleFailed2 = function(){
+    return client.select(1)
+        .then(
+            function(){
+                return client.srandmember('location');
+            })
+        .then(
+            function(logId){
+                logger.info("scheduleFailed", logId);
+                return client.get(logId);
+            })
+        .then(
+            function(item){
+                var obj = JSON.parse(item);
+                if(obj.tries >= 200 || obj.location.latitude <= 0 || obj.location.longitude <= 0){
+                    return AV.Promise.all(client.srem('location', obj.objectId), client.del(obj.objectId));
+                }else{
+                    m_task.start(obj);
+                }
+            })
+        .catch(
+            function(e){
+                logger.error("From Redis 2", JSON.stringify(e));
+                return AV.Promise.error(e);
             })
 };
 
@@ -84,7 +109,10 @@ var backupToDb1 = function(id, obj){
 var scheduleCleanFromRedis = function(){
     setInterval(function(){
         scheduleFailed();
-    }, 500)
+    }, 1000);
+    setInterval(function(){
+        scheduleFailed2();
+    }, 2000)
 };
 
 //var scheduleCleanFromMemoryCache = function(){
