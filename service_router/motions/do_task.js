@@ -154,6 +154,7 @@ var start = function(request_id){
             return get_motion_type(body).then(
                 function(motion_type){
                     motion_type['user'] = user;
+                    motion_type['user_id'] = user.objectId;
                     logger.info(request_id, "Motion service requested Success!");
                     return write_data(motion_type);
                 },

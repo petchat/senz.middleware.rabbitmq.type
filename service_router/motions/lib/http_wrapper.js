@@ -21,7 +21,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     var promise = new AV.Promise();
     req.post(
         {
-            url: "https://leancloud.cn/1.1/classes/"+config.target_db.target_class,
+            url: "http://api.trysenz.com/mongodb/api/UserMotions",
             headers:{
                 "X-AVOSCloud-Application-Id":APP_ID,
                 "X-AVOSCloud-Application-Key":APP_KEY,
