@@ -154,10 +154,11 @@ var start = function(request_id){
             return get_motion_type(body).then(
                 function(motion_type){
                     motion_type['user'] = user;
-                    logger.info(request_id, "Motion service requested successfully");
+                    logger.info(request_id, "Motion service requested Success!");
                     return write_data(motion_type);
                 },
                 function(err){
+                    logger.error(request_id, "Motion service requested Failed!");
                     return AV.Promise.error(err);
                 }
             )
