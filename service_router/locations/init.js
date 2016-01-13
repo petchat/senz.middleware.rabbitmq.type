@@ -46,6 +46,7 @@ var scheduleFailed = function(){
                     if(obj.tries < 10 && obj.location.latitude > 0 && obj.location.longitude>0){
                         logger.debug("From Redis db0", JSON.stringify(obj));
                         m_task.start(obj);
+                        return AV.Promise.all(client.srem('location', obj.objectId), client.del(obj.objectId));
                     }else{
                         return AV.Promise.all(client.srem('location', obj.objectId), client.del(obj.objectId)).then(
                             function(){
@@ -74,11 +75,12 @@ var scheduleFailed2 = function(){
         .then(
             function(item){
                 var obj = JSON.parse(item);
-                if(obj.tries >= 200 || obj.location.latitude <= 0 || obj.location.longitude <= 0){
+                if(obj.tries >= 100 || obj.location.latitude <= 0 || obj.location.longitude <= 0){
                     logger.debug("From Redis db1", JSON.stringify(obj));
                     return AV.Promise.all(client.srem('location', obj.objectId), client.del(obj.objectId));
                 }else{
                     m_task.start(obj);
+                    return AV.Promise.all(client.srem('location', obj.objectId), client.del(obj.objectId));
                 }
             })
         .catch(
@@ -111,7 +113,7 @@ var scheduleCleanFromRedis = function(){
     }, 1000);
     setInterval(function(){
         scheduleFailed2();
-    }, 2000)
+    }, 10000)
 };
 
 //var scheduleCleanFromMemoryCache = function(){
