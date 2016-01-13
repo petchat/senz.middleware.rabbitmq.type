@@ -60,14 +60,14 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     logger.info(uuid, "Leancloud post started");
     var promise = new AV.Promise();
     if (params.type == "calendar"){
-        url =  "http://api.trysenz.com/mongodb/api/UserCalendars"
+        url =  "http://api.trysenz.com/RefinedLog/api/UserCalendars"
 
     }else if(params.type == "sensor") {
         params.type = "predicted_motion";
-        url =  "http://api.trysenz.com/mongodb/api/UserMotions"
+        url =  "http://api.trysenz.com/RefinedLog/api/UserMotions"
 
     }else if(params.type == "predictedMotion"){
-        url =  "http://api.trysenz.com/mongodb/api/UserMotions"
+        url =  "http://api.trysenz.com/RefinedLog/api/UserMotions"
     }
 
     req.post(

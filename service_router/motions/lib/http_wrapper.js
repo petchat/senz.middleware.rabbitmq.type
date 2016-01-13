@@ -21,7 +21,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     var promise = new AV.Promise();
     req.post(
         {
-            url: "http://api.trysenz.com/mongodb/api/UserMotions",
+            url: "http://api.trysenz.com/RefinedLog/api/UserMotions",
             headers:{
                 "X-AVOSCloud-Application-Id":APP_ID,
                 "X-AVOSCloud-Application-Key":APP_KEY,
