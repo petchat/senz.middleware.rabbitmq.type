@@ -77,6 +77,7 @@ var get_raw_data_o = function(req){
                 .then(
                     function(userId){
                         var a = {
+                            "extra": log.extra,
                             "location": location,
                             "userId": userId,
                             "objectId": LogId,
@@ -163,10 +164,12 @@ var start = function(log_obj){
         .then(
             function(raw_data){
                 var userId = raw_data.userId;
+                var extra = raw_data.extra;
                 var body = get_request_body(raw_data);
                 return get_location_type(body).then(
                     function(location_type){
                         location_type['user_id'] = userId;
+                        location_type['extra'] = extra;
                         return write_data(location_type);
                     });
         })
