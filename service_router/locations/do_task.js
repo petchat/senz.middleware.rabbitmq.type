@@ -73,11 +73,16 @@ var get_raw_data_o = function(req){
             var location = log.location;
             var timestamp = log.timestamp;
             var radius = log.locationRadius;
+            if(log.sdkVersion.slice(-3) == 'ios'){
+                var extra = log.value;
+            }else{
+                extra = log.extra;
+            }
             return get_user_obj(installationId)
                 .then(
                     function(userId){
                         var a = {
-                            "extra": log.extra,
+                            "extra": extra,
                             "location": location,
                             "userId": userId,
                             "objectId": LogId,
