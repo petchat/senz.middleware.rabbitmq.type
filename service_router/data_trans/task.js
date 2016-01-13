@@ -109,6 +109,20 @@ var write_data = function(body){
     return lean_post(app_id, app_key, body);
 };
 
+var postMotionService = function(url, params){
+    req.post({
+        url: url,
+        json: params
+    }, function(err, res, body){
+        if(err || (res.statusCode != 200 && res.statusCode != 201)){
+            logger.error("postMotionService", JSON.stringify(err));
+            return {};
+        }else{
+            return body;
+        }
+    });
+};
+
 var start = function(data_object){
     var request_id = data_object.objectId;
     logger.info(request_id, "Task start ...");
@@ -151,6 +165,15 @@ var start = function(data_object){
             }else if(data_object.type == "sensor"){
                 //console.log("fuck your")
                 var sensor_array = data_object.value.events;
+
+                var post_obj = {
+                    raw_data: data_object.value,
+                    userId: user.objectId
+                };
+
+                //Get Data From Motion Service
+                var motionFromService = postMotionService("http://api.trysenz.com/motionservice/", post_obj);
+
                 var activity_array = _.filter(sensor_array,
                     function(sample){
                         return sample.sensorName == "activity"
@@ -161,11 +184,7 @@ var start = function(data_object){
                     body.motionProb= {"unknown":1}
 
                 }else{
-
                     var max_prob_activity = _.max(activity_array, function(status){
-                        //var keys = Object.keys(status);
-                        //console.log(status)
-
                         var values = status.values;
                         //console.log(values)
                         var temp_max = -1;
@@ -193,6 +212,11 @@ var start = function(data_object){
                     });
                     //var motion_stat_dict = {"0":"sitting", "1":"driving", "2":"riding", "3":"walking","4":"running"}
                     var ios_type_dict = {"unknown":"unknow","stationary":"sitting","automotive":"driving","cycling":"riding","walking":"walking","running":"running"};
+
+                    //Get Data From Motion Service
+                    if(motionFromService.result){
+                        temp_type = motionFromService.result;
+                    }
 
                     body.motionProb = {};
                     body.motionProb[[ios_type_dict[temp_type]]] = 1
