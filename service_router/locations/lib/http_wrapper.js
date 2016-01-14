@@ -13,6 +13,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     var uuid = params.userRawdataId;
     logger.info(uuid, "Leancloud post started");
     var promise = new AV.Promise();
+    logger.debug("###########", JSON.stringify(params));
     req.post(
         {
             url: "http://api.trysenz.com/RefinedLog/UserLocations",
