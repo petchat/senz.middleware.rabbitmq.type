@@ -182,8 +182,8 @@ var start = function(log_obj){
             function(msg){
                 logger.debug("success", msg);
             },
-            function(){
-                logger.error("location", JSON.stringify(log_obj));
+            function(err){
+                logger.error("location", JSON.stringify(err));
                 failed(log_obj);
             })
 };
