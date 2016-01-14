@@ -16,7 +16,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     logger.debug("###########", JSON.stringify(params));
     req.post(
         {
-            url: "http://api.trysenz.com/RefinedLog/UserLocations",
+            url: "http://api.trysenz.com/RefinedLog/api/UserLocations",
             headers:{
                 "Content-Type": "application/json"
             },
