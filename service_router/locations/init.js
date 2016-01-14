@@ -112,10 +112,10 @@ var backupToDb1 = function(id, obj){
 var scheduleCleanFromRedis = function(){
     setInterval(function(){
         scheduleFailed();
-    }, 500);
+    }, 1000);
     setInterval(function(){
         scheduleFailed2();
-    }, 1000)
+    }, 10000)
 };
 
 //var scheduleCleanFromMemoryCache = function(){
