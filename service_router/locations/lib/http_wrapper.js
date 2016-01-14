@@ -15,7 +15,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     var promise = new AV.Promise();
     req.post(
         {
-            url: "http://api.trysenz.com/mongodb/api/UserLocations",
+            url: "http://api.trysenz.com/RefinedLog/UserLocations",
             headers:{
                 "Content-Type": "application/json"
             },
