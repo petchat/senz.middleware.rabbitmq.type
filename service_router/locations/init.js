@@ -115,7 +115,7 @@ var scheduleCleanFromRedis = function(){
     }, 500);
     setInterval(function(){
         scheduleFailed2();
-    }, 100)
+    }, 1000)
 };
 
 //var scheduleCleanFromMemoryCache = function(){
