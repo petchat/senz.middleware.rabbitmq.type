@@ -1,5 +1,5 @@
 {
-  "debug":true,
+  "debug":false,
  "is_sample":0,
   "max_tries":100,
   "interval": 10000
