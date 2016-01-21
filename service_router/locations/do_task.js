@@ -12,7 +12,8 @@ AV.initialize(config.source_db.APP_ID,config.source_db.APP_KEY);
 var UserLocation = AV.Object.extend(config.source_db.target_class);
 var Installation = AV.Object.extend("_Installation");
 var redis = require('promise-redis')();
-var client = redis.createClient();
+var client0 = redis.createClient();
+var client2 = redis.createClient();
 
 var get_log_obj = function(req){
     if(typeof req === typeof {}) return AV.Promise.as(req);
@@ -30,9 +31,9 @@ var get_log_obj = function(req){
 };
 
 var get_user_obj = function(installationId){
-    return client.select(2).then(
+    return client2.select(2).then(
         function(){
-            return client.get(installationId);
+            return client2.get(installationId);
         })
     .then(
         function(cache_user){
@@ -46,7 +47,7 @@ var get_user_obj = function(installationId){
                 }).then(
                 function(installation){
                     var userId = installation.get("user").id;
-                    client.set(installationId, userId);
+                    client2.set(installationId, userId);
                     return AV.Promise.as(userId);
                 }).catch(
                 function(err){
@@ -129,12 +130,12 @@ var write_data = function(body){
 };
 
 var succeeded = function(suc_id){
-    return client.select(0)
+    return client0.select(0)
         .then(
             function(){
                 return AV.Promise.all(
-                    client.srem('location', suc_id),
-                    client.del(suc_id))
+                    client0.srem('location', suc_id),
+                    client0.del(suc_id))
             })
         .catch(
             function(e){
@@ -145,7 +146,7 @@ var succeeded = function(suc_id){
 var failed = function(request) {
     logger.debug("REDIS: ", "add to redis!");
     if(typeof request == typeof {}){
-        return client.select(0)
+        return client0.select(0)
             .then(
                 function(){
                     if(request.tries){
@@ -154,8 +155,8 @@ var failed = function(request) {
                         request.tries = 1;
                     }
                     return AV.Promise.all(
-                        client.sadd('location', request.objectId),
-                        client.set(request.objectId, JSON.stringify(request)))
+                        client0.sadd('location', request.objectId),
+                        client0.set(request.objectId, JSON.stringify(request)))
                 })
             .catch(
                 function(e){

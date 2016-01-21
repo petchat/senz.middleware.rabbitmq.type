@@ -4,13 +4,11 @@
 
 var sub = require('../rabbit_lib/subscriber');
 var m_task = require("./do_task");
-var task_interval = require("../config.json").interval;
 var log = require("../utils/logger").log;
 var logger = new log("[locations]");
 var redis = require('promise-redis')();
-var client = redis.createClient();
+var client0 = redis.createClient();
 var client1 = redis.createClient();
-var client2 = redis.createClient();
 
 var config = require("./config.json");
 var AV = require("avoscloud-sdk").AV;
@@ -32,14 +30,14 @@ var locationCallback = function(msg){
 };
 
 var scheduleFailed = function(){
-    return client1.select(0)
+    return client0.select(0)
         .then(
             function(){
-                return client1.srandmember('location');
+                return client0.srandmember('location');
             })
         .then(
             function(logId){
-                return client1.get(logId);
+                return client0.get(logId);
             })
         .then(
             function(item){
@@ -48,9 +46,9 @@ var scheduleFailed = function(){
                     if(obj.tries < 10 && obj.location.latitude > 0 && obj.location.longitude>0){
                         logger.debug("From Redis db0", JSON.stringify(obj));
                         m_task.start(obj);
-                        return AV.Promise.all(client1.srem('location', obj.objectId), client1.del(obj.objectId));
+                        return AV.Promise.all(client0.srem('location', obj.objectId), client0.del(obj.objectId));
                     }else{
-                        return AV.Promise.all(client1.srem('location', obj.objectId), client1.del(obj.objectId)).then(
+                        return AV.Promise.all(client0.srem('location', obj.objectId), client0.del(obj.objectId)).then(
                             function(){
                                 return backupToDb1(obj.objectId, obj);
                             })
@@ -65,24 +63,24 @@ var scheduleFailed = function(){
 };
 
 var scheduleFailed2 = function(){
-    return client2.select(1)
+    return client1.select(1)
         .then(
             function(){
-                return client2.srandmember('location');
+                return client1.srandmember('location');
             })
         .then(
             function(logId){
-                return client2.get(logId);
+                return client1.get(logId);
             })
         .then(
             function(item){
                 var obj = JSON.parse(item);
                 if(obj.tries >= 100 || obj.location.latitude <= 0 || obj.location.longitude <= 0){
                     logger.debug("From Redis db1", JSON.stringify(obj));
-                    return AV.Promise.all(client2.srem('location', obj.objectId), client2.del(obj.objectId));
+                    return AV.Promise.all(client1.srem('location', obj.objectId), client1.del(obj.objectId));
                 }else{
                     m_task.start(obj);
-                    return AV.Promise.all(client2.srem('location', obj.objectId), client2.del(obj.objectId));
+                    return AV.Promise.all(client1.srem('location', obj.objectId), client1.del(obj.objectId));
                 }
             })
         .catch(
@@ -93,14 +91,14 @@ var scheduleFailed2 = function(){
 };
 
 var backupToDb1 = function(id, obj){
-    return client.select(1)
+    return client1.select(1)
         .then(
             function(){
-                return client.sadd('location', id);
+                return client1.sadd('location', id);
             })
         .then(
             function(){
-                return client.set(id, JSON.stringify(obj));
+                return client1.set(id, JSON.stringify(obj));
             })
         .catch(
             function(e){
