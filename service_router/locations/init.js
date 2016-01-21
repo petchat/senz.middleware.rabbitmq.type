@@ -46,9 +46,9 @@ var scheduleFailed = function(){
                     if(obj.tries < 10 && obj.location.latitude > 0 && obj.location.longitude>0){
                         logger.debug("From Redis db0", JSON.stringify(obj));
                         m_task.start(obj);
-                        return AV.Promise.all(client0.srem('location', obj.objectId), client0.del(obj.objectId));
+                        return AV.Promise.all([client0.srem('location', obj.objectId), client0.del(obj.objectId)]);
                     }else{
-                        return AV.Promise.all(client0.srem('location', obj.objectId), client0.del(obj.objectId)).then(
+                        return AV.Promise.all([client0.srem('location', obj.objectId), client0.del(obj.objectId)]).then(
                             function(){
                                 return backupToDb1(obj.objectId, obj);
                             })
@@ -77,10 +77,10 @@ var scheduleFailed2 = function(){
                 var obj = JSON.parse(item);
                 if(obj.tries >= 100 || obj.location.latitude <= 0 || obj.location.longitude <= 0){
                     logger.debug("From Redis db1", JSON.stringify(obj));
-                    return AV.Promise.all(client1.srem('location', obj.objectId), client1.del(obj.objectId));
+                    return AV.Promise.all([client1.srem('location', obj.objectId), client1.del(obj.objectId)]);
                 }else{
                     m_task.start(obj);
-                    return AV.Promise.all(client1.srem('location', obj.objectId), client1.del(obj.objectId));
+                    return AV.Promise.all([client1.srem('location', obj.objectId), client1.del(obj.objectId)]);
                 }
             })
         .catch(
@@ -94,11 +94,7 @@ var backupToDb1 = function(id, obj){
     return client1.select(1)
         .then(
             function(){
-                return client1.sadd('location', id);
-            })
-        .then(
-            function(){
-                return client1.set(id, JSON.stringify(obj));
+                return AV.Promise.all([client1.sadd('location', id), client1.set(id, JSON.stringify(obj))]);
             })
         .catch(
             function(e){
