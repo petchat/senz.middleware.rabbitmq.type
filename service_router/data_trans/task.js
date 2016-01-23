@@ -134,7 +134,7 @@ var start = function(data_object){
             body.timestamp = data_object.timestamp;
             body.type = data_object.type;
 
-            if(data_object.type == "predictedMotion"){
+            if(data_object.type == "predictedMotion" || data_object.type == "predicted_motion"){
                 var android_motion_to_standard_motion = {
                     "ride": "riding",
                     "sit": "sitting",
