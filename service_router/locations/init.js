@@ -48,10 +48,11 @@ var scheduleFailed = function(){
                         m_task.start(obj);
                         return AV.Promise.all([client0.srem('location', obj.objectId), client0.del(obj.objectId)]);
                     }else{
-                        return AV.Promise.all([client0.srem('location', obj.objectId), client0.del(obj.objectId)]).then(
-                            function(){
-                                return backupToDb1(obj.objectId, obj);
-                            })
+                        return AV.Promise.all([client0.srem('location', obj.objectId), client0.del(obj.objectId)]);
+                            //.then(
+                            //    function(){
+                            //        return backupToDb1(obj.objectId, obj);
+                            //    })
                     }
                 }
             })
@@ -107,9 +108,9 @@ var scheduleCleanFromRedis = function(){
     setInterval(function(){
         scheduleFailed();
     }, 1000);
-    setInterval(function(){
-        scheduleFailed2();
-    }, 10000)
+    //setInterval(function(){
+    //    scheduleFailed2();
+    //}, 10000)
 };
 
 //var scheduleCleanFromMemoryCache = function(){
