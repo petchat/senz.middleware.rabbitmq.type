@@ -122,6 +122,45 @@ var postMotionService = function(url, params){
     });
 };
 
+var getSensorMotion = function(sensor_data){
+    var activity_array = _.filter(sensor_data, function(sample){
+        return sample.sensorName == "activity"
+    });
+
+    if(activity_array.length == 0){
+        return "unknown";
+    }else{
+        var max_prob_activity = _.max(activity_array, function(status){
+            var values = status.values;
+            var temp_max = -1;
+            var temp_type = "";
+            Object.keys(values).forEach(function(type){
+                if(values[type] >= temp_max){
+                    temp_max = values[type];
+                    temp_type = type
+                }
+            });
+            return temp_max
+        });
+
+        var values = max_prob_activity.values;
+
+        var temp_max = -1;
+        var temp_type = "";
+        Object.keys(values).forEach(function(type){
+            if(values[type] >= temp_max){
+                temp_max = values[type];
+                temp_type = type
+            }
+        });
+
+        var ios_type_dict = {"unknown":"unknow","stationary":"sitting","automotive":"driving",
+            "cycling":"riding","walking":"walking","running":"running"};
+
+        return ios_type_dict[temp_type];
+    }
+};
+
 var start = function(data_object){
     var request_id = data_object.objectId;
     logger.info(request_id, "Task start ...");
@@ -163,11 +202,6 @@ var start = function(data_object){
                     userId: user.objectId
                 };
 
-                var ios_type_dict = {
-                    "unknown": "unknow", "stationary": "sitting", "automotive": "driving",
-                    "cycling": "riding", "walking": "walking", "running": "running"
-                };
-
                 var url = "http://api.trysenz.com/motionservice/";
                 req.post({url: url, json: post_obj}, function (err, res, data) {
                     console.log(JSON.stringify(data));
@@ -175,64 +209,16 @@ var start = function(data_object){
                         logger.error("postMotionService", JSON.stringify(err));
                         body.motionProb = {"unknown": 1}
                     } else {
-                        if (data.result) {
-                            body.motionProb = {};
-                            body.motionProb[data.result] = 1;
-                        }
+                        var motion = data.result || getSensorMotion(data_object.value.events);
+                        body.motionProb = {};
+                        body.motionProb[motion] = 1;
                     }
                     return write_data(body);
                 });
             }
 
-            //    var activity_array = _.filter(sensor_array,
-            //        function(sample){
-            //            return sample.sensorName == "activity"
-            //        }
-            //    );
-            //
-            //    if(activity_array.length == 0){
-            //        body.motionProb= {"unknown":1}
-            //
-            //    }else{
-            //        var max_prob_activity = _.max(activity_array, function(status){
-            //            var values = status.values;
-            //            //console.log(values)
-            //            var temp_max = -1;
-            //            var temp_type = "";
-            //            Object.keys(values).forEach(function(type){
-            //                //console.log("fuck 444")
-            //                if(values[type] >= temp_max){
-            //                    temp_max = values[type];
-            //                    temp_type = type
-            //                }
-            //            });
-            //            //console.log(temp_max)
-            //            return temp_max
-            //        });
-            //
-            //        var values = max_prob_activity.values;
-            //
-            //        var temp_max = -1;
-            //        var temp_type = "";
-            //        Object.keys(values).forEach(function(type){
-            //            if(values[type] >= temp_max){
-            //                temp_max = values[type];
-            //                temp_type = type
-            //            }
-            //        });
-            //        var motion_stat_dict = {"0":"sitting", "1":"driving", "2":"riding", "3":"walking","4":"running"}
-            //        var ios_type_dict = {"unknown":"unknow","stationary":"sitting","automotive":"driving","cycling":"riding","walking":"walking","running":"running"};
-            //
-            //        //Get Data From Motion Service
-            //        if(motionFromService.result){
-            //            temp_type = motionFromService.result;
-            //        }
-            //
-            //        body.motionProb = {};
-            //        body.motionProb[[ios_type_dict[temp_type]]] = 1
-            //
-            //    }
-            //}
+
+
             //console.log("fuck your 2")
             //return write_data(body);
         },
