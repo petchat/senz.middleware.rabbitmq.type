@@ -60,7 +60,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     logger.info(uuid, "Leancloud post started");
     var promise = new AV.Promise();
     if (params.type == "calendar"){
-        url =  "http://api.trysenz.com/RefinedLog/api/UserCalendars"
+        var url =  "http://api.trysenz.com/RefinedLog/api/UserCalendars"
 
     }else if(params.type == "sensor") {
         params.type = "predicted_motion";
@@ -69,7 +69,7 @@ var lean_post = function (APP_ID, APP_KEY, params) {
     }else if(params.type == "predictedMotion"){
         url =  "http://api.trysenz.com/RefinedLog/api/UserMotions"
     }
-
+    logger.debug("lean_post", JSON.stringify(params));
     req.post(
         {
             url: url,
@@ -84,11 +84,10 @@ var lean_post = function (APP_ID, APP_KEY, params) {
         function(err,res,body){
             if(err != null || (res.statusCode != 200 && res.statusCode !=201) ) {
                 if(_.has(res,"statusCode")){
-                    //console.log(res)
-                    logger.debug(uuid,res.statusCode);
+                    logger.debug("lean_post: " + uuid,res.statusCode);
                     promise.reject("Error is " + err + " " + "response code is " + res.statusCode);
                 }else{
-                    logger.error(uuid,"Response with no statusCode");
+                    logger.error("lean_post: " + uuid,"Response with no statusCode");
                     promise.reject("Error is " + err );
                 }
             }
