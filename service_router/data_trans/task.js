@@ -170,6 +170,7 @@ var start = function(data_object){
 
                 var url = "http://api.trysenz.com/motionservice/";
                 req.post({url: url, json: post_obj}, function (err, res, data) {
+                    console.log(JSON.stringify(data));
                     if (err || (res.statusCode != 200 && res.statusCode != 201)) {
                         logger.error("postMotionService", JSON.stringify(err));
                         body.motionProb = {"unknown": 1}
