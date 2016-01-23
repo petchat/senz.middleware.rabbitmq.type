@@ -176,6 +176,7 @@ var start = function(data_object){
                         body.motionProb = {"unknown": 1}
                     } else {
                         if (data.result) {
+                            body.motionProb = {};
                             body.motionProb[data.result] = 1;
                         }
                     }
