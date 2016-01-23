@@ -23,25 +23,16 @@ exports.init = function(){
 
 
 var calendar_cbx = function(msg) {
-    console.log("\n" + "fuck" + "\n");
-    logger.info(msg.object.id,"a new calendar data arrived");
     logger.debug(msg.object.id,"The calendar object sent at " + msg.object.timestamp);
-    //logger.info(msg.object.id,"Data is " + JSON.stringify(msg.object));
     m_task.start(msg.object);
 };
 
 var predicted_motion_cbx = function(msg) {
-    console.log("\n" + "fuck" + "\n");
-    logger.info(msg.object.id,"a new predicted motion data arrived");
     logger.debug(msg.object.id,"The predicted motion object sent at " + msg.object.timestamp);
-    //logger.info(msg.object.id,"Data is " + JSON.stringify(msg.object));
     m_task.start(msg.object);
 };
 
 var ios_motion_cbx = function(msg) {
-    console.log("\n" + "fuck" + "\n");
-    logger.info(msg.object.id,"a new ios motion data arrived");
     logger.debug(msg.object.id,"The ios motion object sent at " + msg.object.timestamp);
-    //logger.info(msg.object.id,"Data is " + JSON.stringify(msg.object));
     m_task.start(msg.object);
 };
