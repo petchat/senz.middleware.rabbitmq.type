@@ -176,7 +176,7 @@ var start = function(data_object){
                         body.motionProb = {"unknown": 1}
                     } else {
                         if (data.result) {
-                            body.motionProb[[ios_type_dict[data.result]]] = 1;
+                            body.motionProb[data.result] = 1;
                         }
                     }
                     return write_data(body);
