@@ -133,9 +133,7 @@ var succeeded = function(suc_id){
     return client0.select(0)
         .then(
             function(){
-                return AV.Promise.all(
-                    client0.srem('location', suc_id),
-                    client0.del(suc_id))
+                return AV.Promise.all([client0.srem('location', suc_id), client0.del(suc_id)]);
             })
         .catch(
             function(e){
@@ -154,9 +152,8 @@ var failed = function(request) {
                     }else{
                         request.tries = 1;
                     }
-                    return AV.Promise.all(
-                        client0.sadd('location', request.objectId),
-                        client0.set(request.objectId, JSON.stringify(request)))
+                    return AV.Promise.all([client0.sadd('location', request.objectId),
+                        client0.set(request.objectId, JSON.stringify(request))]);
                 })
             .catch(
                 function(e){

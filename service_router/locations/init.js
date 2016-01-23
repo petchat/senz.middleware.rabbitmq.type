@@ -43,17 +43,11 @@ var scheduleFailed = function(){
             function(item){
                 if(item && item.length > 100){
                     var obj = JSON.parse(item);
-                    if(obj.tries < 10 && obj.location.latitude > 0 && obj.location.longitude>0){
+                    if(obj.tries < 10 && obj.location.latitude > 0 && obj.location.longitude>0) {
                         logger.debug("From Redis db0", JSON.stringify(obj));
                         m_task.start(obj);
-                        return AV.Promise.all([client0.srem('location', obj.objectId), client0.del(obj.objectId)]);
-                    }else{
-                        return AV.Promise.all([client0.srem('location', obj.objectId), client0.del(obj.objectId)]);
-                            //.then(
-                            //    function(){
-                            //        return backupToDb1(obj.objectId, obj);
-                            //    })
                     }
+                    return AV.Promise.all([client0.srem('location', obj.objectId), client0.del(obj.objectId)]);
                 }
             })
         .catch(
@@ -63,46 +57,46 @@ var scheduleFailed = function(){
             })
 };
 
-var scheduleFailed2 = function(){
-    return client1.select(1)
-        .then(
-            function(){
-                return client1.srandmember('location');
-            })
-        .then(
-            function(logId){
-                return client1.get(logId);
-            })
-        .then(
-            function(item){
-                var obj = JSON.parse(item);
-                if(obj.tries >= 100 || obj.location.latitude <= 0 || obj.location.longitude <= 0){
-                    logger.debug("From Redis db1", JSON.stringify(obj));
-                    return AV.Promise.all([client1.srem('location', obj.objectId), client1.del(obj.objectId)]);
-                }else{
-                    m_task.start(obj);
-                    return AV.Promise.all([client1.srem('location', obj.objectId), client1.del(obj.objectId)]);
-                }
-            })
-        .catch(
-            function(e){
-                logger.error("From Redis db1", JSON.stringify(e));
-                return AV.Promise.error(e);
-            })
-};
-
-var backupToDb1 = function(id, obj){
-    return client1.select(1)
-        .then(
-            function(){
-                return AV.Promise.all([client1.sadd('location', id), client1.set(id, JSON.stringify(obj))]);
-            })
-        .catch(
-            function(e){
-                logger.error("second failed", JSON.stringify(e));
-                return Promise.error(e);
-            });
-};
+//var scheduleFailed2 = function(){
+//    return client1.select(1)
+//        .then(
+//            function(){
+//                return client1.srandmember('location');
+//            })
+//        .then(
+//            function(logId){
+//                return client1.get(logId);
+//            })
+//        .then(
+//            function(item){
+//                var obj = JSON.parse(item);
+//                if(obj.tries >= 100 || obj.location.latitude <= 0 || obj.location.longitude <= 0){
+//                    logger.debug("From Redis db1", JSON.stringify(obj));
+//                    return AV.Promise.all([client1.srem('location', obj.objectId), client1.del(obj.objectId)]);
+//                }else{
+//                    m_task.start(obj);
+//                    return AV.Promise.all([client1.srem('location', obj.objectId), client1.del(obj.objectId)]);
+//                }
+//            })
+//        .catch(
+//            function(e){
+//                logger.error("From Redis db1", JSON.stringify(e));
+//                return AV.Promise.error(e);
+//            })
+//};
+//
+//var backupToDb1 = function(id, obj){
+//    return client1.select(1)
+//        .then(
+//            function(){
+//                return AV.Promise.all([client1.sadd('location', id), client1.set(id, JSON.stringify(obj))]);
+//            })
+//        .catch(
+//            function(e){
+//                logger.error("second failed", JSON.stringify(e));
+//                return Promise.error(e);
+//            });
+//};
 
 var scheduleCleanFromRedis = function(){
     setInterval(function(){
